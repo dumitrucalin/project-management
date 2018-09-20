@@ -1,0 +1,330 @@
+'use strict';
+
+var libs = ['bootstrap', 'vue', 'bootbox', 'lodash', 'vuex', 'vue-resource', 'vue-router', 'moment', 'jquery', 'socket.io-client', 'xterm', 'vue2-leaflet', 'leaflet', 'validator', 'csv-parse'];
+
+var crypto = require ('crypto');
+var fs = require ('fs');
+
+module.exports = function(grunt){
+	var tasks = {
+		browserify: {
+			ui: {
+				files: {
+					'build/ui/js/app.js': ['source/ui/js/app.js'],
+					'build/ui/js/login.js': ['source/ui/js/login.js']
+				},
+				options: {
+					transform: ['vueify']
+				}
+			},
+			vendor: {
+				src: [],
+				dest: 'build/ui/js/vendor.js',
+				options: {
+					external: null,
+					require: libs
+				}
+			},
+			docs: {
+				files: {
+					'build/docs/js/script.js': ['source/docs/js/script.js'],
+				},
+				options: {
+					external: null
+				}
+			},
+			server: {
+				files: 
+				{
+					'build/server/index.js': ['source/server/index.js']
+				},
+				options:
+				{
+					external: ['../package.json', '../../package.json', 'node_modules/**'],
+					browserifyOptions: {
+						ignoreMissing: true,
+						builtins: false,
+						commondir: false,
+						browserField: false,
+						detectGlobals: false
+					}
+				}
+			},
+			options:{
+				external: libs,
+			},
+		},
+		uglify: {
+			options:
+			{
+				compress: {
+					drop_console: true
+				},
+				mongle: true,
+			},
+			server: {
+				files:
+				{
+					'build/server/startup.js':'build/server/startup.js',
+					'build/server/index.js':'build/server/index.js'
+				}
+			},
+			ui: {
+				files:
+				{
+					'build/ui/js/login.js':'build/ui/js/login.js',
+					'build/ui/js/app.js':'build/ui/js/app.js'
+				}
+			},
+			docs: {
+				files:
+				{
+					'build/docs/js/script.js':'build/docs/js/script.js',
+				}
+			},
+			vendor: {
+				files:
+				{
+					'build/ui/js/vendor.js':'build/ui/js/vendor.js',
+				}
+			},
+		},
+		copy:
+		{
+			server:
+			{
+				files:[
+					// {
+					// 	expand: true,
+					// 	cwd:'source/server/',
+					// 	src:['**/*'],
+					// 	dest: 'build/server/',
+					// 	extDot: 'first'
+					// },
+					{
+						src: 'package.json',
+						dest: 'build/package.json'
+					},
+					{
+						src: 'source/server/startup.js',
+						dest: 'build/server/startup.js'
+					},
+					{
+						src:'.env',
+						dest:'build/server/.env'
+					},
+					{
+						expand: true,
+						cwd:'source/deploy/',
+						src:['Dockerfile'],
+						dest: 'build/',
+						extDot: 'first'
+					},
+					{
+						expand: true,
+						cwd:'source/keys',
+						src:['**/*'],
+						dest: 'deploy/keys',
+						extDot: 'first'
+					},
+				]
+			},
+			ui:
+			{
+				files:[
+					{
+						expand: true,
+						cwd:'node_modules/leaflet/dist/images',
+						src:['*'],
+						dest: 'build/ui/css/images',
+						extDot: 'first'
+					},
+					{
+						expand: true,
+						cwd:'source/ui/',
+						src:['*.html'],
+						dest: 'build/ui/',
+						extDot: 'first'
+					},
+					{
+						expand: true,
+						cwd:'source/ui/img/',
+						src:['**/*'],
+						dest: 'build/ui/img/',
+						extDot: 'first'
+					},
+				]
+			},
+			docs:
+			{
+				files:[
+					{
+						expand: true,
+						cwd:'source/docs/img',
+						src:['**/*'],
+						dest: 'build/docs/img',
+						extDot: 'first'
+					},
+				]
+			},
+			ibot:
+			{
+				files:[
+					{
+						expand: true,
+						cwd:'source/whitelabel/ibot/img/ui',
+						src:['**/*'],
+						dest: 'build/ui/img',
+						extDot: 'first'
+					},
+					{
+						expand: true,
+						cwd:'source/whitelabel/ibot/img/docs',
+						src:['**/*'],
+						dest: 'build/docs/img',
+						extDot: 'first'
+					},
+					{
+						expand: true,
+						cwd:'source/whitelabel/ibot/keys',
+						src:['**/*'],
+						dest: 'deploy/keys',
+						extDot: 'first'
+					},
+				]
+			}
+		},
+		less:
+		{
+			wyliodrin:
+			{
+				files: {
+					'build/ui/css/wyliodrin.css': 'source/ui/css/style.less'
+				}
+			},
+			docs: 
+			{
+				files: {
+					'build/docs/css/docs.css': 'source/docs/css/docs.less'
+				}
+			},
+			vendor: {
+				files: {
+					'build/ui/css/vendor.css': 'source/ui/css/vendor.less'
+				}
+			},
+			ibot: {
+				files: {
+					'build/ui/css/wyliodrin.css': 'source/whitelabel/ibot/css/style.less',
+					'build/docs/css/docs.css': 'source/whitelabel/ibot/css/docs.less'
+				}
+			}
+		},
+		eslint:
+		{
+			gruntfile: 'gruntfile.js',
+			server:['source/server/**/*.js'],
+			ui:['source/ui/**/*.js', 'source/ui/**/*.vue']
+		},
+		mustache_render: {
+			wyliodrin_docs: {
+				files : [
+					{
+						expand: true,
+						cwd: 'source/docs',
+						data: {
+							name: 'Wyliodrin'
+						},
+						src: ['**/*.md', '**/*.html'],
+						dest: 'build/docs'
+					}
+				]
+			},
+			wyliodrin_deploy: {
+				files : [
+					{
+						expand: true,
+						cwd: 'source/deploy/templates',
+						data: 'source/deploy/templates/wyliodrin.json',
+						src: ['**/*.yml','**/*.sh'],
+						dest: 'deploy'
+					}
+				]
+			},
+			ibot_deploy: {
+				files : [
+					{
+						expand: true,
+						cwd: 'source/deploy/templates',
+						data: 'source/whitelabel/ibot/ibot.json',
+						src: ['**/*.yml','**/*.sh'],
+						dest: 'deploy'
+					},
+				]
+			},
+			ibot_docs: {
+				files : [
+					{
+						expand: true,
+						cwd: 'source/docs',
+						data: {
+							name: 'iBot Studio'
+						},
+						src: ['**/*.md', '**/*.html'],
+						dest: 'build/docs'
+					},
+				]
+			}
+		},
+		cssmin: {
+			options: {
+				keepSpecialComments: 0
+			},
+			ui:
+			{
+				expand: true,
+				cwd: 'build/ui/css',
+				src: ['*.css', '!*.min.css'],
+				dest: 'build/ui/css',
+				ext: '.css'
+			},
+			docs:
+			{
+				expand: true,
+				cwd: 'build/docs/css',
+				src: ['*.css', '!*.min.css'],
+				dest: 'build/docs/css',
+				ext: '.css'
+			}
+		}
+	};
+	grunt.initConfig(tasks);
+	grunt.loadNpmTasks('grunt-browserify');
+	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.loadNpmTasks('grunt-contrib-uglify-es');
+	grunt.loadNpmTasks('grunt-eslint');
+	grunt.loadNpmTasks('grunt-mustache-render');
+
+	
+	// server
+	grunt.registerTask('server',['eslint:server', 'browserify:server', 'copy:server']);
+
+	// ui
+	grunt.registerTask ('fastui', ['eslint:ui', 'browserify:ui']);
+	grunt.registerTask('ui',['fastui', 'browserify:vendor', 'less:wyliodrin', 'less:vendor', 'copy:ui']);
+
+	// deploy
+	grunt.registerTask ('deploy', ['mustache_render:wyliodrin_deploy']);
+
+	// docs
+	grunt.registerTask('docs',['mustache_render:wyliodrin_docs', 'browserify:docs', 'copy:docs', 'less:docs']);
+
+	// ibot
+	grunt.registerTask ('deploy:ibot', ['mustache_render:ibot_deploy']);
+	grunt.registerTask('docs:ibot',['mustache_render:ibot_docs']);
+	grunt.registerTask ('ibot', ['default', 'docs:ibot', 'encrypt:ibot', 'less:ibot', 'copy:ibot', 'cssmin', 'deploy:ibot']);
+	
+	grunt.registerTask('default',['eslint:gruntfile','server', 'docs', 'ui', 'uglify', 'cssmin']);
+};
