@@ -1,6 +1,6 @@
 {
-	"name": "temeuso",
-	"description": "Main server for USO teme",
+	"name": "task-manager",
+	"description": "Main server for the task-manager",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {

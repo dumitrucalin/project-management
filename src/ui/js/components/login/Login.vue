@@ -28,19 +28,13 @@ module.exports = {
 
 	methods: {
 		async login () {
-			if (this.next === null)
-				this.next = 'DASHBOARD';
+			let login = await this.$store.dispatch ('user/login', {
+				username: this.username,
+				password: this.password
+			});
 
-			// let login = await this.$store.dispatch ('user/login', {
-			// 	username: this.username,
-			// 	password: this.password
-			// });
-
-			// if (login)
-			if (this.username === 'andy' && this.password === 'andy')
-			{
+			if (login)
 				await this.$store.dispatch ('settings/redirect', this.next);
-			}
 			else {
 				this.incorrectLogin = true;
 				console.log('Incorrect credentials');

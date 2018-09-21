@@ -1,7 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
-var debug = require('debug')('teme-uso-server:database');
+var debug = require('debug')('task-manager:database');
 
 
 debug.log = console.info.bind(console);
@@ -10,14 +10,14 @@ mongoose.set('debug', process.env.NODE_ENV !== 'production');
 
 mongoose.Promise = global.Promise;
 
-var database_string = process.env.WYLIODRIN_MONGODB_RESOURCE;
+var database_string = process.env.TASK_MANAGER_MONGODB_RESOURCE;
 
 if (database_string && database_string.trim().length > 0) {
-	debug('Using Wyliodrin Database');
+	debug('Using Task-manager Database');
 } else {
-	debug('Using WYLIODRIN_MONGODB');
-	database_string = 'mongodb://' + process.env.WYLIODRIN_MONGODB_USER + ':' + process.env.WYLIODRIN_MONGODB_PASSWORD +
-		'@' + process.env.WYLIODRIN_MONGODB_SERVER + '/' + process.env.WYLIODRIN_MONGODB_DATABASE;
+	debug('Using TASK_MANAGER_MONGODB');
+	database_string = 'mongodb://' + process.env.TASK_MANAGER_MONGODB_USER + ':' + process.env.TASK_MANAGER_MONGODB_PASSWORD +
+		'@' + process.env.TASK_MANAGER_MONGODB_SERVER + '/' + process.env.TASK_MANAGER_MONGODB_DATABASE;
 	debug(database_string);
 }
 

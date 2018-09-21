@@ -4,11 +4,10 @@ var express = require('express');
 var path = require('path');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
-var debug = require('debug')('teme-uso-server:app');
+var debug = require('debug')('task-manager:app');
 require('./database/database.js');
 var users = require('./routes/users');
 var error = require('./error.js');
-var admin = require('./routes/admin');
 var statusCodes = require('http-status-codes');
 
 debug.log = console.info.bind(console);
@@ -27,10 +26,6 @@ apiv1.use('/users', users.publicRoutes);
 apiv1.use(users.security);
 
 apiv1.use('/users', users.privateRoutes);
-
-apiv1.use(admin.adminSecurity);
-
-apiv1.use('/users', users.adminRoutes);
 
 apiv1.use(function(req, res) {
 	error.sendError(res, error.notFound('Link not found'));

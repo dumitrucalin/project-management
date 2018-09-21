@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-// var uuid = require('uuid');
 var validator = require('validator');
 var crypto = require('crypto');
 var _ = require('lodash');
