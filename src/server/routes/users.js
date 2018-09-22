@@ -16,11 +16,16 @@ debug.log = console.info.bind(console);
 // 	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
 // }
 
-// publicApp.post('/login', async function(req, res, next) {
-// 	var e;
-// 	var username = req.body.username;
-// 	var password = req.body.password;
-// });
+publicApp.post('/login', async function(req, res, next) {
+	// var e;
+	var username = req.body.username;
+	var password = req.body.password;
+
+	if (username === 'andy' && password === 'andy')
+		console.log('good');
+	else
+		console.log('bad');
+});
 
 function security(req, res, next) {
 	// var e;
