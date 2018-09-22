@@ -47,9 +47,9 @@ module.exports = {
 				return false;
 			}
 		},
-		async logout(store) {
+		async logout(store, token) {
 			try {
-				let response = await Vue.http.get(setup.API + '/users/logout');
+				let response = await Vue.http.post(setup.API + '/users/logout', token);
 				store.commit('token', null);
 				if (response.data.err === 0) {
 					return true;

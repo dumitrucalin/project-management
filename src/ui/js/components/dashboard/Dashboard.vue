@@ -13,13 +13,17 @@ module.exports = {
 	name: 'Dashboard',
 	
 	data() {
+		var urlParams = new URLSearchParams(window.location.search);
 		return {
+			token: urlParams.get ('token')
 		};
 	},
 
 	methods: {
 		async logout() {
-			let logout = await this.$store.dispatch('user/logout');
+			let logout = await this.$store.dispatch('user/logout', {
+				token: this.token
+			});
 			if (logout)
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 		}

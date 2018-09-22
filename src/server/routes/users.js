@@ -89,10 +89,14 @@ function security(req, res, next) {
 	next();
 }
 
-privateApp.get('/logout', function(req, res) {
-	// debug(req.user.username + ' logged out');
-	// await db.user.setToken(req.user.username, req.user.token);
-	res.status(200).send({ err: 0 });
+privateApp.post('/logout', async function(req, res) {
+	var user = await db.user.findByToken(req.body.token);
+	if (user) {
+		await db.user.setToken(user.username, '');
+		res.status(200).send({ err: 0 });
+	} else {
+		debug('Couldn\t find the given token');
+	}
 });
 
 

@@ -74,6 +74,10 @@ function findByEmail(email) {
 	return User.findOne({ email: email }).lean();
 }
 
+function findByToken(token) {
+	return User.findOne({ token: token }).lean();
+}
+
 function deleteByUsername(username) {
 	return User.remove({ username });
 }
@@ -136,6 +140,7 @@ var user = {
 	create,
 	findByUsername,
 	findByEmail,
+	findByToken,
 	deleteByUsername,
 	edit,
 	setPassword,
