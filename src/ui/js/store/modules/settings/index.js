@@ -2,6 +2,9 @@ module.exports = {
 	namespaced: true,
 	state: {
 		LOGIN: '/login.html',
+		SIGNUP: '/signup.html',
+		DASHBOARD: '/dashboard.html',
+		BAD_DASHBOARD: '/login.html?redirect=dashboard.html'
 	},
 	actions: {
 		redirect(store, application) {

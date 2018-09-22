@@ -19,9 +19,6 @@ module.exports = {
 		token(state) {
 			return state.token;
 		},
-		isLoggedIn(state) {
-			return state.token && state.token !== '';
-		},
 		user(state) {
 			return state.user;
 		}
@@ -30,11 +27,20 @@ module.exports = {
 		async login(store, credentials) {
 			try {
 				let response = await Vue.http.post(setup.API + '/users/login', credentials);
-				console.log(response.data.role);
-				if (response.data.token) {
+				console.log(response);
+				if (response.data.token) 
 					store.commit('token', response.data.token);
-					store.commit('role', response.data.role);
-				}
+				return true;
+			} catch (e) {
+				console.log('Login fail ' + e);
+				return false;
+			}
+		},
+		async signup(store, credentials) {
+			try {
+				let response = await Vue.http.post(setup.API + '/users/signup', credentials);
+				if (response.data.token)
+					store.commit('token', response.data.token);
 				return true;
 			} catch (e) {
 				console.log('Login fail ' + e);
@@ -62,19 +68,6 @@ module.exports = {
 					return response.data.user;
 				}
 				return false;
-			} catch (e) {
-				return false;
-			}
-		},
-		async addUser(store, user) {
-			console.log(user);
-			try {
-				let response = await Vue.http.post(setup.API + '/users/create', user);
-				if (response.data.err === 0) {
-					await store.dispatch('getUser');
-					return true;
-				} else
-					return false;
 			} catch (e) {
 				return false;
 			}

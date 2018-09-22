@@ -8,6 +8,8 @@ module.exports = function(grunt) {
             ui: {
                 files: {
 					'build/ui/js/login.js': ['src/ui/js/login.js'],
+					'build/ui/js/signup.js': ['src/ui/js/signup.js'],
+					'build/ui/js/dashboard.js': ['src/ui/js/dashboard.js'],
                 },
                 options: {
                     transform: ['vueify']
