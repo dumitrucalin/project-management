@@ -11,7 +11,9 @@ var Dashboard = require('./components/dashboard/Dashboard.vue');
 
 new Vue({
 	el: '#dashboard',
-	data: {},
+	data: {
+		token: ''
+	},
 	render: function(render) {
 		return render(Dashboard);
 	},

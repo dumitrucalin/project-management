@@ -92,10 +92,11 @@ function security(req, res, next) {
 privateApp.post('/logout', async function(req, res) {
 	var user = await db.user.findByToken(req.body.token);
 	if (user) {
+		debug('Found user');
 		await db.user.setToken(user.username, '');
 		res.status(200).send({ err: 0 });
 	} else {
-		debug('Couldn\t find the given token');
+		debug('Couldn\'t find the given token');
 	}
 });
 

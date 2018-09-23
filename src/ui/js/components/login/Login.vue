@@ -35,7 +35,6 @@ module.exports = {
 
 			if (login)
 				await this.$store.dispatch ('settings/redirect', this.next);
-				// TODO: PASS THE TOKEN TO THE DASHBOARD!!!!!
 			else {
 				console.log('Incorrect credentials');
 				this.username = '';
