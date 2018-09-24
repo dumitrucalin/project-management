@@ -16,6 +16,18 @@ var userSchema = mongoose.Schema({
 	token: {
 		type: String,
 		required: true
+	},
+	fullName: {
+		type: String,
+		required: true
+	},
+	email: {
+		type: String,
+		required: true
+	},
+	groupName: {
+		type: String,
+		unique: true
 	}
 }, {
 	toObject: {
@@ -55,10 +67,11 @@ var User = mongoose.model('User', userSchema);
  * @param {String} password - password
  * @param {String} email - email
  */
-function create(username, password, email, token) {
+function create(username, password, fullName, email, token) {
 	var user = new User(_.assign({}, {
 		username: username,
 		password: password,
+		fullName: fullName,
 		email: email,
 		token: token
 	}));
@@ -89,21 +102,22 @@ function listUsers() {
 
 /**
  * Edit an user
- * @param {String} username - new first name (optional)
- * @param {String} password - new last name (optional)
+ * @param {String} username - username (optional)
+ * @param {String} password - password (optional)
+ * @param {String} fullName - full name (optional)
  * @param {String} email - new email (optional)
  */
 
-async function edit(username, password, email) {
+async function edit(username, password, email, fullName) {
 	var editUser = {};
-	if (username) {
-		editUser.username = username;
-	}
 	if (password) {
 		editUser.password = encryptPassword(password);
 	}
 	if (email) {
 		editUser.email = email;
+	}
+	if (fullName) {
+		editUser.fullName = fullName;
 	}
 	let ret = await User.updateOne({ username: username }, { $set: editUser }).lean();
 	return ret;

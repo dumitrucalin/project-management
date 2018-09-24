@@ -20,6 +20,7 @@ publicApp.post('/signup', async function(req, res, next) {
 	var e;
 	var username = req.body.username;
 	var password = req.body.password;
+	var fullName = req.body.fullName;
 	var email = req.body.email;
 
 	if (username && password) {
@@ -28,7 +29,7 @@ publicApp.post('/signup', async function(req, res, next) {
 		if (!user) {
 			debug('User not found. Saving the new credentials into the database...');
 			var token = createToken();
-			await db.user.create(username, password, email, token);
+			await db.user.create(username, password, fullName, email, token);
 			res.status(200).send({err: 0, token: token});
 		} else {
 			// TODO: TOAST FOR EXISTING USER

@@ -4,6 +4,7 @@
 			<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="signup" v-model="username" />
 			<input type="text" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
 			<input type="text" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
+			<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
 			<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
 			<button class="submitButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
 			<a @click="redirectLogin" >Log In</a>
@@ -21,7 +22,8 @@ module.exports = {
 			username: '',
 			password: '',
 			confirmPassword: '',
-			email: ''
+			email: '',
+			fullName: ''
 		};
 	},
 
@@ -31,6 +33,7 @@ module.exports = {
 				let signup = await this.$store.dispatch ('user/signup', {
 					username: this.username,
 					password: this.password,
+					fullName: this.fullName,
 					email: this.email
 				});
 
@@ -40,6 +43,7 @@ module.exports = {
 					this.username = '';
 					this.password = '';
 					this.confirmPassword = '';
+					this.fullName = '';
 					this.email = '';
 				}
 			} else {

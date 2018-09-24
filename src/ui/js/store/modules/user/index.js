@@ -13,14 +13,14 @@ module.exports = {
 	namespaced: true,
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
-		user: null
+		fullName: null
 	},
 	getters: {
 		token(state) {
 			return state.token;
 		},
-		user(state) {
-			return state.user;
+		fullName(state) {
+			return state.fullName;
 		}
 	},
 	actions: {
@@ -39,8 +39,10 @@ module.exports = {
 		async signup(store, credentials) {
 			try {
 				let response = await Vue.http.post(setup.API + '/users/signup', credentials);
-				if (response.data.token)
+				if (response.data.token) {
 					store.commit('token', response.data.token);
+					store.commit('fullName', credentials.fullName);
+				}
 				return true;
 			} catch (e) {
 				console.log('Login fail ' + e);
@@ -104,8 +106,8 @@ module.exports = {
 				state.token = undefined;
 			}
 		},
-		user(state, value) {
-			state.user = value;
+		fullName(state, value) {
+			state.fullName = value;
 		}
 	}
 };
