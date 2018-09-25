@@ -13,14 +13,14 @@ module.exports = {
 	namespaced: true,
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
-		fullName: null
+		user: null
 	},
 	getters: {
 		token(state) {
 			return state.token;
 		},
-		fullName(state) {
-			return state.fullName;
+		user(state) {
+			return state.user;
 		}
 	},
 	actions: {
@@ -28,8 +28,9 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/users/login', credentials);
 				console.log(response);
-				if (response.data.token) 
+				if (response.data.token) {
 					store.commit('token', response.data.token);
+				}
 				return true;
 			} catch (e) {
 				console.log('Login fail ' + e);
@@ -63,11 +64,12 @@ module.exports = {
 				return false;
 			}
 		},
-		async getUser(store, token) {
+		async getUser(store) {
 			try {
-				let response = await Vue.http.get(setup.API + '/users/get/' + token);
+				console.log(store.state.token);
+				let response = await Vue.http.get(setup.API + '/users/get/', store.state.token);
 				if (response.data.err === 0) {
-					return response.data.user;
+					store.commit ('user', response.data.user);
 				}
 				return false;
 			} catch (e) {
@@ -106,8 +108,8 @@ module.exports = {
 				state.token = undefined;
 			}
 		},
-		fullName(state, value) {
-			state.fullName = value;
+		user(state, value) {
+			state.user = value;
 		}
 	}
 };

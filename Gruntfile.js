@@ -1,6 +1,6 @@
 'use strict';
 
-var libs = ['bootstrap', 'vue', 'bootbox', 'lodash', 'vuex', 'vue-resource', 'vue-router', 'jquery', 'moment'];
+var libs = ['bootstrap', 'vue', 'bootbox', 'lodash', 'vuex', 'vue-resource', 'vue-router', 'jquery', 'moment', 'epic-spinners/dist/lib/epic-spinners.min.js'];
 
 module.exports = function(grunt) {
     var tasks = {

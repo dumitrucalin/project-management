@@ -37,9 +37,9 @@ module.exports = {
 					email: this.email
 				});
 
-				if (signup)
+				if (signup) {
 					await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
-				else {
+				} else {
 					this.username = '';
 					this.password = '';
 					this.confirmPassword = '';

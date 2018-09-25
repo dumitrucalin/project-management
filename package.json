@@ -12,6 +12,7 @@
 		"child-process-async": "^1.0.1",
 		"debug": "^2.6.9",
 		"dotenv": "^6.0.0",
+		"epic-spinners": "^1.0.3",
 		"express": "~4.16.0",
 		"fs-extra": "^7.0.0",
 		"http-errors": "~1.6.2",

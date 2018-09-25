@@ -26,8 +26,7 @@ var userSchema = mongoose.Schema({
 		required: true
 	},
 	groupName: {
-		type: String,
-		unique: true
+		type: String
 	}
 }, {
 	toObject: {
@@ -108,11 +107,8 @@ function listUsers() {
  * @param {String} email - new email (optional)
  */
 
-async function edit(username, password, email, fullName) {
+async function edit(username, email, fullName) {
 	var editUser = {};
-	if (password) {
-		editUser.password = encryptPassword(password);
-	}
 	if (email) {
 		editUser.email = email;
 	}

@@ -101,6 +101,16 @@ privateApp.post('/logout', async function(req, res) {
 	}
 });
 
+privateApp.get('/get', async function(req, res) {
+	var user = await db.user.findByToken(req.token);
+	if (user) {
+		debug('Found user');
+		res.status(200).send({ err: 0, user: user });
+	} else {
+		debug('User not found');
+	}
+});
+
 
 module.exports.publicRoutes = publicApp;
 module.exports.security = security;

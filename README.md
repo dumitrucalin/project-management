@@ -1,5 +1,14 @@
 # task-manager
 
 TODO: 
-	- Regexes for signUp
-	- Username in dashboard
+	UI: {
+		- Regexes for signUp
+		- Loading icon
+		- Buttons from Dashboard: 
+			- Create group
+			- Create task
+	},
+	SERVER: {
+		- Group DB
+		- Routes for groups
+	}
