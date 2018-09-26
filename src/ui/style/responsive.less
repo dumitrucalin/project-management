@@ -1,0 +1,126 @@
+@import "var.less";
+
+.no-transition {
+    -webkit-transition: height 0.01s;
+    -moz-transition: height 0.01s;
+    -ms-transition: height 0.01s;
+    -o-transition: height 0.01s;
+    transition: height 0.01s;
+}
+
+@media (min-width: 993px) {
+    .submenu {position: absolute; right: 20px; width: 100%;
+        .dropdown-menu {display: block; border: 0; background: transparent; top: -11px; padding-right: 10px;}
+    }
+    .xs-submenu {display: none !important;}
+    .xl-hide {display: none !important;}
+    .v-history { display: block !important;}
+}
+
+@media (min-width: 1301px) and (max-width: 1600px) {
+	html {zoom:80% !important;}
+	.shell-modal .modal-dialog {max-width: 90%;
+		.modal-body {height: 100vh;}
+    }
+    .projectbox{padding-top: 13px !important;}
+    .projectbox > div .right {margin-right: 40px;}
+}
+
+@media (min-width: 993px) and (max-width: 1300px) {
+	html {zoom:70% !important;}
+	.shell-modal .modal-dialog {max-width: 90%;
+		.modal-body {height: 100vh;}
+    }
+    .projectbox{padding-top: 7px !important;}
+    .projectbox > div .right {margin-right: 46px;}
+}
+
+  @media screen and (max-width: 992px) {
+
+    .xs-hide {display: none;}
+
+    .tooltip {display: none !important;}
+
+    .navbar-toggler, .navbar-toggler:hover, .navbar-toggler:focus {z-index: 999; padding: 27px; outline: none;}
+    #navbarResponsive {position: absolute; right: 0; top:0; background:@color-black; width: 300px; height: 100vh; padding-top: 0px; z-index: 900;} 
+    .navbar-collapse {flex-grow: 0;}
+    .close-area {position: absolute; width: 100%; height: 100vh; top: 0; z-index: 800;}
+    div.hidden-sm-up {display: block;}
+    div.collapsed {display: none;}
+    .nav-btns {margin-top: 80px;}
+    .nav-switch{position: absolute; bottom: 0; width: 100%;
+        .options-list {padding: 0;}
+        a {width: 100%; margin: 0; font-size: 16px; color: @color-grey-4; padding: 25px 50px 25px 20px; height: 70px; border-radius:0;
+            img {padding: 0 5px 0 10px;}
+        }
+        .i-product{padding: 0 0 0 30px; margin-left: 10px;}
+    }
+    .triangle, .pointer {display: none;}
+    .user-image {left: 20px;}
+    .user > a {margin-left: 50px; line-height: 40px;}
+    .my-proj, .my-boards, .main-btn {width: 100%;
+        a {height: 70px; padding: 25px 50px 25px 20px;
+            img {padding: 0 5px 0 10px;}
+        }
+    }
+    .user {position: absolute; width: 100%; top: 0;
+        .options-list {display: block; width: 100%; position: absolute; top: 220px; left: 0; margin: 0; padding: 0;
+            a {width: 100%; margin: 0; font-size: 16px; color: @color-grey-4; padding: 25px 50px 25px 20px; height: 70px; border-radius:0;
+                img {vertical-align: bottom; padding: 0 10px 0 10px;}
+            }
+        }
+        .doc-link:after {content: "Documentation";}
+        .settings-link:after {content: "Settings";}
+        .logout-link:after {content: "Logout";}
+    }
+
+    .modal-dialog {margin: 3% !important; max-width: 990px !important; width:initial !important;}
+
+    .proj-box {width: 50%;}
+
+    .projectbox {padding-top: 60px !important; zoom: 80%;
+        > div {width: 100%; padding: 0 20px;
+            .right {margin-right: 0px;}
+        }
+    }
+
+    .welcome {zoom: 70%;}
+
+    .welcome-menu {
+        .user .options-list {top: 430px;}
+    }
+
+    .wsd-menu {
+        .user .options-list {top: 290px;}
+    }
+
+    .v-history {width: 100%; display: none;
+        h5 {text-align: left;}
+        .close, .close:hover, .close:focus {background: transparent; padding: 0; outline: none; opacity: 1;}
+    }
+
+    .v-hist-btn, .v-hist-btn:hover, .v-hist-btn:focus {border: 0; padding: 10px 0; outline: none; background: @color-grey-2; color: @color-white; cursor: pointer; position: fixed; bottom: 0; left: 0; width: 100%;}
+
+    .table {width: 100% !important;
+        th, td {width: initial !important;}
+    }
+
+    .submenu, .submenu:hover, .submenu:focus {position: absolute; right: 20px; border: 0 !important; outline: none !important;
+        .dropdown-menu {background: @dark-color-2; padding: 0;  min-width: 200px; left: 14px !important;}
+        .dropdown-toggle::after {display: none;}
+        .xs-submenu, .xs-submenu:hover, .xs-submenu:focus {border: 0 !important; background: @color-black !important; outline: none !important; padding: 11px;
+            img {margin: 0;}
+        }
+    }
+    
+    .content-title {zoom: 80%;}
+
+    .proj-bar a, .proj-bar button {margin-left: 0px; width: 100%; text-align: left; float: right;}
+    .proj-bar span img {margin-right: 1rem !important;}
+
+    .w-80 tbody {padding-bottom: 60px;}
+
+    .hidescroll {overflow-y: hidden;}
+    .showscroll {overflow-y: auto;}
+
+  }
