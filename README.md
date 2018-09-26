@@ -14,8 +14,8 @@ TODO:
 				.task info
 	},
 	SERVER: {
-		- Group DB
-		- Routes for groups
+		- Update users in group collection
+		- Send taskId
 		- Use "upseart" to search if a group/user already exist or not
 		- Routes using "try/catch"
 	}
