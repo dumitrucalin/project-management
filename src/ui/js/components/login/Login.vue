@@ -4,7 +4,7 @@
 			<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="login" v-model="username" />
 			<input type="text" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
 			<button class="submitButton" name="Submit" value="Login"  @click="login" >Login</button>
-			<a @click="redirectSignup" >Sign Up</a>
+			<a href="signup.html" >Sign Up</a>
 		</div>
 	</div>
 </template>
@@ -41,10 +41,6 @@ module.exports = {
 				this.password = '';
 			}
 		},
-
-		async redirectSignup() {
-			await this.$store.dispatch ('settings/redirect', 'SIGNUP');
-		}
 	},
 };
 

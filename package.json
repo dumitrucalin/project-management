@@ -1,5 +1,4 @@
-{
-	"name": "task-manager",
+{	"name": "task-manager",
 	"description": "Main server for the task-manager",
 	"version": "0.1.0",
 	"private": true,
