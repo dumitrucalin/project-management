@@ -4,7 +4,7 @@ module.exports = {
 		LOGIN: '/login.html',
 		SIGNUP: '/signup.html',
 		DASHBOARD: '/dashboard.html',
-		BAD_DASHBOARD: '/login.html?redirect=dashboard.html'
+		BAD_DASHBOARD: '/login.html?redirect=DASHBOARD'
 	},
 	actions: {
 		redirect(store, application) {

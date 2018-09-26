@@ -41,7 +41,6 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/signup', credentials);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
-					store.commit('fullName', credentials.fullName);
 				}
 				return true;
 			} catch (e) {
@@ -66,7 +65,7 @@ module.exports = {
 		async getUser(store) {
 			try {
 				console.log(store.state.token);
-				let response = await Vue.http.get(setup.API + '/users/get/', store.state.token);
+				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
 				}

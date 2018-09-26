@@ -21,6 +21,6 @@ new Vue({
 		if (!this.$store.getters['user/token'])
 			await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
 		else
-			this.$store.dispatch ('user/getUser');
+			await this.$store.dispatch ('user/getUser');
 	}
 });
