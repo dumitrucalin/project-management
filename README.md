@@ -4,7 +4,6 @@ TODO:
 	UI: {
 		- Regexes for signUp
 		- Loading icon
-		- Token problem (Calin)
 		- Buttons from Dashboard: 
 			- Create group: 
 				.group name -form stabil
