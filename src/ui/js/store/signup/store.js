@@ -9,6 +9,9 @@ Vue.use (Vuex);
 var settings = require ('../modules/settings');
 var user = require ('../modules/user');
 
+var Validator = require('validator');
+Vue.use (Validator);
+
 module.exports = new Vuex.Store ({
 	modules: {
 		settings,
