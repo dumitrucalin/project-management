@@ -27,13 +27,12 @@ module.exports = {
 		async login(store, credentials) {
 			try {
 				let response = await Vue.http.post(setup.API + '/users/login', credentials);
-				console.log(response);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
 				}
 				return true;
 			} catch (e) {
-				console.log('Login fail ' + e);
+				//console.log('Login fail ' + e);
 				return false;
 			}
 		},
