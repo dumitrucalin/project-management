@@ -106,8 +106,10 @@ privateApp.get('/get', async function(req, res) {
 	if (user) {
 		debug('Found user');
 		res.status(200).send({ err: 0, user: user });
+		return true;
 	} else {
 		debug('User not found');
+		return false;
 	}
 });
 

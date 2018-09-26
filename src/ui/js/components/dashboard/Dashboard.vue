@@ -8,12 +8,12 @@
 				<button class="submitButton" name="Submit" value="Create Group" @click="groupF()">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="taskF()">Create Task</button>
 			</div>
+			<div id="homepage" v-if="home">
+				<h5>Welcome to TaskManager2018</h5>
+			</div>
 		</div>
 		<div v-else>
 			Loading
-		</div>
-		<div id="homepage" v-if="home">
-			<h5>Welcome to TaskManager2018</h5>
 		</div>
 		<Group v-if="group"></Group>
 		<Task v-if="task"></Task>

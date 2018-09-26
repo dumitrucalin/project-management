@@ -74,6 +74,10 @@ module.exports = {
 				return false;
 			}
 		},
+		deleteToken(store) {
+			store.commit('token', null);
+			return true;
+		},
 		async updateUser(store) {
 			try {
 				let response = await Vue.http.get(setup.API + '/users/info');

@@ -4,6 +4,7 @@ TODO:
 	UI: {
 		- Regexes for signUp
 		- Loading icon
+		- Token problem (Calin)
 		- Buttons from Dashboard: 
 			- Create group: 
 				.group name -form stabil
@@ -15,8 +16,9 @@ TODO:
 				.task info - string <p>
 	},
 	SERVER: {
-		- Update users in group collection
-		- Send taskId
+		- Make the group collection
+		- Make the task collection
+		- Make the task routes
 		- Use "upseart" to search if a group/user already exist or not
 		- Routes using "try/catch"
 	}
