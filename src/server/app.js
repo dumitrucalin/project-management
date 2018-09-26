@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var debug = require('debug')('task-manager:app');
 require('./database/database.js');
 var users = require('./routes/users');
+var groups = require('./routes/groups');
 var error = require('./error.js');
 var statusCodes = require('http-status-codes');
 
@@ -26,6 +27,7 @@ apiv1.use('/users', users.publicRoutes);
 apiv1.use(users.security);
 
 apiv1.use('/users', users.privateRoutes);
+apiv1.use('/groups', groups.privateRoutes);
 
 apiv1.use(function(req, res) {
 	error.sendError(res, error.notFound('Link not found'));

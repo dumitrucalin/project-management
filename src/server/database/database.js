@@ -56,4 +56,7 @@ try {
 }
 
 var user = require('./user.js');
+var group = require('./group.js');
+
 module.exports.user = user;
+module.exports.group = group;
