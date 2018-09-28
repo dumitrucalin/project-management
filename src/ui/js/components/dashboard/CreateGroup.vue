@@ -3,7 +3,6 @@
 		<p>This is the group creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
 		<p>This is the group creator!</p>
-		<!--<button class="submitButton" name="Submit" value="Logout" >Logout</button>-->
 		<form>
 			<div class="form-group">
 				<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupN" />
@@ -17,7 +16,7 @@
 					<p>{{Guser}}</p>
 				</li>
 			</ul>
-			<button>Create Group</button>
+			<button type="submit">Create Group</button>
 		</form>
 	</div>
 </template>
@@ -34,8 +33,7 @@ module.exports = {
 			groupN:'',
 			userNG:'',
 			Gusers:[
-				'andy',
-				'roby',
+
 			],
 		};
 	},
