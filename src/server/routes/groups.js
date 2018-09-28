@@ -9,35 +9,55 @@ var privateApp = express.Router();
 
 debug.log = console.info.bind(console);
 
-privateApp.post('/create', async function(req, res, next) {
-	var e;
+privateApp.post('/create', async function(req, res) {
 	var groupName = req.body.groupName;
 	var usernames = req.body.usernames;
 	debug('Searching for group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 	if (!group) {
-		await db.group.create(groupName, usernames);
+		await db.group.createGroup(groupName, usernames);
 		res.status(200).send({ err: 0 });
 	} else {
-		e = error.unauthorized('Group already exist');
-		return next(e);
+		debug('The group already exists');
 	}
 });
 
-privateApp.post('/users/update', async function (req, res, next) {
-	var e;
+privateApp.post('/delete', async function(req, res) {
+	var groupName = req.body.groupName;
+	debug('Searching for the group');
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		await db.group.deleteGroup(groupName);
+		res.status(200).send({err: 0});
+	} else {
+		debug('The group doesn\'t exist');
+	}
+});
+
+privateApp.post('/users/create', async function (req, res) {
 	var groupName = req.body.groupName;
 	var usernames = req.body.usernames;
 	debug('Searching for group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
-		await db.group.updateUsers(groupName, usernames);
+		await db.group.createUsers(groupName, usernames);
 		res.status(200).send({ err: 0 });
 	} else {
-		e = error.unauthorized('Group doesn\'t exist');
-		return next(e);
+		debug('The group doesn\'t exist');
 	}
-	return;
+});
+
+privateApp.post('/users/delete', async function (req, res) {
+	var groupName = req.body.groupName;
+	var usernames = req.body.usernames;
+	debug('Searching for group ' + groupName);
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		await db.group.deleteUsers(groupName, usernames);
+		res.status(200).send({ err: 0 });
+	} else {
+		debug('The group doesn\'t exist');
+	}
 });
 
 privateApp.post('/tasks/given/set', async function(req, res) {
@@ -46,7 +66,6 @@ privateApp.post('/tasks/given/set', async function(req, res) {
 	var username = req.body.username;
 	await db.group.setTasksGiven(groupName, username, taskId);
 	res.status(200).send({ err: 0 });
-	return;
 });
 
 privateApp.post('/tasks/received/set', async function(req, res) {
@@ -55,7 +74,6 @@ privateApp.post('/tasks/received/set', async function(req, res) {
 	var username = req.body.username;
 	await db.group.setTasksReceived(groupName, username, taskId);
 	res.status(200).send({ err: 0 });
-	return;
 });
 
 module.exports.privateRoutes = privateApp;

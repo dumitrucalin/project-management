@@ -23,7 +23,7 @@ var groupSchema = mongoose.Schema({
 
 var Group = mongoose.model('Group', groupSchema);
 
-function create(groupName, usernames) {
+function createGroup(groupName, usernames) {
 	var users = {};
 
 	for (let username of usernames)
@@ -42,11 +42,15 @@ function create(groupName, usernames) {
 	return group.save();
 }
 
+function deleteGroup(groupName) {
+	return Group.deleteOne({ groupName: groupName });
+}
+
 function findByGroupName(groupName) {
 	return Group.findOne({ groupName: groupName });
 }
 
-function updateUsers(groupName, usernames) {
+function createUsers(groupName, usernames) {
 	var updatedUsers = {};
 
 	for (let username of usernames)
@@ -58,6 +62,12 @@ function updateUsers(groupName, usernames) {
 	}
 
 	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers } );
+}
+
+function deleteUsers(groupName, usernames) {
+	console.log(groupName);
+	console.log(usernames);
+	return;
 }
 
 async function setTasksGiven(groupName, username, taskId) {
@@ -80,7 +90,6 @@ async function setTasksReceived(groupName, username, taskId) {
 	var tasksGiven = group.users[username].tasksGiven;
 	var tasksReceived = group.users[username].tasksReceived;
 	tasksReceived.push(taskId);
-	
 
 	var updatedUsers = {};
 	updatedUsers['users.' + username] = {
@@ -93,9 +102,11 @@ async function setTasksReceived(groupName, username, taskId) {
 
 
 var group = {
-	create,
+	createGroup,
+	deleteGroup,
 	findByGroupName,
-	updateUsers,
+	createUsers,
+	deleteUsers,
 	setTasksGiven,
 	setTasksReceived
 };

@@ -15,10 +15,12 @@
 			</div>
 				<form id="options">
 					<input type="text" name="GroupName" class="form-control input-sm chat-input" placeholder="Group Name"><br>
+					
 					<input type="checkbox" name="Status" onchange="changeDeadline()"><br>
-					<input v-if="this.checkboxDeadline" type="date" name="DeadLine" ><br>
+					<input v-if="checkboxDeadline" type="date" name="DeadLine" ><br>
+
 					<input type="checkbox" name="Status" onchange="changeStatus()"><br>
-					<form v-if="this.checkboxStatus">
+					<form v-if="checkboxStatus">
 						<input type="checkbox" name="Urgent">
 						<input type="checkbox" name="Moderate">
 						<input type="checkbox" name="At leisure">
@@ -50,11 +52,11 @@ module.exports = {
 	},
 
 	methods: {
-		changeDeadline:function(){
-			this.checkboxDeadline=!this.checkboxDeadline;
+		changeDeadline: function() {
+			this.checkboxDeadline = !this.checkboxDeadline;
 		},
-		changeStatus:function(){
-			this.checkboxStatus=!this.checkboxStatus;
+		changeStatus: function() {
+			this.checkboxStatus = !this.checkboxStatus;
 		}
 	},
 };
