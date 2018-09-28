@@ -2,7 +2,22 @@
 	<div class="createGroup">
 		<p>This is the group creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
-		<!--<button class="submitButton" name="Submit" value="Logout" >Logout</button>-->
+		<p>This is the group creator!</p>
+		<form>
+			<div class="form-group">
+				<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupN" />
+			</div>
+			<div class="form-group">
+				<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNG" />
+				<button type="button" @click="addUserG()">Add User</button>
+			</div>
+			<ul>
+				<li v-for="(Guser,index) in Gusers" :key="index">
+					<p>{{Guser}}</p>
+				</li>
+			</ul>
+			<button type="submit">Create Group</button>
+		</form>
 	</div>
 </template>
 
@@ -15,8 +30,11 @@ module.exports = {
 	
 	data() {
 		return {
-			group: true,
-			task: false,
+			groupN:'',
+			userNG:'',
+			Gusers:[
+
+			],
 		};
 	},
 
@@ -30,6 +48,9 @@ module.exports = {
 		/*async submit(){
 
 		}*/
+		addUserG:function(){
+			this.Gusers.push(this.userNG);
+		},
 	},
 };
 
