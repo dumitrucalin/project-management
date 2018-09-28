@@ -17,6 +17,6 @@ TODO:
 				.with/out status -> option
 
 	SERVER:
-		- Make the group collection
+		- Update group collection/routes
 		- Update task collection/routes
 		- Use "upseart" to search if a group/user already exist or not
