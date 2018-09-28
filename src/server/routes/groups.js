@@ -22,8 +22,6 @@ privateApp.post('/create', async function(req, res, next) {
 		e = error.unauthorized('Group already exist');
 		return next(e);
 	}
-
-	next();
 });
 
 privateApp.post('/users/update', async function (req, res, next) {
@@ -42,11 +40,20 @@ privateApp.post('/users/update', async function (req, res, next) {
 	return;
 });
 
-privateApp.post('/tasks/given', async function(req, res) {
+privateApp.post('/tasks/given/set', async function(req, res) {
 	var taskId = req.body.taskId;
 	var groupName = req.body.groupName;
 	var username = req.body.username;
-	await db.group.setTaskGiven(groupName, username, taskId);
+	await db.group.setTasksGiven(groupName, username, taskId);
+	res.status(200).send({ err: 0 });
+	return;
+});
+
+privateApp.post('/tasks/received/set', async function(req, res) {
+	var taskId = req.body.taskId;
+	var groupName = req.body.groupName;
+	var username = req.body.username;
+	await db.group.setTasksReceived(groupName, username, taskId);
 	res.status(200).send({ err: 0 });
 	return;
 });
