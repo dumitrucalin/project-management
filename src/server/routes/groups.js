@@ -2,7 +2,6 @@
 
 var express = require('express');
 var debug = require('debug')('task-manager:user-routes');
-// var uuid = require('uuid');
 var db = require('../database/database.js');
 var error = require('../error.js');
 
@@ -13,21 +12,43 @@ debug.log = console.info.bind(console);
 privateApp.post('/create', async function(req, res, next) {
 	var e;
 	var groupName = req.body.groupName;
-	var users = req.body.users;
+	var usernames = req.body.usernames;
 	debug('Searching for group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 	if (!group) {
-		await db.group.create(groupName);
-		await db.group.updateUsers(users);
+		await db.group.create(groupName, usernames);
 		res.status(200).send({ err: 0 });
 	} else {
 		e = error.unauthorized('Group already exist');
 		return next(e);
 	}
 
-	debug('This is the create group route');
-
 	next();
+});
+
+privateApp.post('/users/update', async function (req, res, next) {
+	var e;
+	var groupName = req.body.groupName;
+	var usernames = req.body.usernames;
+	debug('Searching for group ' + groupName);
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		await db.group.updateUsers(groupName, usernames);
+		res.status(200).send({ err: 0 });
+	} else {
+		e = error.unauthorized('Group doesn\'t exist');
+		return next(e);
+	}
+	return;
+});
+
+privateApp.post('/tasks/given', async function(req, res) {
+	var taskId = req.body.taskId;
+	var groupName = req.body.groupName;
+	var username = req.body.username;
+	await db.group.setTaskGiven(groupName, username, taskId);
+	res.status(200).send({ err: 0 });
+	return;
 });
 
 module.exports.privateRoutes = privateApp;

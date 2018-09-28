@@ -57,6 +57,8 @@ try {
 
 var user = require('./user.js');
 var group = require('./group.js');
+var task = require('./task.js');
 
 module.exports.user = user;
 module.exports.group = group;
+module.exports.task = task;

@@ -4,7 +4,6 @@ var express = require('express');
 var debug = require('debug')('task-manager:user-routes');
 var uuid = require('uuid');
 var db = require('../database/database.js');
-var error = require('../error.js');
 
 var publicApp = express.Router();
 var privateApp = express.Router();
@@ -16,98 +15,112 @@ function createToken() {
 }
 
 
-publicApp.post('/signup', async function(req, res, next) {
-	var e;
+publicApp.post('/signup', async function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 	var fullName = req.body.fullName;
 	var email = req.body.email;
 
-	if (username && password) {
-		debug('Searching for ' + username);
-		let user = await db.user.findByUsername(username);
-		if (!user) {
-			debug('User not found. Saving the new credentials into the database...');
-			var token = createToken();
-			await db.user.create(username, password, fullName, email, token);
-			res.status(200).send({err: 0, token: token});
-		} else {
-			// TODO: TOAST FOR EXISTING USER
-			e = error.unauthorized('User already exist');
-			return next(e);
-		}
-	} else {
-		// TODO: TOAST FOR INCOMPLETE CREDENTIALS
-		e = error.unauthorized('All fields are required');
-		return next(e);
-	}
+	debug('Searching for ' + username);
+	let user = await db.user.findByUsername(username);
 
-	next();
+	if (!user) {
+		debug('User not found. Saving the new credentials into the database...');
+		var token = createToken();
+
+		try {
+			await db.user.createUser(username, password, fullName, email, token);
+			res.status(200).send({err: 0});
+		} catch (err) {
+			debug(err.message);
+		}
+
+	} else {
+		// TODO: TOAST FOR EXISTING USER
+		debug('User already exist');
+	}
 });
 
-publicApp.post('/login', async function(req, res, next) {
-	var e;
+publicApp.post('/login', async function(req, res) {
 	var username = req.body.username;
 	var password = req.body.password;
 
-	if (username && password) {
-		debug('Searching for ' + username);
-		let user = await db.user.findByUsername(username);
-		if (user) {
-			var token = createToken();
-			user = await db.user.setToken(username, token);
-			res.status(200).send({err: 0, token: token});
-		} else {
-			// TODO: TOAST FOR INCORRECT CREDENTIALS
-			e = error.unauthorized('Username or password are incorrect');
-			return next(e);
-		}
-	} else {
-		// TODO: TOAST FOR INCOMPLETE CREDENTIALS
-		e = error.unauthorized('All fields are required');
-		return next(e);
-	}
+	debug('Searching for ' + username);
+	let user = await db.user.findByUsernameAndPassword(username, password);
 
-	next();
+	if (user) {
+		var token = createToken();
+
+		try {
+			await db.user.setToken(username, token);
+			res.status(200).send({err: 0, token: token});
+		} catch (err) {
+			debug(err.message);
+		}
+
+	} else {
+		// TODO: TOAST FOR INCORRECT CREDENTIALS
+		debug('Username or password are incorrect');
+	}
 });
 
 function security(req, res, next) {
-	// var e;
 	let token = null;
-	if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer') {
+
+	if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
 		token = req.headers.authorization.split(' ')[1];
-	}
-	if (!token && req.headers.Authorization && req.headers.Authorization.split(' ')[0] === 'Bearer') {
+
+	if (!token && req.headers.Authorization && req.headers.Authorization.split(' ')[0] === 'Bearer')
 		token = req.headers.Authorization.split(' ')[1];
-	}
-	if (!token) {
+
+	if (!token) 
 		token = req.query.token;
-	}
-	if (!token) {
+
+	if (!token) 
 		token = req.body.token;
-	}
+
 	req.token = token;
 	next();
 }
 
 privateApp.post('/logout', async function(req, res) {
-	var user = await db.user.findByToken(req.body.token);
+	try {
+		var user = await db.user.findByToken(req.body.token);
+	} catch (err) {
+		debug(err.message);
+	}
+
 	if (user) {
 		debug('Found user');
-		await db.user.setToken(user.username, '');
-		res.status(200).send({ err: 0 });
+
+		try {
+			await db.user.setToken(user.username, '');
+			res.status(200).send({ err: 0 });
+		} catch (err) {
+			debug(err.message);
+		}
+
 	} else {
 		debug('Couldn\'t find the given token');
 	}
 });
 
 privateApp.get('/get', async function(req, res) {
-	var user = await db.user.findByToken(req.token);
+	try {
+		var user = await db.user.findByToken(req.token);
+	} catch (err) {
+		debug(err.message);
+	}
+
 	if (user) {
 		debug('Found user');
 		res.status(200).send({ err: 0, user: user });
+
+		return true;
 	} else {
 		debug('User not found');
+
+		return false;
 	}
 });
 

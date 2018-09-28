@@ -1,5 +1,6 @@
 <template>
-	<div class="task">
+	<div class="createTask">
+		<p>This is the task creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
 		<p>This is the task creator!</p>
 		<!--<button class="submitButton" name="Submit" value="Logout" >Logout</button>-->
@@ -11,7 +12,7 @@
 var mapGetters = require ('vuex').mapGetters;
 
 module.exports = {
-	name: 'Task',
+	name: 'CreateTask',
 	
 	data() {
 		return {

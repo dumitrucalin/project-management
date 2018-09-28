@@ -2,50 +2,52 @@
 	<div>
 		<div v-if="user">
 			<div class="dashboard">
-				<h3 @click="homeF()">This is the dashboard!</h3>
+				<h3 @click="taskList">This is the dashboard!</h3>
 				<p>Hello {{ this.user.fullName }}</p>
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
-				<button class="submitButton" name="Submit" value="Create Group" @click="groupF()">Create Group</button>
-				<button class="submitButton" name="Submit" value="Create Group" @click="taskF()">Create Task</button>
+				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
+				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
 			</div>
+			<CreateGroup v-if="createGroupView"></CreateGroup>
+			<CreateTask v-if="createTaskView"></CreateTask>
+			<TaskList v-if="taskListView"></TaskList>
+
+			<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
 		</div>
 		<div v-else>
-			Loading
+			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
 		</div>
-		<Group v-if="group"></Group>
-		<Task v-if="task"></Task>
-		<button v-if="group || task" @click="homeF()">TaskView</button>
-		<TaskView v-if="home"></TaskView>
 	</div>
 </template>
 
 <script>
 
 var mapGetters = require ('vuex').mapGetters;
-var Group = require('../dashboard/Group.vue');
-var Task = require('../dashboard/Task.vue');
-var TaskView = require('../dashboard/TaskView.vue');
+var Loading = require ('../Loading.vue');
+var CreateGroup = require('../dashboard/CreateGroup.vue');
+var CreateTask = require('../dashboard/CreateTask.vue');
+var TaskList = require('../dashboard/TaskList.vue');
 
 module.exports = {
 	name: 'Dashboard',
 	
-	components:{
-		'Group':Group,
-		'Task':Task,
-		'TaskView':TaskView,
-	},
 	data() {
 		return {
-			group: false,
-			task: false,
-			home:true,
+			loadingSize: 20,
+			loadingColor: '#0000ff',
+			loadingDuration: 1500,
+			
+			createGroupView: false,
+			createTaskView: false,
+			taskListView: true,
 		};
 	},
 
-	computed: {
-		...mapGetters ({
-			user: 'user/user'
-		})
+	components:{
+		CreateGroup,
+		CreateTask,
+		TaskList,
+		Loading
 	},
 
 	methods: {
@@ -57,21 +59,27 @@ module.exports = {
 			if (logout)
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 		},
-		groupF:function(){
-			this.group=true;
-			this.task=false;
-			this.home=false;
+		createGroup: function() {
+			this.createGroupView = true;
+			this.createTaskView = false;
+			this.taskListView = false;
 		},
-		taskF:function(){
-			this.group=false;
-			this.task=true;
-			this.home=false;
+		createTask: function() {
+			this.createGroupView = false;
+			this.createTaskView = true;
+			this.taskListView = false;
 		},
-		homeF:function(){
-			this.group=false;
-			this.task=false;
-			this.home=true;
-		},
+		taskList: function() {
+			this.createGroupView = false;
+			this.createTaskView = false;
+			this.taskListView = true;
+		}
+	},
+
+	computed: {
+		...mapGetters ({
+			user: 'user/user'
+		})
 	},
 };
 

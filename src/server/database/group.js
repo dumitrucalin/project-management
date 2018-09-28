@@ -7,8 +7,19 @@ var groupSchema = mongoose.Schema({
 		required: true,
 		unique: true,
 	},
-	users: {
-	},
+	users: [
+		{
+			username: {
+				type: String
+			},
+			tasksGiven: {
+				type: [String],
+			},
+			tasksReceived: {
+				type: [String],
+			}
+		}
+	]
 }, {
 	toObject: {
 		transform: function(doc, ret) {
@@ -24,32 +35,59 @@ var groupSchema = mongoose.Schema({
 
 var Group = mongoose.model('Group', groupSchema);
 
-function create(groupName) {
+function create(groupName, usernames) {
+	var users = [];
+
+	usernames.forEach(username => {
+		var user = {
+			username: username,
+		};
+
+		users.push(user);
+	});
+
 	var group = new Group(_.assign({}, {
 		groupName: groupName,
-		users: null
+		users: users
 	}));
 
 	return group.save();
 }
 
 function findByGroupName(groupName) {
-	return Group.findOne({ groupName: groupName }).lean();
+	return Group.findOne({ groupName: groupName });
 }
 
-function updateUsers(groupName, users) {
-	console.log(groupName);
-	for (let user in users) {
-		console.log(user);
-		// return Group.update({ groupName: groupName}, { $set: { [user]: { tasksGiven: [], taskReceived: [] } } });
-	}
+function updateUsers(groupName, usernames) {
+	var users = [];
+
+	usernames.forEach(username => {
+		var user = {
+			username: username,
+		};
+
+		users.push(user);
+	});
+
+	return Group.updateOne({ groupName: groupName }, { users: users });
+}
+
+async function setTaskGiven(groupName, username, taskId) {
+	console.log(taskId);
+	var group = await Group.findOne({ groupName: groupName});
+	var user = group.users.find(obj => {
+		return obj.username === username;
+	});
+	console.log(user);
+	return;
 }
 
 
 var group = {
 	create,
 	findByGroupName,
-	updateUsers
+	updateUsers,
+	setTaskGiven
 };
 
-module.exports =group;
+module.exports = group;

@@ -13,7 +13,9 @@
 </template>
 
 <script>
+
 var validator = require('validator');
+
 module.exports = {
 	name: 'Signup',
 	data() {
@@ -28,12 +30,9 @@ module.exports = {
 
 	methods: {
 		async signup () {
-			if(validator.isAlphanumeric(this.username,['en-US']))
-			{
-				if(validator.isAlphanumeric(this.password,['en-US']))
-				{
-					if(validator.isEmail(this.email,['en-US']))
-					{
+			if (validator.isAlphanumeric(this.username, ['en-US'])) {
+				if (validator.isAlphanumeric(this.password, ['en-US'])) {
+					if (validator.isEmail(this.email, ['en-US'])) {
 						if (this.password === this.confirmPassword) {
 							let signup = await this.$store.dispatch ('user/signup', {
 								username: this.username,

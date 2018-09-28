@@ -3,7 +3,7 @@
 				"javascript": {
 								"indent_size": 1,
 								"indent_char": "\t",
-								"eol": "auto",
+								"eol": "LF",
 								"preserve_newlines": true,
 								"break_chained_methods": false,
 								"max_preserve_newlines": 0,

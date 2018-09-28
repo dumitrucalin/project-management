@@ -21,7 +21,14 @@ new Vue({
 	async created() {
 		if (!this.$store.getters['user/token'])
 			await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
-		else
-			await this.$store.dispatch ('user/getUser');
+		else {
+			console.log('Searching for the user');
+			var userFound = await this.$store.dispatch ('user/getUser');
+			console.log('Found the user: ' + userFound);
+			if (!userFound) {
+				await this.$store.dispatch ('user/deleteToken');
+				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
+			}
+		}
 	}
 });

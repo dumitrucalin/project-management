@@ -1,5 +1,6 @@
 <template>
-	<div class="group">
+	<div class="createGroup">
+		<p>This is the group creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
 		<p>This is the group creator!</p>
 		<!--<button class="submitButton" name="Submit" value="Logout" >Logout</button>-->
@@ -12,7 +13,7 @@
 				<button type="button" @click="addUserG()">Add User</button>
 			</div>
 			<ul>
-				<li v-bind:v-for="Guser in Gusers">
+				<li v-for="(Guser,index) in Gusers" :key="index">
 					<p>{{Guser}}</p>
 				</li>
 			</ul>
@@ -26,7 +27,7 @@
 var mapGetters = require ('vuex').mapGetters;
 
 module.exports = {
-	name: 'Group',
+	name: 'CreateGroup',
 	
 	data() {
 		return {
@@ -50,7 +51,7 @@ module.exports = {
 
 		}*/
 		addUserG:function(){
-			this.usersG.push(this.userNG);
+			this.Gusers.push(this.userNG);
 		},
 	},
 };
