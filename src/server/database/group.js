@@ -55,7 +55,7 @@ function create(groupName, usernames) {
 }
 
 function findByGroupName(groupName) {
-	return Group.findOne({ groupName: groupName }).lean();
+	return Group.findOne({ groupName: groupName });
 }
 
 function updateUsers(groupName, usernames) {

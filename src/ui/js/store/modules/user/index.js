@@ -29,10 +29,11 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/login', credentials);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
+					return true;
 				}
-				return true;
+				return false;
 			} catch (e) {
-				//console.log('Login fail ' + e);
+				console.log('Login fail ' + e);
 				return false;
 			}
 		},
@@ -41,10 +42,11 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/signup', credentials);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
+					return true;
 				}
-				return true;
+				return false;
 			} catch (e) {
-				console.log('Login fail ' + e);
+				console.log('Sign up fail ' + e);
 				return false;
 			}
 		},
@@ -68,6 +70,7 @@ module.exports = {
 				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
+					return true;
 				}
 				return false;
 			} catch (e) {

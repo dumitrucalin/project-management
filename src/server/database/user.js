@@ -51,22 +51,9 @@ function encryptPassword(password, salt) {
 	return crypto.createHash('sha256').update(password + salt).digest('base64');
 }
 
-userSchema.pre('save', function(next) {
-	var user = this;
-	if (user.isModified('password')) {
-		user.password = encryptPassword(user.password);
-	}
-	next();
-});
-
 var User = mongoose.model('User', userSchema);
-/**
- * Create a new user
- * @param {String} username - username 
- * @param {String} password - password
- * @param {String} email - email
- */
-function create(username, password, fullName, email, token) {
+
+function createUser(username, password, fullName, email, token) {
 	var user = new User(_.assign({}, {
 		username: username,
 		password: password,
@@ -79,15 +66,19 @@ function create(username, password, fullName, email, token) {
 }
 
 function findByUsername(username) {
-	return User.findOne({ username: username }).lean();
+	return User.findOne({ username: username });
+}
+
+function findByUsernameAndPassword(username, password) {
+	return User.findOne({ username: username, password: encryptPassword(password)});
 }
 
 function findByEmail(email) {
-	return User.findOne({ email: email }).lean();
+	return User.findOne({ email: email });
 }
 
 function findByToken(token) {
-	return User.findOne({ token: token }).lean();
+	return User.findOne({ token: token });
 }
 
 function deleteByUsername(username) {
@@ -95,27 +86,18 @@ function deleteByUsername(username) {
 }
 
 function listUsers() {
-	return User.find().lean();
+	return User.find();
 }
 
-
-/**
- * Edit an user
- * @param {String} username - username (optional)
- * @param {String} password - password (optional)
- * @param {String} fullName - full name (optional)
- * @param {String} email - new email (optional)
- */
-
 async function edit(username, email, fullName) {
-	var editUser = {};
+	var userUpdated = {};
 	if (email) {
-		editUser.email = email;
+		userUpdated.email = email;
 	}
 	if (fullName) {
-		editUser.fullName = fullName;
+		userUpdated.fullName = fullName;
 	}
-	let ret = await User.updateOne({ username: username }, { $set: editUser }).lean();
+	let ret = await User.updateOne({ username: username }, { $set: userUpdated });
 	return ret;
 }
 
@@ -123,21 +105,10 @@ function setPassword(username, password) {
 	return User.updateOne({ username: username }, { $set: { password: encryptPassword(password) } });
 }
 
-// /**
-//  * Edit password
-//  * @param {String} userId 
-//  * @param {String} oldPassword - old password 
-//  * @param {String} newPassword - new password
-//  */
-// function editPassword(userId, oldPassword, newPassword) {
-// 	return User.updateOne({ userId: userId, password: encryptPassword(oldPassword) }, { $set: { password: encryptPassword(newPassword) } });
-// }
+function editPassword(username, oldPassword, newPassword) {
+	return User.updateOne({ username: username, password: encryptPassword(oldPassword) }, { $set: { password: encryptPassword(newPassword) } });
+}
 
-/**
- * Reset a password
- * @param {String} userId 
- * @param {String} password - new password
- */
 function resetPassword(username, password) {
 	return User.updateOne({ username: username }, { $set: { password: encryptPassword(password) } });
 }
@@ -146,18 +117,24 @@ function setToken(username, token) {
 	return User.updateOne({ username: username }, { $set: { token: token } });
 }
 
+function updateGroups(username, groupName) {
+	return User.updateOne({ username: username }, { $addToSet: { groupName: groupName } });
+}
+
 var user = {
-	create,
+	createUser,
 	findByUsername,
+	findByUsernameAndPassword,
 	findByEmail,
 	findByToken,
 	deleteByUsername,
 	edit,
+	editPassword,
 	setPassword,
-	// editPassword,
 	resetPassword,
 	listUsers,
-	setToken
+	setToken,
+	updateGroups
 };
 
 module.exports = user;
