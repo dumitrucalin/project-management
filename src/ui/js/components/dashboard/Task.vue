@@ -1,7 +1,7 @@
 <template>
 	<div class="task">
-		<p>This is the task creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
+		<p>This is the task creator!</p>
 		<!--<button class="submitButton" name="Submit" value="Logout" >Logout</button>-->
 	</div>
 </template>

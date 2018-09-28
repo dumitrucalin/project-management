@@ -12,13 +12,10 @@
 		<div v-else>
 			Loading
 		</div>
-		<div id="homepage" v-if="home">
-			<h5>Welcome to TaskManager2018</h5>
-		</div>
 		<Group v-if="group"></Group>
 		<Task v-if="task"></Task>
-		<button v-if="group || task" @click="taskVF()">TaskView</button>
-		<TaskView v-if="taskV"></TaskView>
+		<button v-if="group || task" @click="homeF()">TaskView</button>
+		<TaskView v-if="home"></TaskView>
 	</div>
 </template>
 
@@ -42,7 +39,6 @@ module.exports = {
 			group: false,
 			task: false,
 			home:true,
-			taskV:false,
 		};
 	},
 
@@ -65,26 +61,17 @@ module.exports = {
 			this.group=true;
 			this.task=false;
 			this.home=false;
-			this.taskV=false;
 		},
 		taskF:function(){
 			this.group=false;
 			this.task=true;
 			this.home=false;
-			this.taskV=false;
 		},
 		homeF:function(){
 			this.group=false;
 			this.task=false;
 			this.home=true;
-			this.taskV=false;
 		},
-		taskVF:function(){
-			this.group=false;
-			this.task=false;
-			this.home=false;
-			this.taskV=true;
-		}
 	},
 };
 
