@@ -5,11 +5,15 @@
 			<input type="text" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
 			<button class="submitButton" name="Submit" value="Login"  @click="login" >Login</button>
 			<a href="signup.html" >Sign Up</a>
+			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 		</div>
 	</div>
 </template>
 
 <script>
+
+var Loading = require ('../Loading.vue');
+var validator = require('validator');
 
 module.exports = {
 	name: 'Login',
@@ -19,26 +23,50 @@ module.exports = {
 		return {
 			username: '',
 			password: '',
+
+			loadingSize: 20,
+			loadingColor: '#0000ff',
+			loadingDuration: 1500,
+			loadingView: false,
+			
 			next: urlParams.get ('redirect')
 		};
+	},
+
+	components: {
+		Loading
 	},
 
 	methods: {
 		async login () {
 			if (this.next === '' || this.next === null)
 				this.next = 'DASHBOARD';
-				
-			let login = await this.$store.dispatch ('user/login', {
-				username: this.username,
-				password: this.password
-			});
 
-			if (login)
-				await this.$store.dispatch ('settings/redirect', this.next);
-			else {
-				console.log('Incorrect credentials');
+			if (validator.isAlphanumeric(this.username, ['en-US'])) {
+				if (validator.isAlphanumeric(this.password, ['en-US'])) {
+					this.loadingView = true;
+
+					let login = await this.$store.dispatch ('user/login', {
+						username: this.username,
+						password: this.password
+					});
+
+					if (login)
+						await this.$store.dispatch ('settings/redirect', this.next);
+					else {
+						console.log('Incorrect credentials');
+						this.username = '';
+						this.password = '';
+					}
+				} else {
+					this.password = '';
+					console.log('Password contains invalid characters');
+					// TODO: TOAST FOR NOT MATCHING PASSWORDS
+				}
+			} else {
 				this.username = '';
-				this.password = '';
+				console.log('Username contains invalid characters');
+				// TODO: TOAST FOR NOT MATCHING PASSWORDS
 			}
 		},
 	},

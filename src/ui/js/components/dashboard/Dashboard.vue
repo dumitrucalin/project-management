@@ -15,7 +15,7 @@
 			<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
 		</div>
 		<div v-else>
-			Loading
+			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
 		</div>
 	</div>
 </template>
@@ -23,6 +23,7 @@
 <script>
 
 var mapGetters = require ('vuex').mapGetters;
+var Loading = require ('../Loading.vue');
 var CreateGroup = require('../dashboard/CreateGroup.vue');
 var CreateTask = require('../dashboard/CreateTask.vue');
 var TaskList = require('../dashboard/TaskList.vue');
@@ -30,23 +31,23 @@ var TaskList = require('../dashboard/TaskList.vue');
 module.exports = {
 	name: 'Dashboard',
 	
-	components:{
-		'CreateGroup': CreateGroup,
-		'CreateTask': CreateTask,
-		'TaskList': TaskList,
-	},
 	data() {
 		return {
+			loadingSize: 20,
+			loadingColor: '#0000ff',
+			loadingDuration: 1500,
+			
 			createGroupView: false,
 			createTaskView: false,
 			taskListView: true,
 		};
 	},
 
-	computed: {
-		...mapGetters ({
-			user: 'user/user'
-		})
+	components:{
+		CreateGroup,
+		CreateTask,
+		TaskList,
+		Loading
 	},
 
 	methods: {
@@ -73,6 +74,12 @@ module.exports = {
 			this.createTaskView = false;
 			this.taskListView = true;
 		}
+	},
+
+	computed: {
+		...mapGetters ({
+			user: 'user/user'
+		})
 	},
 };
 
