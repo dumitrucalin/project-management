@@ -5,18 +5,18 @@
 		<p>This is the group creator!</p>
 		<form>
 			<div class="form-group">
-				<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupN" />
+				<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupName" />
 			</div>
 			<div class="form-group">
-				<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNG" />
-				<button type="button" @click="addUserG()">Add User</button>
+				<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNameGroup" />
+				<button type="button" @click="addUserG">Add User</button>
 			</div>
 			<ul>
-				<li v-for="(Guser,index) in Gusers" :key="index">
-					<p>{{Guser}}</p>
+				<li v-for="(groupUser,index) in groupUsers" :key="index">
+					<p>{{groupUser}}</p>
 				</li>
 			</ul>
-			<button type="submit">Create Group</button>
+			<button type="submit" @click=submitGroup>Create Group</button>
 		</form>
 	</div>
 </template>
@@ -30,11 +30,9 @@ module.exports = {
 	
 	data() {
 		return {
-			groupN:'',
-			userNG:'',
-			Gusers:[
-
-			],
+			groupName:'',
+			userNameGroup:'',
+			groupUsers:[],
 		};
 	},
 
@@ -45,11 +43,14 @@ module.exports = {
 	},
 
 	methods: {
-		/*async submit(){
-
-		}*/
+		async submitGroup(){
+			await this.$store.dispatch ('user/sendGroup', {
+				groupName:this.groupName,
+				usernames:this.groupUsers,
+			});
+		},
 		addUserG:function(){
-			this.Gusers.push(this.userNG);
+			this.groupUsers.push(this.userNameGroup);
 		},
 	},
 };
