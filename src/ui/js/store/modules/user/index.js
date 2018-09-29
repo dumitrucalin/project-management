@@ -115,6 +115,19 @@ module.exports = {
 				return false;
 			}
 		},
+		async sendTask(store, taskInfo) {
+			try {
+				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
+				if (response.data.err === 0) {
+					store.commit('user',response.data.user);
+					return true;
+				} else {
+					return false;
+				}
+			} catch(e) {
+				return false;
+			}
+		},
 	},
 	mutations: {
 		token(state, value) {
