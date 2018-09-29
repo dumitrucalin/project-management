@@ -120,7 +120,11 @@ function setToken(username, token) {
 }
 
 function updateGroups(username, groupName) {
-	return User.updateOne({ username: username }, { $addToSet: { groupName: groupName } });
+	return User.updateOne({ username: username }, { $addToSet: { groupNames: groupName } });
+}
+
+function deleteGroup(username, groupName) {
+	return User.updateOne({ username: username}, { $pull: { groupNames: groupName } });
 }
 
 var user = {
@@ -136,7 +140,8 @@ var user = {
 	resetPassword,
 	listUsers,
 	setToken,
-	updateGroups
+	updateGroups,
+	deleteGroup
 };
 
 module.exports = user;

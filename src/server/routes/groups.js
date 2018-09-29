@@ -16,6 +16,16 @@ privateApp.post('/create', async function(req, res) {
 	var group = await db.group.findByGroupName(groupName);
 	if (!group) {
 		await db.group.createGroup(groupName, usernames);
+		for (let username of usernames) {
+			debug('Searching for user ' + username);
+			let userFound = await db.user.findByUsername(username);
+			if (userFound) {
+				debug('Updating groups list');
+				await db.user.updateGroups(username, groupName);
+			} else {
+				debug('The given user ' + username + ' doesn\'t eixst');
+			}
+		}
 		res.status(200).send({ err: 0 });
 	} else {
 		debug('The group already exists');
@@ -41,7 +51,17 @@ privateApp.post('/users/create', async function (req, res) {
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
 		await db.group.createUsers(groupName, usernames);
-		res.status(200).send({ err: 0 });
+		for (let username of usernames) {
+			debug('Searching for user ' + username);
+			let userFound = await db.user.findByUsername(username);
+			if (userFound) {
+				debug('Updating groups list');
+				await db.user.updateGroups(username, groupName);
+			} else {
+				debug('The given user ' + username + ' doesn\'t eixst');
+			}
+		}
+		res.status(200).send({err: 0});
 	} else {
 		debug('The group doesn\'t exist');
 	}
@@ -53,7 +73,9 @@ privateApp.post('/users/delete', async function (req, res) {
 	debug('Searching for group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
+		debug('Deleting the given user');
 		await db.group.deleteUsers(groupName, username);
+		await db.user.deleteGroup(username, groupName);
 		res.status(200).send({ err: 0 });
 	} else {
 		debug('The group doesn\'t exist');

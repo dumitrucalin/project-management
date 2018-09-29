@@ -60,13 +60,14 @@ function createUsers(groupName, usernames) {
 		};
 	}
 
-	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers } );
+	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers });
 }
 
-function deleteUsers() {
-// 	return Group.findOne({ gorupName: groupName }, function(err, username) {
-
-// 	});	
+async function deleteUsers(groupName, username) {
+	var group = await Group.findOne({ groupName: groupName });
+	delete group.users[username];
+	return Group.updateOne({ groupName: groupName }, { users: group.users });
+	
 }
 
 async function setTasksGiven(groupName, username, taskId) {

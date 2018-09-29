@@ -4,13 +4,16 @@ var _ = require('lodash');
 var taskSchema = mongoose.Schema({
 	taskId: {
 		type: String,
-		unique: true
+		unique: true,
+		required: true
 	},
 	taskName: {
-		type: String
+		type: String,
+		required: true
 	},
 	taskString: {
-		type: String
+		type: String,
+		required: true
 	}
 }, {
 	toObject: {
