@@ -53,8 +53,7 @@ function findByGroupName(groupName) {
 function createUsers(groupName, usernames) {
 	var updatedUsers = {};
 
-	for (let username of usernames)
-	{
+	for (let username of usernames) {
 		updatedUsers['users.' + username] = {
 			tasksGiven: [],
 			tasksReceived: []
@@ -64,10 +63,10 @@ function createUsers(groupName, usernames) {
 	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers } );
 }
 
-function deleteUsers(groupName, usernames) {
-	console.log(groupName);
-	console.log(usernames);
-	return;
+function deleteUsers() {
+// 	return Group.findOne({ gorupName: groupName }, function(err, username) {
+
+// 	});	
 }
 
 async function setTasksGiven(groupName, username, taskId) {

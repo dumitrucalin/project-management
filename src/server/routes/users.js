@@ -20,6 +20,7 @@ publicApp.post('/signup', async function(req, res) {
 	var password = req.body.password;
 	var fullName = req.body.fullName;
 	var email = req.body.email;
+	var groupNames = [];
 
 	debug('Searching for ' + username);
 	let user = await db.user.findByUsername(username);
@@ -29,7 +30,7 @@ publicApp.post('/signup', async function(req, res) {
 		var token = createToken();
 
 		try {
-			await db.user.createUser(username, password, fullName, email, token);
+			await db.user.createUser(username, password, fullName, email, token, groupNames);
 			res.status(200).send({err: 0});
 		} catch (err) {
 			debug(err.message);

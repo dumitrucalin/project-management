@@ -25,8 +25,9 @@ var userSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	groupName: {
-		type: String
+	groupNames: {
+		type: [String],
+		required: true
 	}
 }, {
 	toObject: {
@@ -53,13 +54,14 @@ function encryptPassword(password, salt) {
 
 var User = mongoose.model('User', userSchema);
 
-function createUser(username, password, fullName, email, token) {
+function createUser(username, password, fullName, email, token, groupNames) {
 	var user = new User(_.assign({}, {
 		username: username,
-		password: password,
+		password: encryptPassword(password),
 		fullName: fullName,
 		email: email,
-		token: token
+		token: token,
+		groupNames: groupNames
 	}));
 
 	return user.save();
