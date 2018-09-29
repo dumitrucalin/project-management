@@ -49,11 +49,11 @@ privateApp.post('/users/create', async function (req, res) {
 
 privateApp.post('/users/delete', async function (req, res) {
 	var groupName = req.body.groupName;
-	var usernames = req.body.usernames;
+	var username = req.body.username;
 	debug('Searching for group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
-		await db.group.deleteUsers(groupName, usernames);
+		await db.group.deleteUsers(groupName, username);
 		res.status(200).send({ err: 0 });
 	} else {
 		debug('The group doesn\'t exist');
