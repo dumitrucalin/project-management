@@ -63,41 +63,16 @@ function createUsers(groupName, usernames) {
 	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers });
 }
 
-async function deleteUsers(groupName, username) {
-	var group = await Group.findOne({ groupName: groupName });
-	delete group.users[username];
-	return Group.updateOne({ groupName: groupName }, { users: group.users });
-	
+function deleteUsers(groupName, username) {
+	return Group.updateOne({ groupName: groupName }, { $unset: { ['users.' + username]: {} } });
 }
 
-async function setTasksGiven(groupName, username, taskId) {
-	var group = await Group.findOne({ groupName: groupName });
-	var tasksGiven = group.users[username].tasksGiven;
-	tasksGiven.push(taskId);
-	var tasksReceived = group.users[username].tasksReceived;
-
-	var updatedUsers = {};
-	updatedUsers['users.' + username] = {
-		tasksGiven: tasksGiven,
-		tasksReceived: tasksReceived
-	};
-
-	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers });
+function setTasksGiven(groupName, username, taskId) {
+	return Group.updateOne({ groupName: groupName }, { $addToSet: { ['users.' + username + '.tasksGiven']: taskId } });
 }
 
-async function setTasksReceived(groupName, username, taskId) {
-	var group = await Group.findOne({ groupName: groupName });
-	var tasksGiven = group.users[username].tasksGiven;
-	var tasksReceived = group.users[username].tasksReceived;
-	tasksReceived.push(taskId);
-
-	var updatedUsers = {};
-	updatedUsers['users.' + username] = {
-		tasksGiven: tasksGiven,
-		tasksReceived: tasksReceived
-	};
-
-	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers });
+function setTasksReceived(groupName, username, taskId) {
+	return Group.updateOne({ groupName: groupName }, { $addToSet: { ['users.' + username + '.tasksReceived']: taskId } });
 }
 
 
