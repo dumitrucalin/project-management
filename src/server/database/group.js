@@ -50,6 +50,11 @@ function findByGroupName(groupName) {
 	return Group.findOne({ groupName: groupName });
 }
 
+async function findTasks(groupName, username) {
+	var group = await Group.findOne({ groupName: groupName });
+	return group.users[username];
+}
+
 function createUsers(groupName, usernames) {
 	var updatedUsers = {};
 
@@ -80,6 +85,7 @@ var group = {
 	createGroup,
 	deleteGroup,
 	findByGroupName,
+	findTasks,
 	createUsers,
 	deleteUsers,
 	setTasksGiven,

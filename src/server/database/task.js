@@ -41,7 +41,7 @@ function createTask(taskId, taskName, taskString) {
 }
 
 function findByTaskId(taskId) {
-	return Task.findOne({taskId: taskId});
+	return Task.findOne({ taskId: taskId });
 }
 
 function editTask(taskId, taskName, taskString) {
