@@ -41,4 +41,19 @@ privateApp.post('/edit', async function(req, res) {
 	}
 });
 
+privateApp.post('/delete', async function(req, res) {
+	var taskId = req.body.taskId;
+	var existTask = await db.task.findByTaskId(taskId);
+	if (existTask) {
+		try {
+			await db.task.deleteTask(taskId);
+			res.status(200).send({err:0});
+		} catch (err) {
+			debug(err.message);
+		}
+	} else {
+		debug('There is no task with that id');
+	}
+});
+
 module.exports.privateRoutes = privateApp;

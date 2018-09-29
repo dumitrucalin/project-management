@@ -38,7 +38,7 @@ function createTask(taskId, taskName, taskString) {
 }
 
 function findByTaskId(taskId) {
-	return Task.finOne({taskId: taskId});
+	return Task.findOne({taskId: taskId});
 }
 
 function editTask(taskId, taskName, taskString) {
@@ -52,10 +52,15 @@ function editTask(taskId, taskName, taskString) {
 	return Task.updateOne({ taskId: taskId }, { $set: { taskUpdated } });
 }
 
+function deleteTask(taskId) {
+	return Task.deleteOne({ taskId: taskId });
+}
+
 var task = {
 	createTask,
 	findByTaskId,
-	editTask
+	editTask,
+	deleteTask
 };
 
 module.exports = task;
