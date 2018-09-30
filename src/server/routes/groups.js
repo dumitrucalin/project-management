@@ -16,20 +16,18 @@ privateApp.post('/create', async function(req, res) {
 	var group = await db.group.findByGroupName(groupName);
 
 	if (!group) {
-		await db.group.createGroup(groupName, usernames);
-
 		for (let username of usernames) {
 			debug('Searching for user ' + username);
 			let userFound = await db.user.findByUsername(username);
 
 			if (!userFound) {
-				await db.group.deleteGroup(groupName);
 				debug('The user ' + username + ' doesn\'t exist');
 				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 			}
 		}
 		debug('All given users founded');
 
+		await db.group.createGroup(groupName, usernames);
 		for (let username of usernames) {
 			await db.user.updateGorups(username, groupName);
 		}
@@ -66,20 +64,18 @@ privateApp.post('/users/create', async function (req, res) {
 	var group = await db.group.findByGroupName(groupName);
 
 	if (group) {
-		await db.group.createUsers(groupName, usernames);
-
 		for (let username of usernames) {
 			debug('Searching for user ' + username);
 			let userFound = await db.user.findByUsername(username);
 
 			if (!userFound) {
-				await db.group.deleteGroup(groupName);
 				debug('The user ' + username + ' doesn\'t exist');
 				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 			}
 		}
 		debug('All given users found');
 
+		await db.group.createUsers(groupName, usernames);
 		for (let username of usernames) {
 			await db.user.updateGorups(username, groupName);
 		}
