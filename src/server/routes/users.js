@@ -14,6 +14,24 @@ function createToken() {
 	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
 }
 
+function security(req, res, next) {
+	let token = null;
+
+	if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
+		token = req.headers.authorization.split(' ')[1];
+
+	if (!token && req.headers.Authorization && req.headers.Authorization.split(' ')[0] === 'Bearer')
+		token = req.headers.Authorization.split(' ')[1];
+
+	if (!token) 
+		token = req.query.token;
+
+	if (!token) 
+		token = req.body.token;
+
+	req.token = token;
+	next();
+}
 
 publicApp.post('/signup', async function(req, res) {
 	var username = req.body.username;
@@ -64,25 +82,6 @@ publicApp.post('/login', async function(req, res) {
 		debug('Username or password are incorrect');
 	}
 });
-
-function security(req, res, next) {
-	let token = null;
-
-	if (req.headers.authorization && req.headers.authorization.split(' ')[0] === 'Bearer')
-		token = req.headers.authorization.split(' ')[1];
-
-	if (!token && req.headers.Authorization && req.headers.Authorization.split(' ')[0] === 'Bearer')
-		token = req.headers.Authorization.split(' ')[1];
-
-	if (!token) 
-		token = req.query.token;
-
-	if (!token) 
-		token = req.body.token;
-
-	req.token = token;
-	next();
-}
 
 privateApp.post('/logout', async function(req, res) {
 	try {

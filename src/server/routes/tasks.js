@@ -2,43 +2,48 @@
 
 var express = require('express');
 var debug = require('debug')('task-manager:user-routes');
-var uuid = require('uuid');
 var db = require('../database/database.js');
 
 var privateApp = express.Router();
 
 debug.log = console.info.bind(console);
 
-function createTaskId() {
-	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
-}
-
 privateApp.post('/create', async function(req, res) {
-	var taskId = createTaskId();
+	var usernameCreator = req.body.usernameCreator;
+	var usernameReceiver = req.body.usernameReceiver;
+	var groupName = req.body.groupName;
 	var taskName = req.body.taskName;
 	var taskString = req.body.taskString;
 
-	try {
-		await db.task.createTask(taskId, taskName, taskString);
-		res.status(200).send({err: 0});
-	} catch (err) {
-		debug(err.message);
-	}
+	var taskId = await db.task.createTask(taskName, taskString);
 
-	return taskId;
+	await db.group.setTasksGiven(groupName, usernameCreator, taskId);
+	await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+	res.status(200).send({ err: 0 });
 });
 
-privateApp.post('/edit', async function(req, res) {
-	var taskId = req.body.taskId;
-	var taskName = req.body.taskName;
-	var taskString = req.body.taskString;
+privateApp.post('/get', async function(req, res) {
+	var groupName = req.body.groupName;
+	var username = req.body.username;
 
-	try {
-		await db.task.editTask(taskId, taskName, taskString);
-		res.status(200).send({err: 0});
-	} catch (err) {
-		debug(err.message);
+	var tasksId = await db.group.findTasks(groupName, username);
+
+	var tasks = {
+		tasksGiven: [],
+		tasksReceived: []
+	};
+
+	for (let taskId of tasksId.tasksGiven) {
+		let task = await db.task.findByTaskId(taskId);
+		tasks.tasksGiven.push(task);
 	}
+
+	for (let taskId of tasksId.tasksReceived) {
+		let task = await db.task.findByTaskId(taskId);
+		tasks.tasksReceived.push(task);
+	}
+
+	res.status(200).send({ err: 0, tasks: tasks });
 });
 
 privateApp.post('/delete', async function(req, res) {

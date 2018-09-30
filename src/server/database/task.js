@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var uuid = require('uuid');
 var _ = require('lodash');
 
 var taskSchema = mongoose.Schema({
@@ -13,6 +14,14 @@ var taskSchema = mongoose.Schema({
 	},
 	taskString: {
 		type: String,
+		required: true
+	},
+	deadline: {
+		type: Date,
+		required: true
+	},
+	priority: {
+		type: String, 
 		required: true
 	}
 }, {
@@ -30,14 +39,20 @@ var taskSchema = mongoose.Schema({
 
 var Task = mongoose.model('Task', taskSchema);
 
-function createTask(taskId, taskName, taskString) {
+function createTaskId() {
+	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
+}
+
+function createTask(taskName, taskString) {
+	var taskId = createTaskId();
 	var task = new Task(_.assign({}, {
 		taskId: taskId,
 		taskName: taskName,
 		taskString: taskString
 	}));
 
-	return task.save();
+	task.save();
+	return taskId;
 }
 
 function findByTaskId(taskId) {
