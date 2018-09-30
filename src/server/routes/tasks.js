@@ -16,17 +16,34 @@ privateApp.post('/create', async function(req, res) {
 	var taskString = req.body.taskString;
 	var taskPriority = req.body.taskPriority;
 
-	var taskId = await db.task.createTask(taskName, taskString, taskPriority);
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		var user = await db.user.findByUsername(usernameReceiver);
 
-	await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-	await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
-	res.status(200).send({ err: 0 });
+		if (user) {
+			var taskId = await db.task.createTask(taskName, taskString, taskPriority);
+			debug('Task ' + taskName + ' created');
+
+			await db.group.setTasksGiven(groupName, usernameCreator, taskId);
+			await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+			debug('Users tasks list updated');
+
+			return res.status(200).send({ err: 0 });
+		} else {
+			debug('The user ' + usernameReceiver + ' doesn\'t exist');
+			return res.status(200).send({ err: 1, message: 'The user ' + usernameReceiver + ' doesn\'t exist!' });
+		}
+	} else {
+		debug('The group ' + groupName + 'doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + 'doesn\'t exist!' });
+	}
 });
 
 privateApp.post('/get', async function(req, res) {
 	var groupName = req.body.groupName;
 	var username = req.body.username;
 
+	debug('Getting the tasks list from the user ' + username + ' in the group ' + groupName);
 	var tasksId = await db.group.findTasks(groupName, username);
 
 	var tasks = {
@@ -38,27 +55,30 @@ privateApp.post('/get', async function(req, res) {
 		let task = await db.task.findByTaskId(taskId);
 		tasks.tasksGiven.push(task);
 	}
+	debug('Given tasks got successfully');
 
 	for (let taskId of tasksId.tasksReceived) {
 		let task = await db.task.findByTaskId(taskId);
 		tasks.tasksReceived.push(task);
 	}
+	debug('Received tasks got successfully');
 
-	res.status(200).send({ err: 0, tasks: tasks });
+	return res.status(200).send({ err: 0, tasks: tasks });
 });
 
 privateApp.post('/delete', async function(req, res) {
 	var taskId = req.body.taskId;
+
+	debug('Searching fot the task');
 	var existTask = await db.task.findByTaskId(taskId);
+
 	if (existTask) {
-		try {
-			await db.task.deleteTask(taskId);
-			res.status(200).send({err:0});
-		} catch (err) {
-			debug(err.message);
-		}
+		await db.task.deleteTask(taskId);
+		debug('Task deleted');
+		return res.status(200).send({err:0});
 	} else {
 		debug('There is no task with that id');
+		return res.status(200).send({ err: 1, message: 'The task with the given id doesn\'t exist!' });
 	}
 });
 

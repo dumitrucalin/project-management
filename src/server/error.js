@@ -1,5 +1,6 @@
 var statusCodes = require('http-status-codes');
 var debug = require('debug')('task-manager:error');
+
 debug.log = console.info.bind(console);
 
 function error(status, err) {
@@ -38,7 +39,7 @@ function notFound(err) {
 
 
 process.on('uncaughtException', function(ex) {
-	console.log('Uncaught Exception', { exception: ex });
+	debug('Uncaught Exception', { exception: ex });
 	process.nextTick(function() {
 		process.exit(1);
 	});

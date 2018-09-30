@@ -22,31 +22,39 @@ privateApp.post('/create', async function(req, res) {
 			debug('Searching for user ' + username);
 			let userFound = await db.user.findByUsername(username);
 
-			if (userFound) {
-				debug('Updating groups list');
-				await db.user.updateGroups(username, groupName);
-			} else {
-				debug('The given user ' + username + ' doesn\'t eixst');
+			if (!userFound) {
+				await db.group.deleteGroup(groupName);
+				debug('The user ' + username + ' doesn\'t exist');
+				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 			}
 		}
+		debug('All given users founded');
 
-		res.status(200).send({ err: 0 });
+		for (let username of usernames) {
+			await db.user.updateGorups(username, groupName);
+		}
+		debug('The users were added to the group');
+
+		return res.status(200).send({ err: 0 });
 	} else {
-		debug('The group already exists');
+		debug('The group ' + groupName + ' already exists');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' already exist!' });
 	}
 });
 
 privateApp.post('/delete', async function(req, res) {
 	var groupName = req.body.groupName;
 
-	debug('Searching for the group');
+	debug('Searching for the group ' + groupName);
 	var group = await db.group.findByGroupName(groupName);
 
 	if (group) {
 		await db.group.deleteGroup(groupName);
-		res.status(200).send({err: 0});
+		debug('Group ' + groupName + ' deleted');
+		return res.status(200).send({err: 0});
 	} else {
-		debug('The group doesn\'t exist');
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName  + 'already exist!' });
 	}
 });
 
@@ -64,21 +72,27 @@ privateApp.post('/users/create', async function (req, res) {
 			debug('Searching for user ' + username);
 			let userFound = await db.user.findByUsername(username);
 
-			if (userFound) {
-				debug('Updating groups list');
-				await db.user.updateGroups(username, groupName);
-			} else {
-				debug('The given user ' + username + ' doesn\'t eixst');
+			if (!userFound) {
+				await db.group.deleteGroup(groupName);
+				debug('The user ' + username + ' doesn\'t exist');
+				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 			}
 		}
+		debug('All given users found');
 
-		res.status(200).send({err: 0});
+		for (let username of usernames) {
+			await db.user.updateGorups(username, groupName);
+		}
+		debug('The users were added to the group');
+
+		return res.status(200).send({ err: 0 });
 	} else {
-		debug('The group doesn\'t exist');
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
 	}
 });
 
-privateApp.post('/users/delete', async function (req, res) {
+privateApp.post('/user/delete', async function (req, res) {
 	var groupName = req.body.groupName;
 	var username = req.body.username;
 
@@ -86,12 +100,21 @@ privateApp.post('/users/delete', async function (req, res) {
 	var group = await db.group.findByGroupName(groupName);
 
 	if (group) {
-		debug('Deleting the given user');
-		await db.group.deleteUsers(groupName, username);
-		await db.user.deleteGroup(username, groupName);
-		res.status(200).send({ err: 0 });
+		debug('Searching for user ' + username);
+		var user = await db.user.findByUsername(username);
+
+		if (user) {
+			await db.group.deleteUsers(groupName, username);
+			await db.user.deleteGroup(username, groupName);
+			debug('The user ' + username + ' was deleted from the group ' + groupName);
+			return res.status(200).send({ err: 0 });
+		} else {
+			debug('The user ' + username + ' doesn\'t exist');
+			return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
+		}
 	} else {
-		debug('The group doesn\'t exist');
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
 	}
 });
 

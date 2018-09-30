@@ -25,7 +25,7 @@ new Vue({
 			console.log('Searching for the user');
 			var userFound = await this.$store.dispatch ('user/getUser');
 			console.log('Found the user: ' + userFound);
-			if (!userFound) {
+			if (userFound.err !== 0) {
 				await this.$store.dispatch ('user/deleteToken');
 				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
 			}
