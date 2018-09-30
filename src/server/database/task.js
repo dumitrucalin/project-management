@@ -16,11 +16,13 @@ var taskSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	deadline: {
-		type: Date,
-		required: true
+	taskDeadline: {
+		type: Date
 	},
-	priority: {
+	taskStatus: {
+		type: String
+	},
+	taskPriority: {
 		type: String, 
 		required: true
 	}
@@ -43,12 +45,14 @@ function createTaskId() {
 	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
 }
 
-function createTask(taskName, taskString) {
+function createTask(taskName, taskString, taskPriority) {
 	var taskId = createTaskId();
+	
 	var task = new Task(_.assign({}, {
 		taskId: taskId,
 		taskName: taskName,
-		taskString: taskString
+		taskString: taskString,
+		taskPriority: taskPriority
 	}));
 
 	task.save();
@@ -59,17 +63,6 @@ function findByTaskId(taskId) {
 	return Task.findOne({ taskId: taskId });
 }
 
-function editTask(taskId, taskName, taskString) {
-	var taskUpdated = {};
-
-	if (taskName)
-		taskUpdated.taskName = taskName;
-	if (taskString)
-		taskUpdated.taskString = taskString;
-
-	return Task.updateOne({ taskId: taskId }, { $set: { taskUpdated } });
-}
-
 function deleteTask(taskId) {
 	return Task.deleteOne({ taskId: taskId });
 }
@@ -77,7 +70,6 @@ function deleteTask(taskId) {
 var task = {
 	createTask,
 	findByTaskId,
-	editTask,
 	deleteTask
 };
 

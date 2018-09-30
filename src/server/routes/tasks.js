@@ -14,8 +14,9 @@ privateApp.post('/create', async function(req, res) {
 	var groupName = req.body.groupName;
 	var taskName = req.body.taskName;
 	var taskString = req.body.taskString;
+	var taskPriority = req.body.taskPriority;
 
-	var taskId = await db.task.createTask(taskName, taskString);
+	var taskId = await db.task.createTask(taskName, taskString, taskPriority);
 
 	await db.group.setTasksGiven(groupName, usernameCreator, taskId);
 	await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
