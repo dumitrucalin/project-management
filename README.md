@@ -21,3 +21,4 @@ TODO:
 	SERVER:
 		- Checkings before try to access the db
 		- Error messages
+		- Implement with redis -> put in npm install
