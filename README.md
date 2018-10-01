@@ -2,22 +2,9 @@
 
 TODO: 
 	UI:
-		- Regexes for signUp
 		- Loading icon
-		- Buttons from Dashboard: 
-			- Create group: 
-				.group name -form stabil
-				.an array of users -form cu buton si lista de afisat. Onclick reset nume adauga string
-			- Create task:
-				.task title
-				.task string
-				.username receiver
-				.groupname -> option
-				.priority -> option
-				.with/out deadline -> option
-				.with/out status -> option
 		- To access the given tasks, you have to console.log the response.data.tasks, and then you will see the structure
-		- Regex and fail safes for create group page
+		- Regex and fail safes for create group page + bootstrap notify
 		- Make a mapGetter for the tasks list (calin)
 
 	SERVER:

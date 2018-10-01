@@ -45,12 +45,12 @@ module.exports = {
 	methods: {
 		async submitGroup(){
 			await this.$store.dispatch ('user/sendGroup', {
-				groupName:this.groupName,
-				usernames:this.groupUsers,
+				groupName:this.groupName,//unic groupname request la server await. if not notify
+				usernames:this.groupUsers,//alfanumeric
 			});
 		},
 		addUserG:function(){
-			this.groupUsers.push(this.userNameGroup);
+			this.groupUsers.push(this.userNameGroup);//alfanumeric if not notify
 		},
 	},
 };
