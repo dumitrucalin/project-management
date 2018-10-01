@@ -7,6 +7,7 @@
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
+				<button>Button GOL</button>
 			</div>
 			<CreateGroup v-if="createGroupView"></CreateGroup>
 			<CreateTask v-if="createTaskView"></CreateTask>
