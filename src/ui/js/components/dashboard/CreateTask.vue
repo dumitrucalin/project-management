@@ -10,13 +10,14 @@
 			<div class="form-group">
 				<textarea name="message" rows="10" cols="30" v-model="taskString">Input your task.</textarea>
 			</div>
-			<div class="form-group">
-				<input id="user-Rec" type="text" class="form-control input-sm chat-input"  placeholder="Designated User" v-model="usernameReceiver" />
-			</div>
 				<form id="options">
 					<select v-model="groupName">
 					<div>Group</div><option v-for="(item, index) in this.user.groupNames" :key="index" :value="item">{{item}}</option>
 					</select><br>
+
+					<div class="form-group" v-if="groupName">
+						<input id="user-Rec" type="text" class="form-control input-sm chat-input"  placeholder="Designated User" v-model="usernameReceiver" />
+					</div>
 
 					<div>DeadLine</div><input type="checkbox" @click="changeDeadline()">
 					<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
