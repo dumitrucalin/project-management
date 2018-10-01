@@ -72,8 +72,8 @@ function deleteUsers(groupName, username) {
 	return Group.updateOne({ groupName: groupName }, { $unset: { ['users.' + username]: {} } });
 }
 
-function getTasksStatus(groupName) {
-	return Group.findOne({ groupName: groupName });
+function setTasksStatus(groupName, username, tasksStatus) {
+	return Group.updateOne({ groupName: groupName }, { $set: { ['users.' + username + '.tasksModified']: tasksStatus } });
 }
 
 function setTasksGiven(groupName, username, taskId) {
@@ -94,7 +94,7 @@ var group = {
 	deleteUsers,
 	setTasksGiven,
 	setTasksReceived,
-	getTasksStatus
+	setTasksStatus
 };
 
 module.exports = group;

@@ -32,7 +32,6 @@ privateApp.post('/create', async function(req, res) {
 			await db.user.updateGroups(username, groupName);
 		}
 		debug('The users were added to the group');
-
 		return res.status(200).send({ err: 0 });
 	} else {
 		debug('The group ' + groupName + ' already exists');

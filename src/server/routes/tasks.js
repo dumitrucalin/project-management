@@ -26,10 +26,13 @@ privateApp.post('/create', async function(req, res) {
 
 			if (usernameCreator === usernameReceiver) {
 				await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+				await db.group.setTasksStatus(groupName, usernameReceiver, true);
 				debug('User tasks list updated');
 			} else {
 				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
 				await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+				await db.group.setTasksStatus(groupName, usernameCreator, true);
+				await db.group.setTasksStatus(groupName, usernameReceiver, true);
 				debug('Users tasks list updated');
 			}
 
@@ -71,7 +74,7 @@ privateApp.post('/get', async function(req, res) {
 				tasks.tasksReceived.push(task);
 			}
 			debug('Received tasks got successfully');
-		
+			await db.group.setTasksStatus(groupName, username, false);
 			return res.status(200).send({ err: 0, tasks: tasks });
 		} else {
 			debug('The user ' + username + ' doesn\'t exist');
@@ -92,6 +95,8 @@ privateApp.post('/status/get', async function(req, res) {
 		var user = await db.user.findByUsername(username);
 		if (user) {
 			let tasksModified = group.users[username].tasksModified;
+			console.log(username);
+			console.log(tasksModified);
 			return res.status(200).send({ err: 0, tasksModified: tasksModified });
 		} else {
 			debug('The user ' + username + ' doesn\'t exist');
@@ -105,23 +110,21 @@ privateApp.post('/status/get', async function(req, res) {
 
 privateApp.post('/delete', async function(req, res) {
 	var taskId = req.body.taskId;
+	var username = req.body.username;
+	var groupName = req.body.groupName;
 
 	debug('Searching fot the task');
 	var existTask = await db.task.findByTaskId(taskId);
 
 	if (existTask) {
 		await db.task.deleteTask(taskId);
+		await db.group.setTasksStatus(groupName, username, true);
 		debug('Task deleted');
 		return res.status(200).send({err:0});
 	} else {
 		debug('There is no task with that id');
 		return res.status(200).send({ err: 1, message: 'The task with the given id doesn\'t exist!' });
 	}
-});
-
-privateApp.post('/test', function(req, res) {
-	let test = 'nothing';
-	return res.status(200).send({ err: 0, test: test });
 });
 
 module.exports.privateRoutes = privateApp;

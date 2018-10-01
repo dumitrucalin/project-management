@@ -124,7 +124,7 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
-					store.commit('user',response.data.user);
+					store.commit('user', response.data.user);
 					return true;
 				} else {
 					return false;
@@ -133,21 +133,24 @@ module.exports = {
 				return false;
 			}
 		},
-		async getTasks(store, taskInfo) {
-			let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
-			console.log(response.data.tasks);
-		},
-		getTasksState() {
+		updateTasks(store) {
 			setInterval( async function() {
 				var taskInfo = {
 					groupName: 'admin',
 					username: 'admin'
 				};
 				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
-				if (response) {
-					this.getTasks();
+				if (response.data.err === 0) {
+					console.log(response.data.tasksModified);
+					if (response.data.tasksModified) {
+						let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+						store.commit ('tasks', response.data.tasks);
+						console.log(response.data.tasks);
+					}
+				} else {
+					return;
 				}
-			}, 1000);
+			}, 5000);
 		},
 	},
 	mutations: {
