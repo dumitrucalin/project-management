@@ -31,6 +31,7 @@ module.exports = {
 			loadingView: false,
 			
 			next: urlParams.get ('redirect'),
+			
 			wrongPassword: {
 				title: 'Password contains invalid characters',
 				message: 'Please insert your password again',
@@ -66,6 +67,7 @@ module.exports = {
 						username: this.username,
 						password: this.password
 					});
+					this.loadingView = false;
 
 					if (login)
 						await this.$store.dispatch ('settings/redirect', this.next);

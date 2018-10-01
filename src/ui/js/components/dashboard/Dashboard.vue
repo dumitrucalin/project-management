@@ -40,7 +40,7 @@ module.exports = {
 			
 			createGroupView: false,
 			createTaskView: false,
-			taskListView: true,
+			taskListView: true
 		};
 	},
 
@@ -74,14 +74,17 @@ module.exports = {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = true;
-		}
+		},
+		// changeGroup: function() {
+		// 	await this.$store.dispatch('settings/redirect', 'DASHBOARD', this.group);
+		// }
 	},
 
 	computed: {
 		...mapGetters ({
 			user: 'user/user'
 		})
-	},
+	}
 };
 
 </script>

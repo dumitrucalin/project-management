@@ -5,11 +5,10 @@ TODO:
 		- Loading icon
 		- To access the given tasks, you have to console.log the response.data.tasks, and then you will see the structure
 		- Regex and fail safes for create group page + bootstrap notify
-		- Make a mapGetter for the tasks list (calin)
-		- Check tasksModified only if the user is in a group
+		- Send the selected group from dashboard.vue to dashboard.js through reload and URL
 
 	SERVER:
-		- Unhardcode group when get tasks "test"
+		- Route to send the users in a specifc group
 		- Try/catch ?
 		- Implement with redis -> put in npm install
 

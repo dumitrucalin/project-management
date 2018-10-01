@@ -136,8 +136,7 @@ module.exports = {
 		async updateTasks(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
-				// groupName: userInfo.groupName
-				groupName: 'test'
+				groupName: userInfo.groupName
 			};
 
 			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
@@ -179,7 +178,7 @@ module.exports = {
 			state.user = value;
 		},
 		tasks(state, value) {
-			state.user = value;
+			state.tasks = value;
 		}
 	}
 };

@@ -1,7 +1,7 @@
 <template>
 	<div class="taskList">
 		<p>This is the Task View</p>
-		<p>Hello Tasker mister fucker mother{{ this.user.fullName }}</p>
+		<p>Hello Tasker mister fucker mother you</p>
 	</div>
 </template>
 
@@ -20,15 +20,9 @@ module.exports = {
 
 	computed: {
 		...mapGetters ({
-			user: 'user/user'
+			tasks: 'user/tasks'
 		})
-	},
-
-	methods: {
-		/*async submit(){
-
-		}*/
-	},
+	}
 };
 
 </script>

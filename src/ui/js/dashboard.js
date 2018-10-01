@@ -14,13 +14,10 @@ var Dashboard = require('./components/dashboard/Dashboard.vue');
 new Vue({
 	el: '#dashboard',
 
-	data: {
-		token: '',
-		reloadTasks: true
-	},
 	render: function(render) {
 		return render(Dashboard);
 	},
+
 	async created() {
 		if (!this.$store.getters['user/token'])
 			await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
@@ -32,7 +29,8 @@ new Vue({
 			} else {
 				var user = await this.$store.getters['user/user'];
 				var userInfo = {
-					username: user.username
+					username: user.username,
+					groupName: user.groupNames[0]
 				};
 				await this.$store.dispatch ('user/updateTasks', userInfo);
 			}
