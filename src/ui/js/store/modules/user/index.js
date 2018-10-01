@@ -133,15 +133,15 @@ module.exports = {
 				return false;
 			}
 		},
-		updateTasks(store) {
+		updateTasks(store, userInfo) {
+			var taskInfo = {
+				username: userInfo.username,
+				groupName: 'admin'
+			};
+
 			setInterval( async function() {
-				var taskInfo = {
-					groupName: 'admin',
-					username: 'admin'
-				};
 				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
 				if (response.data.err === 0) {
-					console.log(response.data.tasksModified);
 					if (response.data.tasksModified) {
 						let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
 						store.commit ('tasks', response.data.tasks);
