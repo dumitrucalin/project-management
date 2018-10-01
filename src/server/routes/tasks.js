@@ -24,9 +24,14 @@ privateApp.post('/create', async function(req, res) {
 			var taskId = await db.task.createTask(taskName, taskString, taskPriority);
 			debug('Task ' + taskName + ' created');
 
-			await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-			await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
-			debug('Users tasks list updated');
+			if (usernameCreator === usernameReceiver) {
+				await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+				debug('User tasks list updated');
+			} else {
+				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
+				await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+				debug('Users tasks list updated');
+			}
 
 			return res.status(200).send({ err: 0 });
 		} else {
@@ -80,6 +85,11 @@ privateApp.post('/delete', async function(req, res) {
 		debug('There is no task with that id');
 		return res.status(200).send({ err: 1, message: 'The task with the given id doesn\'t exist!' });
 	}
+});
+
+privateApp.post('/test', function(req, res) {
+	let test = 'nothing';
+	return res.status(200).send({ err: 0, test: test });
 });
 
 module.exports.privateRoutes = privateApp;

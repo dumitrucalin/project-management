@@ -13,7 +13,8 @@ new Vue({
 	el: '#dashboard',
 
 	data: {
-		token: ''
+		token: '',
+		reloadTasks: true
 	},
 	render: function(render) {
 		return render(Dashboard);
@@ -25,9 +26,11 @@ new Vue({
 			console.log('Searching for the user');
 			var userFound = await this.$store.dispatch ('user/getUser');
 			console.log('Found the user: ' + userFound);
-			if (userFound.err !== 0) {
+			if (userFound !== true) {
 				await this.$store.dispatch ('user/deleteToken');
 				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
+			} else {
+				await this.$store.dispatch ('user/getTasks');
 			}
 		}
 	}

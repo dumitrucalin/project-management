@@ -13,7 +13,8 @@ module.exports = {
 	namespaced: true,
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
-		user: null
+		user: null,
+		tasks: null
 	},
 	getters: {
 		token(state) {
@@ -21,6 +22,9 @@ module.exports = {
 		},
 		user(state) {
 			return state.user;
+		},
+		tasks(state) {
+			return state.tasks;
 		}
 	},
 	actions: {
@@ -64,6 +68,10 @@ module.exports = {
 				return false;
 			}
 		},
+		deleteToken(store) {
+			store.commit('token', null);
+			return true;
+		},
 		async getUser(store) {
 			try {
 				console.log(store.state.token);
@@ -76,10 +84,6 @@ module.exports = {
 			} catch (e) {
 				return false;
 			}
-		},
-		deleteToken(store) {
-			store.commit('token', null);
-			return true;
 		},
 		async updateUser(store) {
 			try {
@@ -128,6 +132,12 @@ module.exports = {
 				return false;
 			}
 		},
+		getTasks() {
+			setInterval( async function() {
+				let response = await Vue.http.post(setup.API + '/tasks/test');
+				console.log(response.data.test);
+			}, 15000);
+		}
 	},
 	mutations: {
 		token(state, value) {
@@ -140,6 +150,9 @@ module.exports = {
 			}
 		},
 		user(state, value) {
+			state.user = value;
+		},
+		tasks(state, value) {
 			state.user = value;
 		}
 	}
