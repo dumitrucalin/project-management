@@ -78,10 +78,10 @@ module.exports = {
 		async submitTask(){
 			await this.$store.dispatch ('user/sendTask', {
 				usernameCreator:this.user.username,
-				usernameReceiver:this.usernameReceiver,
-				groupName:this.groupName,
-				taskName:this.taskName,
-				taskString:this.taskString,
+				usernameReceiver:this.usernameReceiver,//must exist
+				groupName:this.groupName,//musts exist
+				taskName:this.taskName,//must exist
+				taskString:this.taskString,//must exist
 				taskPriority:this.taskPriority,
 			});
 		},
