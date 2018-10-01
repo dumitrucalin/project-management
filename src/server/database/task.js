@@ -25,6 +25,14 @@ var taskSchema = mongoose.Schema({
 	taskPriority: {
 		type: String, 
 		required: true
+	},
+	usernameReceiver: {
+		type: String,
+		required: true
+	},
+	usernameCreator: {
+		type: String,
+		required: true
 	}
 }, {
 	toObject: {
@@ -45,14 +53,16 @@ function createTaskId() {
 	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
 }
 
-function createTask(taskName, taskString, taskPriority) {
+function createTask(taskName, taskString, taskPriority, usernameCreator, usernameReceiver) {
 	var taskId = createTaskId();
 	
 	var task = new Task(_.assign({}, {
 		taskId: taskId,
 		taskName: taskName,
 		taskString: taskString,
-		taskPriority: taskPriority
+		taskPriority: taskPriority,
+		usernameReceiver: usernameReceiver,
+		usernameCreator: usernameCreator
 	}));
 
 	task.save();

@@ -133,11 +133,23 @@ module.exports = {
 				return false;
 			}
 		},
-		updateTasks(store, userInfo) {
+		async updateTasks(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
-				groupName: 'admin'
+				// groupName: userInfo.groupName
+				groupName: 'test'
 			};
+
+			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+			if (response.data.err === 0) {
+				if (response.data.tasksModified) {
+					let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+					store.commit ('tasks', response.data.tasks);
+					console.log(response.data.tasks);
+				}
+			} else {
+				return;
+			}
 
 			setInterval( async function() {
 				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);

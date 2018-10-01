@@ -7,11 +7,7 @@ var groupSchema = mongoose.Schema({
 		required: true,
 		unique: true,
 	},
-	users: {},
-	tasksModified: {
-		type: Boolean,
-		required: true
-	}
+	users: {}
 }, {
 	toObject: {
 		transform: function(doc, ret) {
@@ -34,7 +30,8 @@ function createGroup(groupName, usernames) {
 	{
 		users[username] = {
 			tasksGiven: [],
-			tasksReceived: []
+			tasksReceived: [],
+			tasksModified: false
 		};
 	}
 
@@ -88,6 +85,14 @@ function setTasksReceived(groupName, username, taskId) {
 	return Group.updateOne({ groupName: groupName }, { $addToSet: { ['users.' + username + '.tasksReceived']: taskId } });
 }
 
+function deleteTaskGiven(groupName, username, taskId) {
+	return Group.updateOne({ groupName: groupName }, { $pull: { ['users.' + username + '.tasksGiven']: taskId } });
+}
+
+function deleteTaskReceived(groupName, username, taskId) {
+	return Group.updateOne({ groupName: groupName }, { $pull: { ['users.' + username + '.tasksReceived']: taskId } });
+}
+
 
 var group = {
 	createGroup,
@@ -98,7 +103,9 @@ var group = {
 	deleteUsers,
 	setTasksGiven,
 	setTasksReceived,
-	setTasksStatus
+	setTasksStatus,
+	deleteTaskGiven,
+	deleteTaskReceived
 };
 
 module.exports = group;
