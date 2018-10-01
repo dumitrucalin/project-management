@@ -7,7 +7,11 @@ var groupSchema = mongoose.Schema({
 		required: true,
 		unique: true,
 	},
-	users: {}
+	users: {},
+	tasksModified: {
+		type: Boolean,
+		required: true
+	}
 }, {
 	toObject: {
 		transform: function(doc, ret) {
