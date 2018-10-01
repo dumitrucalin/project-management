@@ -48,27 +48,59 @@ privateApp.post('/get', async function(req, res) {
 	var groupName = req.body.groupName;
 	var username = req.body.username;
 
-	debug('Getting the tasks list from the user ' + username + ' in the group ' + groupName);
-	var tasksId = await db.group.findTasks(groupName, username);
-
-	var tasks = {
-		tasksGiven: [],
-		tasksReceived: []
-	};
-
-	for (let taskId of tasksId.tasksGiven) {
-		let task = await db.task.findByTaskId(taskId);
-		tasks.tasksGiven.push(task);
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		var user = await db.user.findByUsername(username);
+		if (user) {
+			debug('Getting the tasks list from the user ' + username + ' in the group ' + groupName);
+			var tasksId = await db.group.findTasks(groupName, username);
+		
+			var tasks = {
+				tasksGiven: [],
+				tasksReceived: []
+			};
+		
+			for (let taskId of tasksId.tasksGiven) {
+				let task = await db.task.findByTaskId(taskId);
+				tasks.tasksGiven.push(task);
+			}
+			debug('Given tasks got successfully');
+		
+			for (let taskId of tasksId.tasksReceived) {
+				let task = await db.task.findByTaskId(taskId);
+				tasks.tasksReceived.push(task);
+			}
+			debug('Received tasks got successfully');
+		
+			return res.status(200).send({ err: 0, tasks: tasks });
+		} else {
+			debug('The user ' + username + ' doesn\'t exist');
+			return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
+		}
+	} else {
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
 	}
-	debug('Given tasks got successfully');
+});
 
-	for (let taskId of tasksId.tasksReceived) {
-		let task = await db.task.findByTaskId(taskId);
-		tasks.tasksReceived.push(task);
+privateApp.post('/status/get', async function(req, res) {
+	var groupName = req.body.groupName;
+	var username = req.body.username;
+
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		var user = await db.user.findByUsername(username);
+		if (user) {
+			let tasksModified = group.users[username].tasksModified;
+			return res.status(200).send({ err: 0, tasksModified: tasksModified });
+		} else {
+			debug('The user ' + username + ' doesn\'t exist');
+			return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
+		}
+	} else {
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
 	}
-	debug('Received tasks got successfully');
-
-	return res.status(200).send({ err: 0, tasks: tasks });
 });
 
 privateApp.post('/delete', async function(req, res) {

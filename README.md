@@ -17,7 +17,7 @@ TODO:
 				.with/out deadline -> option
 				.with/out status -> option
 		- To access the given tasks, you have to console.log the response.data.tasks, and then you will see the structure
-		- Get tasks from the db once every 30 sec (calin)
+		- Regex and fail safes for create group page
 		- Make a mapGetter for the tasks list (calin)
 
 	SERVER:

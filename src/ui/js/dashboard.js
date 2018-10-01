@@ -30,7 +30,7 @@ new Vue({
 				await this.$store.dispatch ('user/deleteToken');
 				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
 			} else {
-				await this.$store.dispatch ('user/getTasks');
+				await this.$store.dispatch ('user/getTasksState');
 			}
 		}
 	}

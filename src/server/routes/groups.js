@@ -29,7 +29,7 @@ privateApp.post('/create', async function(req, res) {
 
 		await db.group.createGroup(groupName, usernames);
 		for (let username of usernames) {
-			await db.user.updateGorups(username, groupName);
+			await db.user.updateGroups(username, groupName);
 		}
 		debug('The users were added to the group');
 
@@ -77,7 +77,7 @@ privateApp.post('/users/create', async function (req, res) {
 
 		await db.group.createUsers(groupName, usernames);
 		for (let username of usernames) {
-			await db.user.updateGorups(username, groupName);
+			await db.user.updateGroups(username, groupName);
 		}
 		debug('The users were added to the group');
 

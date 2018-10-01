@@ -14,7 +14,8 @@ module.exports = {
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
-		tasks: null
+		tasks: null,
+		workingGroupName: null
 	},
 	getters: {
 		token(state) {
@@ -132,12 +133,22 @@ module.exports = {
 				return false;
 			}
 		},
-		getTasks() {
+		async getTasks(store, taskInfo) {
+			let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+			console.log(response.data.tasks);
+		},
+		getTasksState() {
 			setInterval( async function() {
-				let response = await Vue.http.post(setup.API + '/tasks/test');
-				console.log(response.data.test);
-			}, 15000);
-		}
+				var taskInfo = {
+					groupName: 'admin',
+					username: 'admin'
+				};
+				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+				if (response) {
+					this.getTasks();
+				}
+			}, 1000);
+		},
 	},
 	mutations: {
 		token(state, value) {
