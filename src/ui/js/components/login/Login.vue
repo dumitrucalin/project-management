@@ -14,6 +14,7 @@
 
 var Loading = require ('../Loading.vue');
 var validator = require('validator');
+var Vue = require ('vue');
 
 module.exports = {
 	name: 'Login',
@@ -29,7 +30,22 @@ module.exports = {
 			loadingDuration: 1500,
 			loadingView: false,
 			
-			next: urlParams.get ('redirect')
+			next: urlParams.get ('redirect'),
+			wrongPassword: {
+				title: 'Password contains invalid characters',
+				message: 'Please insert your password again',
+				type: 'warning'
+			},
+			wrongUsername: {
+				title: 'Username contains invalid characters',
+				message: 'Please insert your username again',
+				type: 'warning'
+			},
+			wrongLogIn: {
+				title: 'Incorrect Log In!',
+				message: 'Please insert your username and password again.',
+				type: 'warning'
+			},
 		};
 	},
 
@@ -55,18 +71,21 @@ module.exports = {
 						await this.$store.dispatch ('settings/redirect', this.next);
 					else {
 						console.log('Incorrect credentials');
+						Vue.toast.customToast(this.wrongLogIn);
 						this.username = '';
 						this.password = '';
 					}
 				} else {
+					this.username = '';
 					this.password = '';
 					console.log('Password contains invalid characters');
-					// TODO: TOAST FOR NOT MATCHING PASSWORDS
+					Vue.toast.customToast(this.wrongPassword);
 				}
 			} else {
 				this.username = '';
+				this.password = '';
 				console.log('Username contains invalid characters');
-				// TODO: TOAST FOR NOT MATCHING PASSWORDS
+				Vue.toast.customToast(this.wrongUsername);
 			}
 		},
 	},

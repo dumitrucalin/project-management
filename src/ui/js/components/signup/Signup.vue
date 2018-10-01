@@ -15,7 +15,7 @@
 <script>
 
 var validator = require('validator');
-
+var Vue = require('vue');
 module.exports = {
 	name: 'Signup',
 	data() {
@@ -24,7 +24,28 @@ module.exports = {
 			password: '',
 			confirmPassword: '',
 			email: '',
-			fullName: ''
+			fullName: '',
+			matchingPasswords: {
+				title: 'The passwords do not match',
+				message: 'Please insert your password again',
+				type: 'warning'
+			},
+			notEmail: {
+				title: 'That is not an email',
+				message: 'Please insert a valid email adress',
+				type: 'warning'
+			},
+			wrongPassword: {
+				title: 'Password contains invalid characters',
+				message: 'Please insert your password again',
+				type: 'warning'
+			},
+			wrongUsername: {
+				title: 'Username contains invalid characters',
+				message: 'Please insert your username again',
+				type: 'warning'
+			},
+
 		};
 	},
 
@@ -54,23 +75,23 @@ module.exports = {
 							this.password = '';
 							this.confirmPassword = '';
 							console.log('The passwords do not match');
-							// TODO: TOAST FOR NOT MATCHING PASSWORDS
+							Vue.toast.customToast(this.matchingPasswords);
 						}
 					} else {
 						this.email = '';
 						console.log('That is not an email');
-						// TODO: TOAST FOR NOT MATCHING PASSWORDS
+						Vue.toast.customToast(this.notEmail);
 					}
 				} else {
 					this.password = '';
 					this.confirmPassword = '';
 					console.log('Password contains invalid characters');
-					// TODO: TOAST FOR NOT MATCHING PASSWORDS
+					Vue.toast.customToast(this.wrongPassword);
 				}
 			} else {
 				this.username = '';
 				console.log('Username contains invalid characters');
-				// TODO: TOAST FOR NOT MATCHING PASSWORDS
+				Vue.toast.customToast(this.wrongUsername);
 			}
 		},
 
