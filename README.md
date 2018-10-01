@@ -21,6 +21,7 @@ TODO:
 		- Make a mapGetter for the tasks list (calin)
 
 	SERVER:
-		- HOw to delete taskId from users list in group
+		- Unhardcode group when get tasks
+		- How to delete taskId from users list in group
 		- Try/catch ?
 		- Implement with redis -> put in npm install
