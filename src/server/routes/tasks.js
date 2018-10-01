@@ -95,8 +95,6 @@ privateApp.post('/status/get', async function(req, res) {
 		var user = await db.user.findByUsername(username);
 		if (user) {
 			let tasksModified = group.users[username].tasksModified;
-			console.log(username);
-			console.log(tasksModified);
 			return res.status(200).send({ err: 0, tasksModified: tasksModified });
 		} else {
 			debug('The user ' + username + ' doesn\'t exist');
