@@ -15,6 +15,6 @@ TODO:
 	IDEAS:
 		- Messages per task (like a mini watsapp)
 		- A given task can be assigned to multiple persons, and one of them has to take it
-            - The creator user can delete tge given task
+            - The creator user can delete the given task
             - Have sticky notes per user/task (choose one of the 2)
             - Send mails when approaching the deadline or when task deleted
