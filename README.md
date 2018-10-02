@@ -13,8 +13,8 @@ TODO:
 		- Implement token with redis
 
 	IDEAS:
-    5. Messages per task (like a mini watsapp
-    4. A given task can be assigned to multiple persons, and one of them has to take it
+            5. Messages per task (like a mini watsapp
+            4. A given task can be assigned to multiple persons, and one of them has to take it
             1. The creator user can delete the given task
             3. Have sticky notes per user/task (choose one of the 2)
             2. Send mails when approaching the deadline or when task deleted
