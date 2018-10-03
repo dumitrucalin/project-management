@@ -4,8 +4,18 @@
 			<p>This is the Task View</p>
 			<p @click="showTasks">Hello Tasker mister fucker mother you</p>
 			<div>
+				Tasks Received
 				<ul>
 					<li v-for="(task,index) in this.tasks.tasksReceived" :key=index>
+						<h3>{{task.taskName}}</h3>
+						<h5>{{task.usernameCreator}}</h5>
+						<p>{{task.taskString}}</p>
+						<p>{{task.taskPriority}}</p>
+					</li>
+				</ul>
+				<br><br>Tasks Given
+				<ul>
+					<li v-for="(task,index) in this.tasks.tasksGiven" :key=index>
 						<h3>{{task.taskName}}</h3>
 						<h5>{{task.usernameCreator}}</h5>
 						<p>{{task.taskString}}</p>
