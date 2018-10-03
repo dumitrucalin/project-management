@@ -16,6 +16,7 @@ module.exports = {
 		user: null,
 		users: null,
 		tasks: null,
+		groupName: '',
 		workingGroupName: null
 	},
 	getters: {
@@ -149,22 +150,40 @@ module.exports = {
 				return null;
 			}
 		},
-		async updateTasks(store, userInfo) {
+		async updateTasksOnce(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
 				groupName: userInfo.groupName
 			};
+			this.groupName = userInfo.groupName;
 
 			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
 			if (response.data.err === 0) {
 				let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
 				store.commit ('tasks', response.data.tasks);
-				console.log(response.data.tasks);
+			} else {
+				// TODO: TOAST
+			}
+		},
+		async updateTasksContinue(store, userInfo) {
+			var taskInfo = {
+				username: userInfo.username,
+				groupName: userInfo.groupName
+			};
+			console.log(taskInfo.groupName);
+			console.log(userInfo.groupName);
+
+			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+			if (response.data.err === 0) {
+				let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+				store.commit ('tasks', response.data.tasks);
 			} else {
 				// TODO: TOAST
 			}
 
 			setInterval( async function() {
+				taskInfo.groupName = userInfo.groupName;
+				console.log(userInfo.groupName);
 				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
 				if (response.data.err === 0) {
 					if (response.data.tasksModified) {

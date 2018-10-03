@@ -7,7 +7,7 @@
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<button>Button GOL</button>
+				<input v-model="groupName" />
 			</div>
 			<CreateGroup v-if="createGroupView"></CreateGroup>
 			<CreateTask v-if="createTaskView"></CreateTask>
@@ -40,7 +40,9 @@ module.exports = {
 			
 			createGroupView: false,
 			createTaskView: false,
-			taskListView: true
+			taskListView: true,
+
+			groupName: ''
 		};
 	},
 
@@ -74,16 +76,40 @@ module.exports = {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = true;
-		},
-		/*changeGroup: function() {
-			await this.$store.dispatch('settings/redirect', 'DASHBOARD', this.group);
-		},*/
+		}
 	},
 
 	computed: {
 		...mapGetters ({
 			user: 'user/user'
 		})
+	},
+
+	watch: {
+		groupName: async function() {
+			var user = await this.$store.dispatch('user/getUser');
+			if (user !== null) {
+				var userInfo = {
+					username: user.username,
+					groupName: this.groupName
+				};
+				await this.$store.dispatch ('user/updateTasksOnce', userInfo);
+			}
+		}
+	},
+
+	async created() {
+		var user = await this.$store.dispatch ('user/getUser');
+		if (user !== null) {
+			if (this.groupName === '')
+				this.groupName = user.groupNames[0];
+
+			var userInfo = {
+				username: user.username,
+				groupName: this.groupName
+			};
+			await this.$store.dispatch ('user/updateTasksContinue', userInfo);
+		}
 	}
 };
 
