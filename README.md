@@ -8,11 +8,13 @@ TODO:
 		- Send the selected group from dashboard.vue to dashboard.js through reload and URL
 
 	SERVER:
-		- Route to send the users in a specifc group
+		- Route to send the users from a specifc group
 		- Try/catch ?
-		- Implement with redis -> put in npm install
+		- Implement token with redis
 
 	IDEAS:
-		- Desired group to open at login saved in db
-		- Messages per task (like a mini watsapp)
-		- A given task can be assigned to multiple persons, and one of them has to take it
+        5. Messages per task (like a mini watsapp
+        4. A given task can be assigned to multiple persons, and one of them has to take it
+        1. The creator user can delete the given task
+        3. Have sticky notes per user/task (choose one of the 2)
+        2. Send mails when approaching the deadline or when task deleted
