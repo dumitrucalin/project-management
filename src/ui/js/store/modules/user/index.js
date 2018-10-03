@@ -14,10 +14,12 @@ module.exports = {
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
-		users: null,
+		usernames: null,
 		tasks: null,
-		groupName: '',
-		workingGroupName: null
+		taskModified: null
+	},
+	data: {
+		groupName: ''
 	},
 	getters: {
 		token(state) {
@@ -26,11 +28,17 @@ module.exports = {
 		user(state) {
 			return state.user;
 		},
-		users(state){
-			return state.users;
+		usernames(state){
+			return state.usernames;
 		},
 		tasks(state) {
 			return state.tasks;
+		},
+		groupName(state) {
+			return state.groupName;
+		},
+		tasksModified(state) {
+			return state.taskModified;
 		}
 	},
 	actions: {
@@ -80,7 +88,6 @@ module.exports = {
 		},
 		async getUser(store) {
 			try {
-				console.log(store.state.token);
 				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
@@ -142,7 +149,7 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/users/get', groupName);
 				if (response.data.err === 0) {
-					store.commit ('users', response.data.users);
+					store.commit ('usernames', response.data.users);
 					return response.data.users;
 				}
 				return null;
@@ -150,52 +157,18 @@ module.exports = {
 				return null;
 			}
 		},
-		async updateTasksOnce(store, userInfo) {
+		checkTasks(userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
-				groupName: userInfo.groupName
 			};
-			this.groupName = userInfo.groupName;
-
-			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
-			if (response.data.err === 0) {
-				let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
-				store.commit ('tasks', response.data.tasks);
-			} else {
-				// TODO: TOAST
-			}
-		},
-		async updateTasksContinue(store, userInfo) {
-			var taskInfo = {
-				username: userInfo.username,
-				groupName: userInfo.groupName
-			};
-			console.log(taskInfo.groupName);
-			console.log(userInfo.groupName);
-
-			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
-			if (response.data.err === 0) {
-				let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
-				store.commit ('tasks', response.data.tasks);
-			} else {
-				// TODO: TOAST
-			}
 
 			setInterval( async function() {
-				taskInfo.groupName = userInfo.groupName;
-				console.log(userInfo.groupName);
-				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
-				if (response.data.err === 0) {
-					if (response.data.tasksModified) {
-						let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
-						store.commit ('tasks', response.data.tasks);
-						console.log(response.data.tasks);
-					}
-				} else {
-					// TODO: TOAST
-				}
-			}, 5000);
+				await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+			}, 1000);
 		},
+		console() {
+			console.log('mama');
+		}
 	},
 	mutations: {
 		token(state, value) {
@@ -210,11 +183,17 @@ module.exports = {
 		user(state, value) {
 			state.user = value;
 		},
-		users(state, value) {
-			state.users = value;
+		usernames(state, value) {
+			state.usernames = value;
 		},
 		tasks(state, value) {
 			state.tasks = value;
+		},
+		groupName(state, value) {
+			state.groupName = value;
+		},
+		tasksModified(state, value) {
+			state.tasksModified = value;
 		}
 	}
 };

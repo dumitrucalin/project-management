@@ -66,8 +66,6 @@ module.exports = {
 	methods: {
 		changeDeadline: function() {
 			this.checkboxDeadline = !this.checkboxDeadline;
-			console.log(this.users);
-			
 		},
 		changeStatus: function() {
 			this.checkboxStatus = !this.checkboxStatus;
