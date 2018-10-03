@@ -14,6 +14,7 @@ module.exports = {
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
+		users: null,
 		tasks: null,
 		workingGroupName: null
 	},
@@ -23,6 +24,9 @@ module.exports = {
 		},
 		user(state) {
 			return state.user;
+		},
+		users(state){
+			return state.users;
 		},
 		tasks(state) {
 			return state.tasks;
@@ -133,6 +137,18 @@ module.exports = {
 				return false;
 			}
 		},
+		async getUsers(store,groupName) {
+			try {
+				let response = await Vue.http.post(setup.API + '/groups/users/get', groupName);
+				if (response.data.err === 0) {
+					store.commit ('users', response.data.users);
+					return response.data.users;
+				}
+				return null;
+			} catch (e) {
+				return null;
+			}
+		},
 		async updateTasks(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
@@ -141,11 +157,9 @@ module.exports = {
 
 			let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
 			if (response.data.err === 0) {
-				if (response.data.tasksModified) {
-					let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
-					store.commit ('tasks', response.data.tasks);
-					console.log(response.data.tasks);
-				}
+				let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+				store.commit ('tasks', response.data.tasks);
+				console.log(response.data.tasks);
 			} else {
 				// TODO: TOAST
 			}
@@ -176,6 +190,9 @@ module.exports = {
 		},
 		user(state, value) {
 			state.user = value;
+		},
+		users(state, value) {
+			state.users = value;
 		},
 		tasks(state, value) {
 			state.tasks = value;

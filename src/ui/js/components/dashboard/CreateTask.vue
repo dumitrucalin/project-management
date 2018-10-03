@@ -11,13 +11,13 @@
 				<textarea name="message" rows="10" cols="30" v-model="taskString">Input your task.</textarea>
 			</div>
 				<form id="options">
-					<select v-model="groupName">
-					<div>Group</div><option v-for="(item, index) in this.user.groupNames" :key="index" :value="item">{{item}}</option>
+					<select v-model="groupName" @click="getUsers()">
+					<div>Group</div><option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{item}}</option>
 					</select><br>
 
-					<div class="form-group" v-if="groupName">
-						<input id="user-Rec" type="text" class="form-control input-sm chat-input"  placeholder="Designated User" v-model="usernameReceiver" />
-					</div>
+					<select v-if="groupName" v-model="usernameReceiver" >
+						<option v-for="(user,index) in this.users" :key=index :value="user">{{user}}</option>
+					</select>
 
 					<div>DeadLine</div><input type="checkbox" @click="changeDeadline()">
 					<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
@@ -51,25 +51,22 @@ module.exports = {
 			taskName:'',
 			taskString:'',
 			taskPriority:'',
+			users:[],
 
 		};
 	},
 
 	computed: {
 		...mapGetters ({
-			user: 'user/user'
-		})
+			user: 'user/user',
+		}),
+		
 	},
 
 	methods: {
 		changeDeadline: function() {
 			this.checkboxDeadline = !this.checkboxDeadline;
-			console.log(this.user.username);
-			console.log(this.usernameReceiver);
-			console.log(this.groupName);
-			console.log(this.taskName);
-			console.log(this.taskString);
-			console.log(this.taskPriority);
+			console.log(this.users);
 			
 		},
 		changeStatus: function() {
@@ -85,7 +82,13 @@ module.exports = {
 				taskPriority:this.taskPriority,
 			});
 		},
-	}
+		async getUsers(){
+			let users = await this.$store.dispatch('user/getUsers',{
+				groupName:this.groupName,
+			});
+			this.users=users;
+		}
+	},
 };
 
 </script>

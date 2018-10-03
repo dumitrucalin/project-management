@@ -75,9 +75,9 @@ module.exports = {
 			this.createTaskView = false;
 			this.taskListView = true;
 		},
-		// changeGroup: function() {
-		// 	await this.$store.dispatch('settings/redirect', 'DASHBOARD', this.group);
-		// }
+		/*changeGroup: function() {
+			await this.$store.dispatch('settings/redirect', 'DASHBOARD', this.group);
+		},*/
 	},
 
 	computed: {

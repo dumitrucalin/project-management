@@ -44,6 +44,7 @@ module.exports = {
 
 	methods: {
 		async submitGroup(){
+			this.groupUsers.push(this.user.username);
 			await this.$store.dispatch ('user/sendGroup', {
 				groupName:this.groupName,//unic groupname request la server await. if not notify
 				usernames:this.groupUsers,//alfanumeric
