@@ -113,4 +113,11 @@ privateApp.post('/user/delete', async function (req, res) {
 	}
 });
 
+privateApp.post('/users/get', async function (req, res) {
+	var groupName = req.body.groupName;
+
+	var users = await db.group.findUsers(groupName);
+	res.status(200).send({ err: 0, users: users });
+});
+
 module.exports.privateRoutes = privateApp;

@@ -13,5 +13,6 @@ TODO:
 		- Implement with redis -> put in npm install
 
 	IDEAS:
+		- Desired group to open at login saved in db
 		- Messages per task (like a mini watsapp)
 		- A given task can be assigned to multiple persons, and one of them has to take it

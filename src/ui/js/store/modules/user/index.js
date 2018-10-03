@@ -79,11 +79,11 @@ module.exports = {
 				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
-					return true;
+					return response.data.user;
 				}
-				return false;
+				return null;
 			} catch (e) {
-				return false;
+				return null;
 			}
 		},
 		async updateUser(store) {
@@ -147,7 +147,7 @@ module.exports = {
 					console.log(response.data.tasks);
 				}
 			} else {
-				return;
+				// TODO: TOAST
 			}
 
 			setInterval( async function() {
@@ -159,7 +159,7 @@ module.exports = {
 						console.log(response.data.tasks);
 					}
 				} else {
-					return;
+					// TODO: TOAST
 				}
 			}, 5000);
 		},

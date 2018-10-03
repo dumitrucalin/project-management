@@ -44,7 +44,7 @@ module.exports = {
 		};
 	},
 
-	components:{
+	components: {
 		CreateGroup,
 		CreateTask,
 		TaskList,
