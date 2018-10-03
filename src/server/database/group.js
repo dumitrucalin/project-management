@@ -69,12 +69,12 @@ function createUsers(groupName, usernames) {
 	return Group.updateOne({ groupName: groupName }, { $set: updatedUsers });
 }
 
-function deleteUsers(groupName, username) {
-	return Group.updateOne({ groupName: groupName }, { $unset: { ['users.' + username]: {} } });
-}
-
 function findUsers(groupName) {
 	return Group.findOne({ groupName: groupName });
+}
+
+function deleteUsers(groupName, username) {
+	return Group.updateOne({ groupName: groupName }, { $unset: { ['users.' + username]: {} } });
 }
 
 function setTasksStatus(groupName, username, tasksStatus) {

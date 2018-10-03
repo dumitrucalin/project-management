@@ -116,8 +116,14 @@ privateApp.post('/user/delete', async function (req, res) {
 privateApp.post('/users/get', async function (req, res) {
 	var groupName = req.body.groupName;
 
-	var users = await db.group.findUsers(groupName);
-	res.status(200).send({ err: 0, users: users });
+	var group = await db.group.findUsers(groupName);
+	if (group) {
+		var users = Object.keys(group.users);
+		return res.status(200).send({ err: 0, users: users });
+	} else {
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+	}
 });
 
 module.exports.privateRoutes = privateApp;
