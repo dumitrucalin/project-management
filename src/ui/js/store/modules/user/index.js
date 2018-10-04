@@ -133,7 +133,6 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
-					store.commit('user', response.data.user);
 					return true;
 				} else {
 					return false;//bootsrap notify
