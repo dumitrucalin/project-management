@@ -15,6 +15,9 @@ privateApp.post('/create', async function(req, res) {
 	var taskName = req.body.taskName;
 	var taskString = req.body.taskString;
 	var taskPriority = req.body.taskPriority;
+	// var taskDeadline = req.body.taskDeadline;
+	// var taskStatus = req.body.taskStatus;
+	// var showStatus = req.body.showStatus;
 
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {

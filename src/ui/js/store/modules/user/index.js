@@ -11,6 +11,7 @@ Vue.http.interceptors.push(function(request, next) {
 
 module.exports = {
 	namespaced: true,
+
 	state: {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
@@ -19,9 +20,11 @@ module.exports = {
 		showTasks: false,
 		groupName: null
 	},
+
 	data: {
 		intervalStatus: null
 	},
+
 	getters: {
 		token(state) {
 			return state.token;
@@ -42,6 +45,7 @@ module.exports = {
 			return state.groupName;
 		}
 	},
+
 	actions: {
 		async login(store, credentials) {
 			try {
@@ -120,6 +124,15 @@ module.exports = {
 				return false;//bootsrap notify
 			}
 		},
+		async updateUserInfo(store, userInfo) {
+			let response = await Vue.http.post(setup.API + '/users/update', userInfo);
+			if (response.data.err === 0) {
+				store.commit ('user', response.data.user);
+				return true;
+			} else {
+				return null;
+			}
+		},
 		async sendGroup(store, groupInfo) {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/create', groupInfo);
@@ -134,9 +147,11 @@ module.exports = {
 			}
 		},
 		async sendTask(store, taskInfo) {
+			console.log(taskInfo);
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
+					console.log('got it');
 					return true;
 				} else {
 					return false;//bootsrap notify
@@ -149,12 +164,12 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/users/get', groupName);
 				if (response.data.err === 0) {
-					store.commit ('usernames', response.data.users);
-					return response.data.users;
+					store.commit ('usernames', response.data.usernames);
+					return true;
 				}
-				return null;//bootsrap notify
+				return false;//bootsrap notify
 			} catch (e) {
-				return null;//bootsrap notify
+				return false;//bootsrap notify
 			}
 		},
 		async deleteUserFromGroup(deleteInfo) {
@@ -211,6 +226,7 @@ module.exports = {
 			store.commit('showTasks', viewTasks);
 		}
 	},
+	
 	mutations: {
 		token(state, value) {
 			if (value !== null) {

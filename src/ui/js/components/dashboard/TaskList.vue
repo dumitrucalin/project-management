@@ -1,8 +1,10 @@
 <template>
 	<div>
+		<select v-if="user.groupNames.length" v-model="groupName" selected="selected">{{ user.groupNames[0] }}
+			<option v-for="(groupNameIndex, index) in user.groupNames" :key=index >{{ groupNameIndex }}</option>
+		</select>
 		<div v-if="showTasks">
 			<div v-if="tasks" class="taskList">
-				<!-- to choose the group input here something: the variable is groupName -->
 				<p>This is the Task View</p>
 				<p>Hello Tasker mister fucker mother you</p>
 				<div>
@@ -34,6 +36,7 @@
 							<td>{{task.taskString}}</td>
 							<td>{{task.usernameReceiver}}</td>
 							<td>{{task.taskPriority}}</td>
+							<td><button @click="deleteTask(task.taskId)">X</button></td>
 						</tr>
 					</table>
 				</div>
@@ -57,12 +60,33 @@ module.exports = {
 		return {
 			loadingSize: 20,
 			loadingColor: '#0000ff',
-			loadingDuration: 1500
+			loadingDuration: 1500,
+
+			groupName: ''
 		};
 	},
 
 	components: {
 		Loading
+	},
+
+	watch: {
+		groupName: async function() {
+			var taskView = true;
+			await this.$store.dispatch ('user/setGroupName', this.groupName);
+			await this.$store.dispatch ('user/changeTasksView', taskView);
+			var user = await this.$store.dispatch('user/getUser');
+			if (user !== null) {
+				await this.$store.dispatch('user/stopCheckTasksStatus');
+
+				this.userInfo = {
+					username: user.username,
+					groupName: this.groupName
+				};
+
+				await this.$store.dispatch ('user/checkTasksStatus', this.userInfo);
+			}
+		}
 	},
 
 	methods: {

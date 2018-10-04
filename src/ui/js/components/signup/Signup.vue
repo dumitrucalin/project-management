@@ -16,6 +16,7 @@
 
 var validator = require('validator');
 var Vue = require('vue');
+
 module.exports = {
 	name: 'Signup',
 	data() {

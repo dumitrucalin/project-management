@@ -11,25 +11,31 @@
 				<textarea name="message" rows="10" cols="30" v-model="taskString">Input your task.</textarea>
 			</div>
 				<form id="options">
-					<select v-model="groupName" @click="getUsers()">
+					<select v-model="groupName">
 						<div>Group</div>
 						<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{item}}</option>
 					</select><br>
 
 					<select v-if="groupName" v-model="usernameReceiver" >
-						<option v-for="(user,index) in this.users" :key=index :value="user">{{user}}</option>
+						<option v-for="(username,index) in this.usernames" :key=index :value="username">{{username}}</option>
 					</select>
 
-					<div>DeadLine</div><input type="checkbox" @click="changeDeadline()">
+					<div>DeadLine</div>
+					<input type="checkbox" @click="this.checkboxDeadline = !this.checkboxDeadline;">
 					<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
 
-					<div>Status</div><input type="checkbox" @click="changeStatus()">
-					<select v-if="checkboxStatus" v-model="taskPriority">
+					<div>Priority</div>
+					<input type="checkbox" @click="this.checkboxPriority = !this.checkboxPriority;">
+					<select v-if="checkboxPriority" v-model="taskPriority">
 						<option name="Urgent" value="urgent">Urgent</option>
 						<option name="Moderate" value="moderate">Moderate</option>
 						<option name="At leisure" value="atLeisure">At leisure</option>
 					</select>
-					<button type="reset" @click="submitTask">Create Task</button>
+
+					<div>Status</div>
+					<input type="checkbox" @click="this.changeStatus = !this.changeStatus;">
+
+					<button @click="submitTask">Create Task</button>
 				</form>
 		</form>
 	</div>
@@ -45,15 +51,16 @@ module.exports = {
 	
 	data() {
 		return {
-			checkboxStatus: false,
+			checkboxPriority: false,
 			checkboxDeadline: false,
-			usernameCreator:'',
-			usernameReceiver:'',
-			groupName:'',
-			taskName:'',
-			taskString:'',
-			taskPriority:'',
-			users:[],
+
+			usernameReceiver: '',
+			groupName: '',
+			taskName: '',
+			taskString: '',
+			taskPriority: '',
+			taskStatus: false,
+
 			groupNameNotify: {
 				title: 'The group field is needed',
 				message: 'You must select you group',
@@ -81,17 +88,12 @@ module.exports = {
 	computed: {
 		...mapGetters ({
 			user: 'user/user',
+			usernames: 'user/usernames'
 		}),
 		
 	},
 
 	methods: {
-		changeDeadline: function() {
-			this.checkboxDeadline = !this.checkboxDeadline;
-		},
-		changeStatus: function() {
-			this.checkboxStatus = !this.checkboxStatus;
-		},
 		async submitTask(){
 			if(this.taskName)
 			{	
@@ -102,12 +104,12 @@ module.exports = {
 						if(this.usernameReceiver)
 						{
 							await this.$store.dispatch ('user/sendTask', {
-								usernameCreator:this.user.username,
-								usernameReceiver:this.usernameReceiver,//must exist
-								groupName:this.groupName,//musts exist
-								taskName:this.taskName,//must exist
-								taskString:this.taskString,//must exist
-								taskPriority:this.taskPriority,
+								usernameCreator: this.user.username,
+								usernameReceiver: this.usernameReceiver,//must exist
+								groupName: this.groupName,//musts exist
+								taskName: this.taskName,//must exist
+								taskString: this.taskString,//must exist
+								taskPriority: this.taskPriority,
 							});
 							await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 						} else {
@@ -124,13 +126,15 @@ module.exports = {
 			}
 			
 		},
-		async getUsers(){
-			let users = await this.$store.dispatch('user/getUsers',{
-				groupName:this.groupName,
-			});
-			this.users=users;
-		}
+
 	},
+	watch: {
+		groupName: async function() {
+			await this.$store.dispatch('user/getUsers',{
+				groupName: this.groupName,
+			});
+		}
+	}
 };
 
 </script>

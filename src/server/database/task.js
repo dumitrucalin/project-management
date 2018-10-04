@@ -17,14 +17,20 @@ var taskSchema = mongoose.Schema({
 		required: true
 	},
 	taskDeadline: {
-		type: Date
+		type: Date,
+		// required: true
+	},
+	showStatus: {
+		type: Boolean,
+		// required: true
 	},
 	taskStatus: {
-		type: String
+		type: String,
+		// required: true
 	},
 	taskPriority: {
 		type: String, 
-		required: true
+		// required: true
 	},
 	usernameReceiver: {
 		type: String,

@@ -7,13 +7,14 @@
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<select v-model="groupName" ><!--v-if="this.groupName.length !== 0"-->
-					<option v-for="(groupNameIndex, index) in user.groupNames" :key=index >{{groupNameIndex}}</option>
-				</select><button type="button" @click="exitGroup">Leave Group</button>
+				<button class="submitButton" name="Submit" value="Settings" @click="settings">Settings</button>
+				<button v-if="user.groupNames.length" type="button" @click="exitGroup">Leave Group</button>
 			</div>
-			<CreateGroup v-if="createGroupView"></CreateGroup>
-			<CreateTask v-if="createTaskView"></CreateTask>
-			<TaskList v-if="taskListView"></TaskList>
+
+			<Settings v-if="settingsView" />
+			<CreateGroup v-if="createGroupView" />
+			<CreateTask v-if="createTaskView" />
+			<TaskList v-if="taskListView" />
 
 			<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
 		</div>
@@ -27,6 +28,7 @@
 
 var mapGetters = require ('vuex').mapGetters;
 var Loading = require ('../Loading.vue');
+var Settings = require('../dashboard/Settings.vue');
 var CreateGroup = require('../dashboard/CreateGroup.vue');
 var CreateTask = require('../dashboard/CreateTask.vue');
 var TaskList = require('../dashboard/TaskList.vue');
@@ -40,11 +42,11 @@ module.exports = {
 			loadingColor: '#0000ff',
 			loadingDuration: 1500,
 			
+			settingsView: false,
 			createGroupView: false,
 			createTaskView: false,
 			taskListView: true,
 
-			groupName: '',
 			userInfo:{
 				username:'',
 				groupName:'',
@@ -53,6 +55,7 @@ module.exports = {
 	},
 
 	components: {
+		Settings,
 		CreateGroup,
 		CreateTask,
 		TaskList,
@@ -77,46 +80,35 @@ module.exports = {
 			this.createGroupView = true;
 			this.createTaskView = false;
 			this.taskListView = false;
+			this.settingsView = false;
 		},
 		createTask: function() {
 			this.createGroupView = false;
 			this.createTaskView = true;
 			this.taskListView = false;
+			this.settingsView = false;
 		},
 		taskList: function() {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = true;
+			this.settingsView = false;
+		},
+		settings: function() {
+			this.createGroupView = false;
+			this.createTaskView = false;
+			this.taskListView = false;
+			this.settingsView = true;
 		},
 		logIt:function(){
 			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
-		},
-		
+		},	
 	},
 
 	computed: {
 		...mapGetters ({
 			user: 'user/user'
 		})
-	},
-
-	watch: {
-		groupName: async function() {
-			var taskView = true;
-			await this.$store.dispatch ('user/setGroupName', this.groupName);
-			await this.$store.dispatch ('user/changeTasksView', taskView);
-			var user = await this.$store.dispatch('user/getUser');
-			if (user !== null) {
-				await this.$store.dispatch('user/stopCheckTasksStatus');
-
-				this.userInfo = {
-					username: user.username,
-					groupName: this.groupName
-				};
-
-				await this.$store.dispatch ('user/checkTasksStatus', this.userInfo);
-			}
-		}
 	},
 
 	async created() {
