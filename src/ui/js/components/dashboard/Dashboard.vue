@@ -41,6 +41,8 @@ module.exports = {
 			createGroupView: false,
 			createTaskView: false,
 			taskListView: true,
+
+			groupName: ''
 		};
 	},
 
@@ -87,29 +89,21 @@ module.exports = {
 		groupName: async function() {
 			var user = await this.$store.dispatch('user/getUser');
 			if (user !== null) {
-				await this.$store.commit('groupName', this.groupName);
-				// var userInfo = {
-				// 	username: user.username,
-				// };
-				// await this.$store.dispatch ('user/updateTasks', userInfo);
+				await this.$store.dispatch('user/stopCheckTasksStatus');
+
+				var userInfo = {
+					username: user.username,
+					groupName: this.groupName
+				};
+
+				await this.$store.dispatch ('user/checkTasksStatus', userInfo);
 			}
 		}
 	},
 
 	async created() {
 		var user = await this.$store.dispatch ('user/getUser');
-		if (user !== null) {
-			await this.$store.commit('groupName', user.groupNames[0]);
-
-			// var userInfo = {
-			// 	username: user.username,
-			// };
-			// await this.$store.dispatch ('user/updateTasks', userInfo);
-			// await this.$store.dispatch ('user/checkTasks', userInfo);
-			setInterval( async function() {
-				await this.$store.dispatch ('user/console');
-			}, 1000);
-		}
+		this.groupName = user.groupNames[0];
 	}
 };
 

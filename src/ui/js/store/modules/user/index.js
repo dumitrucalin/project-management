@@ -15,11 +15,10 @@ module.exports = {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
 		usernames: null,
-		tasks: null,
-		taskModified: null
+		tasks: null
 	},
 	data: {
-		groupName: ''
+		intervalStatus: null
 	},
 	getters: {
 		token(state) {
@@ -33,12 +32,6 @@ module.exports = {
 		},
 		tasks(state) {
 			return state.tasks;
-		},
-		groupName(state) {
-			return state.groupName;
-		},
-		tasksModified(state) {
-			return state.taskModified;
 		}
 	},
 	actions: {
@@ -145,7 +138,7 @@ module.exports = {
 				return false;
 			}
 		},
-		async getUsers(store,groupName) {
+		async getUsers(store, groupName) {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/users/get', groupName);
 				if (response.data.err === 0) {
@@ -157,17 +150,34 @@ module.exports = {
 				return null;
 			}
 		},
-		checkTasks(userInfo) {
+		async checkTasksStatus(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,
+				groupName: userInfo.groupName
 			};
 
-			setInterval( async function() {
-				await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+			let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
+
+			if (response.data.err === 0) {
+				store.commit ('tasks', response.data.tasks);
+			}
+
+			this.intervalStatus = setInterval( async function() {
+				let response = await Vue.http.post(setup.API + '/tasks/status/get', taskInfo);
+
+				if (response.data.err === 0) {
+					if (response.data.tasksModified) {
+						let response = await Vue.http.post(setup.API + '/tasks/get');
+						store.commit('tasks', response.data.tasks);
+						console.log(response.data.tasks);
+					}
+				} else {
+					// TODO: TOAST
+				}
 			}, 1000);
 		},
-		console() {
-			console.log('mama');
+		stopCheckTasksStatus() {
+			clearInterval(this.intervalStatus);
 		}
 	},
 	mutations: {
@@ -188,12 +198,6 @@ module.exports = {
 		},
 		tasks(state, value) {
 			state.tasks = value;
-		},
-		groupName(state, value) {
-			state.groupName = value;
-		},
-		tasksModified(state, value) {
-			state.tasksModified = value;
 		}
 	}
 };
