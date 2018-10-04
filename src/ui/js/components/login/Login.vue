@@ -72,21 +72,18 @@ module.exports = {
 					if (login)
 						await this.$store.dispatch ('settings/redirect', this.next);
 					else {
-						console.log('Incorrect credentials');
-						Vue.toast.customToast(this.wrongLogIn);
 						this.username = '';
 						this.password = '';
+						Vue.toast.customToast(this.wrongLogIn);
 					}
 				} else {
 					this.username = '';
 					this.password = '';
-					console.log('Password contains invalid characters');
 					Vue.toast.customToast(this.wrongPassword);
 				}
 			} else {
 				this.username = '';
 				this.password = '';
-				console.log('Username contains invalid characters');
 				Vue.toast.customToast(this.wrongUsername);
 			}
 		},

@@ -26,12 +26,6 @@ new Vue({
 			if (user === null) {
 				await this.$store.dispatch ('user/deleteToken');
 				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
-			} else {
-				var userInfo = {
-					username: user.username,
-					groupName: user.groupNames[0]
-				};
-				await this.$store.dispatch ('user/updateTasks', userInfo);
 			}
 		}
 	}

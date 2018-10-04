@@ -74,23 +74,19 @@ module.exports = {
 						} else {
 							this.password = '';
 							this.confirmPassword = '';
-							console.log('The passwords do not match');
 							Vue.toast.customToast(this.matchingPasswords);
 						}
 					} else {
 						this.email = '';
-						console.log('That is not an email');
 						Vue.toast.customToast(this.notEmail);
 					}
 				} else {
 					this.password = '';
 					this.confirmPassword = '';
-					console.log('Password contains invalid characters');
 					Vue.toast.customToast(this.wrongPassword);
 				}
 			} else {
 				this.username = '';
-				console.log('Username contains invalid characters');
 				Vue.toast.customToast(this.wrongUsername);
 			}
 		},

@@ -6,9 +6,11 @@ TODO:
 		- To access the given tasks, you have to console.log the response.data.tasks, and then you will see the structure
 		- Regex and fail safes for create group page + bootstrap notify
 		- Send the selected group from dashboard.vue to dashboard.js through reload and URL
+		- https://stackoverflow.com/questions/41501920/is-it-possible-to-trigger-a-function-upon-a-vue-data-element-change (cu porcaria asta o sa facem reload-ul de task-uri in functie de grupul selectat)
+		- Check the order of loads of the tasks and the user
+		- The tasksUpdate function shoul not be call again, and it's variable should be taken from the sotre maybe
 
 	SERVER:
-		- Route to send the users from a specifc group
 		- Try/catch ?
 		- Implement token with redis
 

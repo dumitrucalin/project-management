@@ -1,8 +1,9 @@
 <template>
 	<div>
 		<div v-if="tasks" class="taskList">
+			<!-- to choose the group input here something: the variable is groupName -->
 			<p>This is the Task View</p>
-			<p @click="showTasks">Hello Tasker mister fucker mother you</p>
+			<p>Hello Tasker mister fucker mother you</p>
 			<div>
 				Tasks Received
 				<ul>
@@ -13,7 +14,7 @@
 						<p>{{task.taskPriority}}</p>
 					</li>
 				</ul>
-				<br><br>Tasks Given
+				<br>Tasks Given
 				<ul>
 					<li v-for="(task,index) in this.tasks.tasksGiven" :key=index>
 						<h3>{{task.taskName}}</h3>
@@ -42,17 +43,12 @@ module.exports = {
 		return {
 			loadingSize: 20,
 			loadingColor: '#0000ff',
-			loadingDuration: 1500,
+			loadingDuration: 1500
 		};
 	},
 
 	components: {
 		Loading
-	},
-	methods:{
-		showTasks(){
-			console.log(this.tasks);
-		}
 	},
 
 	computed: {
