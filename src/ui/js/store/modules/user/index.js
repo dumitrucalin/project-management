@@ -16,7 +16,8 @@ module.exports = {
 		user: null,
 		usernames: null,
 		tasks: null,
-		showTasks: false
+		showTasks: false,
+		groupName: null
 	},
 	data: {
 		intervalStatus: null
@@ -36,6 +37,9 @@ module.exports = {
 		},
 		showTasks(state) {
 			return state.showTasks;
+		},
+		groupName(state) {
+			return state.groupName;
 		}
 	},
 	actions: {
@@ -179,6 +183,16 @@ module.exports = {
 				}
 			}, 1000);
 		},
+		async deleteTask(store, taskId) {
+			var groupName = store.getters['groupName'];
+			let response = await Vue.http.post(setup.API + '/tasks/exist', {taskId});
+			if (response.data.err === 0) {
+				await Vue.http.post(setup.API + '/tasks/delete', {taskId, groupName});
+			}
+		},
+		setGroupName(store, groupName) {
+			store.commit('groupName', groupName);
+		},
 		stopCheckTasksStatus() {
 			clearInterval(this.intervalStatus);
 		},
@@ -207,6 +221,9 @@ module.exports = {
 		},
 		showTasks(state, value) {
 			state.showTasks = value;
+		},
+		groupName(state, value) {
+			state.groupName = value;
 		}
 	}
 };
