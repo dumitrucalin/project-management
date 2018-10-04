@@ -28,8 +28,8 @@
 						<option name="Moderate" value="moderate">Moderate</option>
 						<option name="At leisure" value="atLeisure">At leisure</option>
 					</select>
+					<button type="reset" @click="submitTask">Create Task</button>
 				</form>
-			<button type="button" @click="submitTask">Create Task</button>
 		</form>
 	</div>
 </template>
