@@ -84,6 +84,10 @@ module.exports = {
 		...mapGetters ({
 			user: 'user/user'
 		})
+	},
+
+	created() {
+		console.log('maaaaaaa');
 	}
 };
 
