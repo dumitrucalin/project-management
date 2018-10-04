@@ -80,7 +80,7 @@ module.exports = {
 			this.taskListView = true;
 		},
 		logIt:function(){
-			console.log(this.groupName);
+			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
 		}
 	},
 

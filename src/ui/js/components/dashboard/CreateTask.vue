@@ -29,7 +29,7 @@
 						<option name="At leisure" value="atLeisure">At leisure</option>
 					</select>
 				</form>
-			<button type="submit" @click="submitTask">Create Task</button>
+			<button type="button" @click="submitTask">Create Task</button>
 		</form>
 	</div>
 </template>
@@ -37,6 +37,7 @@
 <script>
 
 var mapGetters = require ('vuex').mapGetters;
+var Vue = require('vue');
 
 module.exports = {
 	name: 'CreateTask',
@@ -52,6 +53,26 @@ module.exports = {
 			taskString:'',
 			taskPriority:'',
 			users:[],
+			groupNameNotify: {
+				title: 'The group field is needed',
+				message: 'You must select you group',
+				type: 'warning'
+			},
+			taskNameNotify: {
+				title: 'The task name field is needed',
+				message: 'You must write your task name',
+				type: 'warning'
+			},
+			taskStringNotify: {
+				title: 'The task body field is needed',
+				message: 'You must write something in your task',
+				type: 'warning'
+			},
+			usernameReceiverNotify: {
+				title: 'The user reciever field is needed',
+				message: 'You must select the recieving user',
+				type: 'warning'
+			},
 
 		};
 	},
@@ -71,14 +92,40 @@ module.exports = {
 			this.checkboxStatus = !this.checkboxStatus;
 		},
 		async submitTask(){
-			await this.$store.dispatch ('user/sendTask', {
-				usernameCreator:this.user.username,
-				usernameReceiver:this.usernameReceiver,//must exist
-				groupName:this.groupName,//musts exist
-				taskName:this.taskName,//must exist
-				taskString:this.taskString,//must exist
-				taskPriority:this.taskPriority,
-			});
+			if(this.taskName)
+			{	
+				if(this.taskString)
+				{
+					if(this.groupName)
+					{
+						if(this.usernameReceiver)
+						{
+							await this.$store.dispatch ('user/sendTask', {
+								usernameCreator:this.user.username,
+								usernameReceiver:this.usernameReceiver,//must exist
+								groupName:this.groupName,//musts exist
+								taskName:this.taskName,//must exist
+								taskString:this.taskString,//must exist
+								taskPriority:this.taskPriority,
+							});
+							this.usernameReceiver='';
+							this.groupName='';
+							this.taskName='';
+							this.taskString='';
+							this.taskPriority='';
+						} else {
+							Vue.toast.customToast(this.usernameReceiverNotify);
+						}
+					} else {
+						Vue.toast.customToast(this.groupNameNotify);
+					}
+				} else {
+					Vue.toast.customToast(this.taskStringNotify);
+				}
+			} else {
+				Vue.toast.customToast(this.taskNameNotify);
+			}
+			
 		},
 		async getUsers(){
 			let users = await this.$store.dispatch('user/getUsers',{
