@@ -63,7 +63,7 @@ module.exports = {
 			});
 		},
 		addUserG:function(){
-			if(this.groupUsers.contains(this.userNameGroup)) {
+			if(!this.groupUsers.includes(this.userNameGroup) || this.userNameGroup === this.user.username) {
 				if (validator.isAlphanumeric(this.userNameGroup, ['en-US'])) { 
 					this.groupUsers.push(this.userNameGroup);//ruta daca exista
 					this.userNameGroup='';
