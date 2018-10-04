@@ -88,6 +88,25 @@ privateApp.post('/logout', async function(req, res) {
 	}
 });
 
+privateApp.post('/update', async function(req, res) {
+	var username = req.body.username;
+	if (req.body.fullName)
+		var fullName = req.body.fullName;
+
+	if (req.body.email)
+		var email = req.body.email;
+
+	var user = await db.user.findByUsername(username);
+
+	if (user) {
+		var updatedUser = await db.user.edit(username, email, fullName);
+		return res.status(200).send({ err: 0, user: updatedUser });
+	} else {
+		debug('The user ' + username + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
+	}
+});
+
 privateApp.get('/get', async function(req, res) {
 	debug('Searching for user with a token');
 	var user = await db.user.findByToken(req.token);
@@ -98,6 +117,17 @@ privateApp.get('/get', async function(req, res) {
 	} else {
 		debug('Couldn\'t find the given token');
 		return res.status(200).send({ err: 1, message: 'Couldn\'t find the user with the given token!' });
+	}
+});
+
+privateApp.post('/check/name', async function (req, res) {
+	var username = req.body.username;
+
+	var user = await db.user.findByUsername(username);
+	if (user) {
+		return res.status(200).send({ err: 0 });
+	} else {
+		return res.status(200).send({ err: 1, message: 'Username ' + username + ' doesn\'t exist!' });
 	}
 });
 

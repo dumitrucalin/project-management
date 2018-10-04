@@ -91,16 +91,15 @@ function listUsers() {
 	return User.find();
 }
 
-async function edit(username, email, fullName) {
-	var userUpdated = {};
+function edit(username, email, fullName) {
+	var updatedUser = {};
 	if (email) {
-		userUpdated.email = email;
+		updatedUser.email = email;
 	}
 	if (fullName) {
-		userUpdated.fullName = fullName;
+		updatedUser.fullName = fullName;
 	}
-	let ret = await User.updateOne({ username: username }, { $set: userUpdated });
-	return ret;
+	return User.updateOne({ username: username }, { $set: updatedUser });
 }
 
 function setPassword(username, password) {

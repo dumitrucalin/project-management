@@ -126,7 +126,7 @@ privateApp.post('/delete', async function(req, res) {
 			await db.group.setTasksStatus(groupName, task.usernameCreator, true);
 			await db.group.setTasksStatus(groupName, task.usernameReceiver, true);
 			debug('Task deleted');
-			return res.status(200).send({err:0});
+			return res.status(200).send({ err:0 });
 		} else {
 			debug('There is no task with that id');
 			return res.status(200).send({ err: 1, message: 'The task with the given ID doesn\'t exist!' });
@@ -134,6 +134,17 @@ privateApp.post('/delete', async function(req, res) {
 	} else {
 		debug('The group ' + groupName + ' doesn\'t exist');
 		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+	}
+});
+
+privateApp.post('/exist', async function(req, res) {
+	var taskId = req.body.taskId;
+	var task = await db.task.findByTaskId(taskId);
+	if (task) {
+		return res.status(200).send({ err: 0 });
+	} else {
+		debug('The task with the given taskId doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'THe task with the given taskId doesn\' exist!' });
 	}
 });
 

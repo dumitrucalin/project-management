@@ -103,6 +103,7 @@ module.exports = {
 	watch: {
 		groupName: async function() {
 			var taskView = true;
+			await this.$store.dispatch ('user/setGroupName', this.groupName);
 			await this.$store.dispatch ('user/changeTasksView', taskView);
 			var user = await this.$store.dispatch('user/getUser');
 			if (user !== null) {

@@ -65,8 +65,22 @@ module.exports = {
 		Loading
 	},
 
+	methods: {
+		async deleteTask(taskId) {
+			await this.$store.dispatch('user/deleteTask', taskId);
+			var groupName = await this.$store.getters['user/groupName'];
+			var userInfo = {
+				username: this.user.username,
+				groupName: groupName
+			};
+			await this.$store.dispatch('user/stopCheckTasksStatus');
+			await this.$store.dispatch('user/checkTasksStatus', userInfo);
+		}
+	},
+
 	computed: {
 		...mapGetters ({
+			user: 'user/user',
 			tasks: 'user/tasks',
 			showTasks: 'user/showTasks'
 		})
