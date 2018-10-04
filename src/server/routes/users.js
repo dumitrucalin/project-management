@@ -101,6 +101,17 @@ privateApp.get('/get', async function(req, res) {
 	}
 });
 
+privateApp.post('/check/name', async function (req, res) {
+	var username = req.body.username;
+
+	var user = await db.user.findByUsername(username);
+	if (user) {
+		return res.status(200).send({ err: 0 });
+	} else {
+		return res.status(200).send({ err: 1, message: 'Username ' + username + ' doesn\'t exist!' });
+	}
+});
+
 
 module.exports.publicRoutes = publicApp;
 module.exports.security = security;

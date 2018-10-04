@@ -46,6 +46,17 @@ privateApp.post('/delete', async function(req, res) {
 	var group = await db.group.findByGroupName(groupName);
 
 	if (group) {
+		var usernames = Object.keys(group.users);
+		for (let username in usernames) {
+			var tasks = group.users[username];
+			for (let taskId of tasks.tasksGiven) {
+				await db.task.deleteTask(taskId);
+			}
+			for (let taskId of tasks.tasksReceived) {
+				await db.task.deleteTask(taskId);
+			}
+			await db.user.deleteGroup(username, groupName);
+		}
 		await db.group.deleteGroup(groupName);
 		debug('Group ' + groupName + ' deleted');
 		return res.status(200).send({err: 0});
@@ -99,6 +110,13 @@ privateApp.post('/user/delete', async function (req, res) {
 		var user = await db.user.findByUsername(username);
 
 		if (user) {
+			var tasks = group.users[username];
+			for (let taskId of tasks.tasksGiven) {
+				await db.task.deleteTask(taskId);
+			}
+			for (let taskId of tasks.tasksReceived) {
+				await db.task.deleteTask(taskId);
+			}
 			await db.group.deleteUsers(groupName, username);
 			await db.user.deleteGroup(username, groupName);
 			debug('The user ' + username + ' was deleted from the group ' + groupName);
@@ -118,11 +136,22 @@ privateApp.post('/users/get', async function (req, res) {
 
 	var group = await db.group.findUsers(groupName);
 	if (group) {
-		var users = Object.keys(group.users);
-		return res.status(200).send({ err: 0, users: users });
+		var usernames = Object.keys(group.users);
+		return res.status(200).send({ err: 0, usernames: usernames });
 	} else {
 		debug('The group ' + groupName + ' doesn\'t exist');
 		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+	}
+});
+
+privateApp.post('/check/name', async function (req, res) {
+	var groupName = req.body.groupName;
+
+	var group = await db.group.findByGroupName(groupName);
+	if (!group) {
+		return res.status(200).send({ err: 0 });
+	} else {
+		return res.status(200).send({ err: 1, message: 'Group name ' + groupName + ' already in use!' });
 	}
 });
 
