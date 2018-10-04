@@ -48,7 +48,7 @@ publicApp.post('/signup', async function(req, res) {
 
 		await db.user.createUser(username, password, fullName, email, token, groupNames);
 		debug('User ' + username + ' created');
-		return res.status(200).send({ err: 0 });
+		return res.status(200).send({ err: 0, token: token });
 	} else {
 		debug('The user ' + username + ' already exist');
 		return res.status.send({ err: 1, message: 'The user ' + username + ' already exist!' });
