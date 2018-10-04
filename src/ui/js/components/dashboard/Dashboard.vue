@@ -3,11 +3,13 @@
 		<div v-if="user">
 			<div class="dashboard">
 				<h3 @click="taskList">This is the dashboard!</h3>
-				<p>Hello {{ this.user.fullName }}</p>
+				<p @click="logIt()">Hello {{ this.user.fullName }}</p>
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<input v-model="groupName" />
+				<select v-model="groupName">
+					<option v-for="(groupNameIndex, index) in user.groupNames" :key=index >{{groupNameIndex}}</option>
+				</select>
 			</div>
 			<CreateGroup v-if="createGroupView"></CreateGroup>
 			<CreateTask v-if="createTaskView"></CreateTask>
@@ -76,6 +78,9 @@ module.exports = {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = true;
+		},
+		logIt:function(){
+			console.log(this.groupName);
 		}
 	},
 
