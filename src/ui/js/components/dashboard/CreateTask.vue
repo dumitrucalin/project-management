@@ -108,11 +108,7 @@ module.exports = {
 								taskString:this.taskString,//must exist
 								taskPriority:this.taskPriority,
 							});
-							this.usernameReceiver='';
-							this.groupName='';
-							this.taskName='';
-							this.taskString='';
-							this.taskPriority='';
+							await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 						} else {
 							Vue.toast.customToast(this.usernameReceiverNotify);
 						}

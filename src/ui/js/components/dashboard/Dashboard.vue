@@ -92,6 +92,8 @@ module.exports = {
 
 	watch: {
 		groupName: async function() {
+			var taskView = true;
+			await this.$store.dispatch ('user/changeTasksView', taskView);
 			var user = await this.$store.dispatch('user/getUser');
 			if (user !== null) {
 				await this.$store.dispatch('user/stopCheckTasksStatus');
@@ -108,7 +110,15 @@ module.exports = {
 
 	async created() {
 		var user = await this.$store.dispatch ('user/getUser');
-		this.groupName = user.groupNames[0];
+		var viewTasks = false;
+		if (user.groupNames.length !== 0) {
+			viewTasks = true;
+			await this.$store.dispatch ('user/changeTasksView', viewTasks);
+			this.groupName = user.groupNames[0];
+		} else {
+			viewTasks = false;
+			await this.$store.dispatch ('user/changeTasksView', viewTasks);
+		}
 	}
 };
 

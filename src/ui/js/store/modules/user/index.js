@@ -15,7 +15,8 @@ module.exports = {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
 		usernames: null,
-		tasks: null
+		tasks: null,
+		showTasks: false
 	},
 	data: {
 		intervalStatus: null
@@ -32,6 +33,9 @@ module.exports = {
 		},
 		tasks(state) {
 			return state.tasks;
+		},
+		showTasks(state) {
+			return state.showTasks;
 		}
 	},
 	actions: {
@@ -129,7 +133,6 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
-					store.commit('user', response.data.user);
 					return true;
 				} else {
 					return false;//bootsrap notify
@@ -178,6 +181,9 @@ module.exports = {
 		},
 		stopCheckTasksStatus() {
 			clearInterval(this.intervalStatus);
+		},
+		changeTasksView(store, viewTasks) {
+			store.commit('showTasks', viewTasks);
 		}
 	},
 	mutations: {
@@ -198,6 +204,9 @@ module.exports = {
 		},
 		tasks(state, value) {
 			state.tasks = value;
+		},
+		showTasks(state, value) {
+			state.showTasks = value;
 		}
 	}
 };
