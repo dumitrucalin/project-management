@@ -153,6 +153,17 @@ module.exports = {
 				return null;//bootsrap notify
 			}
 		},
+		async deleteUserFromGroup(deleteInfo) {
+			try {
+				let response = await Vue.http.post(setup.API + '/groups/user/delete', deleteInfo);
+				if(response.data.err === 0) {
+					return response.data.err;
+				}
+				return null;//bootstrap notify 
+			} catch (e) {
+				return null;//bootstrap notify
+			}
+		},
 		async checkTasksStatus(store, userInfo) {
 			var taskInfo = {
 				username: userInfo.username,

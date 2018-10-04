@@ -63,7 +63,7 @@ module.exports = {
 							});
 
 							if (signup) {
-								await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
+								await this.$store.dispatch ('settings/redirect', 'LOGIN');
 							} else {
 								this.username = '';
 								this.password = '';

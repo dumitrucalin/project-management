@@ -7,9 +7,9 @@
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<select v-model="groupName">
+				<select v-model="groupName" ><!--v-if="this.groupName.length !== 0"-->
 					<option v-for="(groupNameIndex, index) in user.groupNames" :key=index >{{groupNameIndex}}</option>
-				</select>
+				</select><button type="button" @click="exitGroup">Leave Group</button>
 			</div>
 			<CreateGroup v-if="createGroupView"></CreateGroup>
 			<CreateTask v-if="createTaskView"></CreateTask>
@@ -44,7 +44,11 @@ module.exports = {
 			createTaskView: false,
 			taskListView: true,
 
-			groupName: ''
+			groupName: '',
+			userInfo:{
+				username:'',
+				groupName:'',
+			},
 		};
 	},
 
@@ -64,6 +68,11 @@ module.exports = {
 			if (logout)
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 		},
+		async exitGroup(){
+			await this.$store.dispatch ('user/deleteUserFromGroup', {
+				groupInfo:this.userInfo
+			});
+		},
 		createGroup: function() {
 			this.createGroupView = true;
 			this.createTaskView = false;
@@ -81,7 +90,8 @@ module.exports = {
 		},
 		logIt:function(){
 			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
-		}
+		},
+		
 	},
 
 	computed: {
@@ -98,12 +108,12 @@ module.exports = {
 			if (user !== null) {
 				await this.$store.dispatch('user/stopCheckTasksStatus');
 
-				var userInfo = {
+				this.userInfo = {
 					username: user.username,
 					groupName: this.groupName
 				};
 
-				await this.$store.dispatch ('user/checkTasksStatus', userInfo);
+				await this.$store.dispatch ('user/checkTasksStatus', this.userInfo);
 			}
 		}
 	},

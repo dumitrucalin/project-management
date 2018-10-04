@@ -12,7 +12,8 @@
 			</div>
 				<form id="options">
 					<select v-model="groupName" @click="getUsers()">
-					<div>Group</div><option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{item}}</option>
+						<div>Group</div>
+						<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{item}}</option>
 					</select><br>
 
 					<select v-if="groupName" v-model="usernameReceiver" >

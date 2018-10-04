@@ -7,23 +7,35 @@
 				<p>Hello Tasker mister fucker mother you</p>
 				<div>
 					Tasks Received
-					<ul>
-						<li v-for="(task,index) in this.tasks.tasksReceived" :key=index>
-							<h3>{{task.taskName}}</h3>
-							<h5>{{task.usernameCreator}}</h5>
-							<p>{{task.taskString}}</p>
-							<p>{{task.taskPriority}}</p>
-						</li>
-					</ul>
+					<table style="width:100%">
+						<tr>
+							<th>Task Name</th>
+							<th>Task Details</th>
+							<th>Creator</th>
+							<th>Priority</th>
+						</tr>
+						<tr v-for="(task,index) in this.tasks.tasksReceived" :key=index>
+							<td>{{task.taskName}}</td>
+							<td>{{task.taskString}}</td>
+							<td>{{task.usernameCreator}}</td>
+							<td>{{task.taskPriority}}</td>
+						</tr>
+					</table>
 					<br>Tasks Given
-					<ul>
-						<li v-for="(task,index) in this.tasks.tasksGiven" :key=index>
-							<h3>{{task.taskName}}</h3>
-							<h5>{{task.usernameCreator}}</h5>
-							<p>{{task.taskString}}</p>
-							<p>{{task.taskPriority}}</p>
-						</li>
-					</ul>
+					<table style="width:100%">
+						<tr>
+							<th>Task Name</th>
+							<th>Task Details</th>
+							<th>Receiver</th>
+							<th>Priority</th>
+						</tr>
+						<tr v-for="(task,index) in this.tasks.tasksGiven" :key=index>
+							<td>{{task.taskName}}</td>
+							<td>{{task.taskString}}</td>
+							<td>{{task.usernameReceiver}}</td>
+							<td>{{task.taskPriority}}</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div v-else>
