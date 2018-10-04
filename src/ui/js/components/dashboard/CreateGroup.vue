@@ -24,6 +24,8 @@
 <script>
 
 var mapGetters = require ('vuex').mapGetters;
+var validator = require('validator');
+var Vue = require('vue');
 
 module.exports = {
 	name: 'CreateGroup',
@@ -33,6 +35,16 @@ module.exports = {
 			groupName:'',
 			userNameGroup:'',
 			groupUsers:[],
+			wrongUsername: {
+				title: 'Username contains invalid characters',
+				message: 'Please insert your username again',
+				type: 'warning'
+			},
+			allreadyAdded: {
+				title: 'The user is allready in the group',
+				message: 'Please insert another user',
+				type: 'warning'
+			},
 		};
 	},
 
@@ -46,12 +58,23 @@ module.exports = {
 		async submitGroup(){
 			this.groupUsers.push(this.user.username);
 			await this.$store.dispatch ('user/sendGroup', {
-				groupName:this.groupName,//unic groupname request la server await. if not notify
-				usernames:this.groupUsers,//alfanumeric
+				groupName:this.groupName,//ruta daca e unic on create
+				usernames:this.groupUsers,
 			});
 		},
 		addUserG:function(){
-			this.groupUsers.push(this.userNameGroup);//alfanumeric if not notify
+			if(this.groupUsers.contains(this.userNameGroup)) {
+				if (validator.isAlphanumeric(this.userNameGroup, ['en-US'])) { 
+					this.groupUsers.push(this.userNameGroup);//ruta daca exista
+					this.userNameGroup='';
+				} else {
+					Vue.toast.customToast(this.wrongUsername);
+					this.userNameGroup='';
+				}
+			} else {
+				Vue.toast.customToast(this.allreadyAdded);
+				this.userNameGroup='';
+			}
 		},
 	},
 };

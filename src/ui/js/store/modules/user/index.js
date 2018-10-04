@@ -44,7 +44,7 @@ module.exports = {
 				}
 				return false;
 			} catch (e) {
-				console.log('Login fail ' + e);
+				console.log('Login fail ' + e);//bootsrap notify
 				return false;
 			}
 		},
@@ -57,7 +57,7 @@ module.exports = {
 				}
 				return false;
 			} catch (e) {
-				console.log('Sign up fail ' + e);
+				console.log('Sign up fail ' + e);//bootsrap notify
 				return false;
 			}
 		},
@@ -71,7 +71,7 @@ module.exports = {
 					return false;
 				}
 			} catch (e) {
-				console.log('Logout fail ' + e);
+				console.log('Logout fail ' + e);//bootsrap notify
 				return false;
 			}
 		},
@@ -86,9 +86,9 @@ module.exports = {
 					store.commit ('user', response.data.user);
 					return response.data.user;
 				}
-				return null;
+				return null;//bootsrap notify
 			} catch (e) {
-				return null;
+				return null;//bootsrap notify
 			}
 		},
 		async updateUser(store) {
@@ -97,19 +97,19 @@ module.exports = {
 				if (response.data.err === 0) {
 					store.commit('user', response.data.user);
 					return true;
-				} else {
+				} else {//bootsrap notify
 					// TODO toast token expired
 					store.commit('user', null);
 					store.commit('token', null);
 					return false;
 				}
-			} catch (e) {
+			} catch (e) {//bootsrap notify
 				if (e.status === 401) {
 					store.commit('user', null);
 					store.commit('token', null);
 				}
 				// TODO toast network error
-				return false;
+				return false;//bootsrap notify
 			}
 		},
 		async sendGroup(store, groupInfo) {
@@ -119,10 +119,10 @@ module.exports = {
 					store.commit('user',response.data.user);
 					return true;
 				} else {
-					return false;
+					return false;//bootsrap notify
 				}
 			} catch(e) {
-				return false;
+				return false;//bootsrap notify
 			}
 		},
 		async sendTask(store, taskInfo) {
@@ -132,10 +132,10 @@ module.exports = {
 					store.commit('user', response.data.user);
 					return true;
 				} else {
-					return false;
+					return false;//bootsrap notify
 				}
 			} catch(e) {
-				return false;
+				return false;//bootsrap notify
 			}
 		},
 		async getUsers(store, groupName) {
@@ -145,9 +145,9 @@ module.exports = {
 					store.commit ('usernames', response.data.users);
 					return response.data.users;
 				}
-				return null;
+				return null;//bootsrap notify
 			} catch (e) {
-				return null;
+				return null;//bootsrap notify
 			}
 		},
 		async checkTasksStatus(store, userInfo) {
@@ -172,7 +172,7 @@ module.exports = {
 						console.log(response.data.tasks);
 					}
 				} else {
-					// TODO: TOAST
+					// TODO: TOAST//bootsrap notify
 				}
 			}, 1000);
 		},
