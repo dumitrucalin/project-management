@@ -1,7 +1,7 @@
 # task-manager
 
 TODO: 
-	UI (ce are - si * inseamna ca il pot face si eu, ce are doar liniuta poti face doar tu):
+	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
 		- * pune butonul de parasire a grupului in settings, alaturi de un select pentru a seta din ce grup vrei sa iesi
 		- un singur tabel pentru tasksList
 		- fiecare celula din tasksList trebuie sa contina atat titlurile corespondente task-urilor, cat si valorile, nu doua linii separate (daca nu ai inteles exact, intreaba-ma!!!!!!!!!)
