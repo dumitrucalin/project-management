@@ -2,13 +2,20 @@
 	<div>
 		<div v-if="user">
 			Your email is {{ user.email }}<br>
-			Your fullName is {{ user.fullName }}<br>
+			Your fullName is {{ user.fullName }}<br><br>
+
 			<button v-if="!changeInfo" @click="changeInfo = true">Change personal info</button>
 			<div v-if="changeInfo">
 				<input type="text" class="inputDesign" placeholder="Full Name" v-model="fullName" />
 				<input type="text" class="inputDesign" placeholder="E-Mail" v-model="email" />
 				<button class="submitButton" name="Submit" @click="submitInfo" >Submit</button>
-			</div>
+			</div><br><br>
+
+			<select v-model="groupName">
+				<div>Group</div>
+				<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{ item }}</option>
+			</select><br>
+			<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button>
 		</div>
 		<div v-else>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
@@ -33,6 +40,7 @@ module.exports = {
 
 			fullName: '',
 			email: '',
+			groupName: '',
 
 			changeInfo: false
 		};
@@ -58,12 +66,15 @@ module.exports = {
 				this.fullName = '';
 				// TOAST FOR INCORRECT EMAIL
 			}
+		},
+		exitGroup() {
+			console.log(this.groupName);
 		}
 	},
 
 	computed: {
 		...mapGetters ({
-			user: 'user/user'
+			user: 'user/user',
 		})
 	}
 };

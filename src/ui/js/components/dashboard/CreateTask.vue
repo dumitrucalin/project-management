@@ -13,11 +13,11 @@
 				<form id="options">
 					<select v-model="groupName">
 						<div>Group</div>
-						<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{item}}</option>
+						<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{ item }}</option>
 					</select><br>
 
 					<select v-if="groupName" v-model="usernameReceiver" >
-						<option v-for="(username,index) in this.usernames" :key=index :value="username">{{username}}</option>
+						<option v-for="(username, index) in this.usernames" :key=index :value="username">{{ username }}</option>
 					</select>
 
 					<div>DeadLine</div>
@@ -30,7 +30,7 @@
 						<option name="Urgent" value="urgent">Urgent</option>
 						<option name="Moderate" value="moderate">Moderate</option>
 						<option name="At leisure" value="atLeisure">At leisure</option>
-					</select>
+					</select><br>
 
 					<div>Status</div>
 					<input type="checkbox" @click="this.changeStatus = !this.changeStatus;">

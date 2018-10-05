@@ -117,8 +117,11 @@ privateApp.post('/user/delete', async function (req, res) {
 			for (let taskId of tasks.tasksReceived) {
 				await db.task.deleteTask(taskId);
 			}
-			await db.group.deleteUsers(groupName, username);
+			await db.group.deleteUser(groupName, username);
 			await db.user.deleteGroup(username, groupName);
+			if (Object.keys(group.users).length === 0) {
+				await db.group.deleteGroup(groupName);
+			}
 			debug('The user ' + username + ' was deleted from the group ' + groupName);
 			return res.status(200).send({ err: 0 });
 		} else {
