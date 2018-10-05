@@ -140,6 +140,7 @@ privateApp.post('/users/get', async function (req, res) {
 	var group = await db.group.findUsers(groupName);
 	if (group) {
 		var usernames = Object.keys(group.users);
+		usernames = usernames.sort();
 		return res.status(200).send({ err: 0, usernames: usernames });
 	} else {
 		debug('The group ' + groupName + ' doesn\'t exist');

@@ -2,22 +2,20 @@
 	<div class="createGroup">
 		<p>This is the group creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
-		<p>This is the group creator!</p>
-		<form>
-			<div class="form-group">
-				<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupName" />
-			</div>
-			<div class="form-group">
-				<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNameGroup" />
-				<button type="button" @click="addUserG">Add User</button>
-			</div>
-			<ul>
-				<li v-for="(groupUserShow, index) in groupUsersShow" :key="index">
-					<p>{{ groupUserShow }}</p>
-				</li>
-			</ul>
-			<button type="submit" @click=submitGroup>Create Group</button>
-		</form>
+
+		<div class="form-group">
+			<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupName" />
+		</div>
+		<div class="form-group">
+			<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNameGroup" />
+			<button @click="addUserGroup">Add User</button>
+		</div>
+		<ul>
+			<li v-for="(groupUserShow, index) in groupUsersShow" :key="index">
+				<p>{{ groupUserShow }}</p>
+			</li>
+		</ul>
+		<button @click="submitGroup">Create Group</button>
 	</div>
 </template>
 
@@ -63,18 +61,30 @@ module.exports = {
 	methods: {
 		async submitGroup(){
 			this.groupUsers.push(this.user.username);
-			await this.$store.dispatch ('user/sendGroup', {
+			var state = await this.$store.dispatch ('user/sendGroup', {
 				groupName:this.groupName,//ruta daca e unic on create
 				usernames:this.groupUsers,
 			});
+			if (state) {
+				this.$store.dispatch('settings/redirect', 'DASHBOARD');
+			} else {
+				console.log('could\'t create the group');
+				// TODO: TOAST
+			}
 		},
-		addUserG:function(){
+		async addUserGroup() {
 			if(this.userNameGroup !== this.user.username) {
 				if(!this.groupUsers.includes(this.userNameGroup)) {
 					if (validator.isAlphanumeric(this.userNameGroup, ['en-US'])) {
-						this.groupUsersShow.push(this.userNameGroup);
-						this.groupUsers.push(this.userNameGroup);//ruta daca exista
-						this.userNameGroup='';
+						let state = await this.$store.dispatch('user/checkUsername', this.userNameGroup);
+						if (state) {
+							this.groupUsersShow.push(this.userNameGroup);
+							this.groupUsers.push(this.userNameGroup);//ruta daca exista
+							this.userNameGroup='';
+						} else {
+							console.log('user not existing');
+							// TODO: TOAST FOR NOT EXISTING USER
+						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);
 						this.userNameGroup='';
@@ -89,6 +99,10 @@ module.exports = {
 			}
 		},
 	},
+
+	async created() {
+		await this.$store.dispatch('user/stopCheckTasksStatus');
+	}
 };
 
 </script>

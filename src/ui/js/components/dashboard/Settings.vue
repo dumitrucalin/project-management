@@ -13,13 +13,13 @@
 
 			<select v-model="exitGroupName">
 				<div>Group</div>
-				<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{ item }}</option>
+				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 			</select><br>
 			<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
 
 			<select v-model="groupName">
 				<div>Group</div>
-				<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{ item }}</option>
+				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 			</select><br>
 			<div class="form-group">
 				<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
@@ -78,6 +78,9 @@ module.exports = {
 			usernames: [],
 			usernamesShow: [],
 
+			groupNamesSorted: [],
+			usernamesSorted: [],
+
 			changeInfo: false
 		};
 	},
@@ -107,19 +110,14 @@ module.exports = {
 			if(this.username !== this.user.username) {
 				if(!this.usernames.includes(this.username)) {
 					if (validator.isAlphanumeric(this.username, ['en-US'])) {
-						if (this.currentUsernames.indexOf(this.username) < 0) {
-							let state = await this.$store.dispatch('user/checkUsername', this.username);
-							if (state) {
-								this.usernames.push(this.username);
-								this.usernamesShow.push(this.username);
-								// TODO: TOAST FOR SUCCEDING ADDING THE USERS IN THE GROUP
-							} else {
-								console.log('user not existing');
-								// TODO: TOAST FOR USER NOT EXISTING
-							}
+						let state = await this.$store.dispatch('user/checkUsername', this.username);
+						if (state) {
+							this.usernames.push(this.username);
+							this.usernamesShow.push(this.username);
+							// TODO: TOAST FOR SUCCEDING ADDING THE USERS IN THE GROUP
 						} else {
-							console.log('user already in group');
-							// TODO: TOAST FOR USER ALREADY IN GROUP
+							console.log('user not existing');
+							// TODO: TOAST FOR USER NOT EXISTING
 						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);
@@ -157,6 +155,18 @@ module.exports = {
 			user: 'user/user',
 			currentUsernames: 'user/usernames'
 		})
+	},
+
+	async created() {
+		for (let groupName of this.user.groupNames)
+			this.groupNamesSorted.push(groupName);
+		this.groupNamesSorted = this.groupNamesSorted.sort();
+
+		for (let username of this.usernames)
+			this.usernamesSorted.push(username);
+		this.usernamesSorted = this.usernamesSorted.sort();
+
+		await this.$store.dispatch('user/stopCheckTasksStatus');
 	}
 };
 

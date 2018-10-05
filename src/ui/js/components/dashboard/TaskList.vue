@@ -1,10 +1,14 @@
 <template>
 	<div>
-		<select v-if="user.groupNames.length" v-model="groupName" selected="selected">{{ user.groupNames[0] }}
-			<option v-for="(groupNameIndex, index) in user.groupNames" :key=index >{{ groupNameIndex }}</option>
+		<select v-if="this.groupNamesSorted.length" v-model="groupName">
+			<option v-for="(groupNameIndex, index) in this.groupNamesSorted" :key=index >{{ groupNameIndex }}</option>
 		</select>
 		<div v-if="showTasks">
 			<div v-if="tasks" class="taskList">
+				The users in the same group with {{ groupName }} are:
+				<div v-for="(username, index) in this.usernames" :key=index>
+					<p>{{ username }}</p>
+				</div>
 				<p>This is the Task View</p>
 				<p>Hello Tasker mister fucker mother you</p>
 				<div>
@@ -62,7 +66,8 @@ module.exports = {
 			loadingColor: '#0000ff',
 			loadingDuration: 1500,
 
-			groupName: ''
+			groupName: '',
+			groupNamesSorted: []
 		};
 	},
 
@@ -72,9 +77,9 @@ module.exports = {
 
 	watch: {
 		groupName: async function() {
-			var taskView = true;
 			await this.$store.dispatch ('user/setGroupName', this.groupName);
-			await this.$store.dispatch ('user/changeTasksView', taskView);
+			await this.$store.dispatch('user/getUsers', this.groupName);
+			await this.$store.dispatch ('user/changeTasksView', true);
 			var user = await this.$store.dispatch('user/getUser');
 			if (user !== null) {
 				await this.$store.dispatch('user/stopCheckTasksStatus');
@@ -105,9 +110,17 @@ module.exports = {
 	computed: {
 		...mapGetters ({
 			user: 'user/user',
+			usernames: 'user/usernames',
 			tasks: 'user/tasks',
 			showTasks: 'user/showTasks'
 		})
+	},
+
+	created() {
+		for (let groupNameTemp of this.user.groupNames)
+			this.groupNamesSorted.push(groupNameTemp);
+		this.groupNamesSorted = this.groupNamesSorted.sort();
+		this.groupName = this.groupNamesSorted[0];
 	}
 };
 

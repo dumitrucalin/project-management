@@ -13,11 +13,11 @@
 				<form id="options">
 					<select v-model="groupName">
 						<div>Group</div>
-						<option v-for="(item, index) in this.user.groupNames" :key="index" :value="item" >{{ item }}</option>
+						<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 					</select><br>
 
 					<select v-if="groupName" v-model="usernameReceiver" >
-						<option v-for="(username, index) in this.usernames" :key=index :value="username">{{ username }}</option>
+						<option v-for="(username, index) in this.usernamesSorted" :key=index :value="username">{{ username }}</option>
 					</select>
 
 					<div>DeadLine</div>
@@ -53,6 +53,9 @@ module.exports = {
 		return {
 			checkboxPriority: false,
 			checkboxDeadline: false,
+
+			groupNamesSorted: [],
+			usernamesSorted: [],
 
 			usernameReceiver: '',
 			groupName: '',
@@ -128,12 +131,22 @@ module.exports = {
 		},
 
 	},
+
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('user/getUsers',{
-				groupName: this.groupName,
-			});
+			await this.$store.dispatch('user/getUsers', this.groupName);
 		}
+	},
+
+	async created() {
+		for (let groupName of this.user.groupNames)
+			this.groupNamesSorted.push(groupName);
+		this.groupNamesSorted = this.groupNamesSorted.sort();
+
+		for (let username of this.usernames)
+			this.usernamesSorted.push(username);
+		this.usernamesSorted = this.usernamesSorted.sort();
+		await this.$store.dispatch('user/stopCheckTasksStatus');
 	}
 };
 

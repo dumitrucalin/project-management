@@ -2,17 +2,16 @@
 
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
-		- * verificarea a variabilei tasksModified sa se intample doar daca este pe tasksList component
+		- * eventual sa iti arate la useri fullname-ul, si nu username-ul
+		- * checkbox to view or hide password
 		- * functia pentru butonul de parasire a grupului in settings.vue && validator pentru exitGroup din settings
 		- un singur tabel pentru tasksList
 		- fiecare celula din tasksList trebuie sa contina atat titlurile corespondente task-urilor, cat si valorile, nu doua linii separate (daca nu ai inteles exact, intreaba-ma!!!!!!!!!)
 		- am mutat selectul de group din dashboard in tasksList. La el, vreau by default sa fie selectat primul grup din lista de grupuri a acelui user, "user.groupNames[0]"
-		- * dupa ce da createGroup sa dea un redirect si ce mai e nevoie, fara sa trebuiasca sa dea reload din nou user-ul pentru a actualiza grupurile
 		- * bootstrap notify pe index.js
-		- * rute in CreateGroup pentru a verifica daca un user exista
-		- * buton iesit din grup
 
 	SERVER:
+		- To update and send only the new tasks, and not all of them
 		- To implement the rest of the details about the task
 		- Try/catch ?
 		- Implement token with redis

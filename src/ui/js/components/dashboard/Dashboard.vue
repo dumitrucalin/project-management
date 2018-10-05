@@ -68,8 +68,10 @@ module.exports = {
 			let logout = await this.$store.dispatch('user/logout', {
 				token: token
 			});
-			if (logout)
+			if (logout) {
+				await this.$store.dispatch('user/stopCheckTasksStatus');
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
+			}
 		},
 		async exitGroup(){
 			await this.$store.dispatch ('user/deleteUserFromGroup', {
