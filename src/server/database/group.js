@@ -62,7 +62,8 @@ function createUsers(groupName, usernames) {
 	for (let username of usernames) {
 		updatedUsers['users.' + username] = {
 			tasksGiven: [],
-			tasksReceived: []
+			tasksReceived: [],
+			tasksModified: false
 		};
 	}
 

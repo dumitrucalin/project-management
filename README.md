@@ -3,6 +3,8 @@
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
 		- * pune butonul de parasire a grupului in settings, alaturi de un select pentru a seta din ce grup vrei sa iesi ????? e bine sa facem asa ?????
+		- * validator pentru exitGroup din settings
+		- abg pula repara update userGroup CALIN !!!!!!!!!!!!!!!!
 		- un singur tabel pentru tasksList
 		- fiecare celula din tasksList trebuie sa contina atat titlurile corespondente task-urilor, cat si valorile, nu doua linii separate (daca nu ai inteles exact, intreaba-ma!!!!!!!!!)
 		- am mutat selectul de group din dashboard in tasksList. La el, vreau by default sa fie selectat primul grup din lista de grupuri a acelui user, "user.groupNames[0]"

@@ -85,10 +85,10 @@ privateApp.post('/users/create', async function (req, res) {
 		}
 		debug('All given users found');
 
-		await db.group.createUsers(groupName, usernames);
-		for (let username of usernames) {
-			await db.user.updateGroups(username, groupName);
-		}
+		// await db.group.createUsers(groupName, usernames);
+		// for (let username of usernames) {
+		// 	await db.user.updateGroups(username, groupName);
+		// }
 		debug('The users were added to the group');
 
 		return res.status(200).send({ err: 0 });

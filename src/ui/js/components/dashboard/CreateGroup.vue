@@ -12,7 +12,7 @@
 				<button type="button" @click="addUserG">Add User</button>
 			</div>
 			<ul>
-				<li v-for="(groupUserShow,index) in groupUsersShow" :key="index">
+				<li v-for="(groupUserShow, index) in groupUsersShow" :key="index">
 					<p>{{ groupUserShow }}</p>
 				</li>
 			</ul>

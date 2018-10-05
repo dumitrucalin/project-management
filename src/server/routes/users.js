@@ -122,6 +122,7 @@ privateApp.get('/get', async function(req, res) {
 
 privateApp.post('/check/name', async function (req, res) {
 	var username = req.body.username;
+	console.log(username);
 
 	var user = await db.user.findByUsername(username);
 	if (user) {

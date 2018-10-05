@@ -137,7 +137,7 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/create', groupInfo);
 				if (response.data.err === 0) {
-					store.commit('user',response.data.user);
+					store.commit('user', response.data.user);
 					return true;
 				} else {
 					return false;//bootsrap notify
@@ -146,8 +146,23 @@ module.exports = {
 				return false;//bootsrap notify
 			}
 		},
+		async updateGroup(store, groupInfo) {
+			let response = await Vue.http.post(setup.API + '/groups/users/create', groupInfo);
+			if (response.data.err === 0) {
+				var newUsernames = groupInfo.usernames;
+				console.log(newUsernames);
+				var oldUsernames = store.getters ['user/usernames'];
+				console.log(oldUsernames);
+				// for (let username of newUsernames) {
+				// 	console.log(username);
+				// }
+				// store.commit('usernames', oldUsernames);
+				return true;
+			} else {
+				return false;
+			}
+		},
 		async sendTask(store, taskInfo) {
-			console.log(taskInfo);
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
@@ -162,7 +177,7 @@ module.exports = {
 		},
 		async getUsers(store, groupName) {
 			try {
-				let response = await Vue.http.post(setup.API + '/groups/users/get', groupName);
+				let response = await Vue.http.post(setup.API + '/groups/users/get', {groupName: groupName});
 				if (response.data.err === 0) {
 					store.commit ('usernames', response.data.usernames);
 					return true;
@@ -211,9 +226,9 @@ module.exports = {
 		},
 		async deleteTask(store, taskId) {
 			var groupName = store.getters['groupName'];
-			let response = await Vue.http.post(setup.API + '/tasks/exist', {taskId});
+			let response = await Vue.http.post(setup.API + '/tasks/exist', {taskId: taskId});
 			if (response.data.err === 0) {
-				await Vue.http.post(setup.API + '/tasks/delete', {taskId, groupName});
+				await Vue.http.post(setup.API + '/tasks/delete', {taskId: taskId, groupName: groupName});
 			}
 		},
 		setGroupName(store, groupName) {
@@ -224,6 +239,14 @@ module.exports = {
 		},
 		changeTasksView(store, viewTasks) {
 			store.commit('showTasks', viewTasks);
+		},
+		async checkUsername(store, username) {
+			let response = await Vue.http.post(setup.API + '/users/check/name', {username: username});
+			if (response.data.err === 0) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	},
 	
