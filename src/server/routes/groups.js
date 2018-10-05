@@ -85,10 +85,10 @@ privateApp.post('/users/create', async function (req, res) {
 		}
 		debug('All given users found');
 
-		// await db.group.createUsers(groupName, usernames);
-		// for (let username of usernames) {
-		// 	await db.user.updateGroups(username, groupName);
-		// }
+		await db.group.createUsers(groupName, usernames);
+		for (let username of usernames) {
+			await db.user.updateGroups(username, groupName);
+		}
 		debug('The users were added to the group');
 
 		return res.status(200).send({ err: 0 });
@@ -144,17 +144,6 @@ privateApp.post('/users/get', async function (req, res) {
 	} else {
 		debug('The group ' + groupName + ' doesn\'t exist');
 		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
-	}
-});
-
-privateApp.post('/check/name', async function (req, res) {
-	var groupName = req.body.groupName;
-
-	var group = await db.group.findByGroupName(groupName);
-	if (!group) {
-		return res.status(200).send({ err: 0 });
-	} else {
-		return res.status(200).send({ err: 1, message: 'Group name ' + groupName + ' already in use!' });
 	}
 });
 

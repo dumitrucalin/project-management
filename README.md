@@ -2,21 +2,17 @@
 
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
-		- * pune butonul de parasire a grupului in settings, alaturi de un select pentru a seta din ce grup vrei sa iesi ????? e bine sa facem asa ?????
-		- * validator pentru exitGroup din settings
-		- abg pula repara update userGroup CALIN !!!!!!!!!!!!!!!!
+		- * functia pentru butonul de parasire a grupului in settings.vue && validator pentru exitGroup din settings
 		- un singur tabel pentru tasksList
 		- fiecare celula din tasksList trebuie sa contina atat titlurile corespondente task-urilor, cat si valorile, nu doua linii separate (daca nu ai inteles exact, intreaba-ma!!!!!!!!!)
 		- am mutat selectul de group din dashboard in tasksList. La el, vreau by default sa fie selectat primul grup din lista de grupuri a acelui user, "user.groupNames[0]"
 		- * dupa ce da createGroup sa dea un redirect si ce mai e nevoie, fara sa trebuiasca sa dea reload din nou user-ul pentru a actualiza grupurile
 		- * bootstrap notify pe index.js
-		- * rute in CreateGroup pentru a verifica daca un user exista si daca GroupName e unic
+		- * rute in CreateGroup pentru a verifica daca un user exista
 		- * buton iesit din grup
-		- * sa poti sa bagi useri in grup
 
 	SERVER:
 		- To implement the rest of the details about the task
-		- To check if there is anyone in the group left, else to delete the group
 		- Try/catch ?
 		- Implement token with redis
 

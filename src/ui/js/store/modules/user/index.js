@@ -150,16 +150,14 @@ module.exports = {
 			let response = await Vue.http.post(setup.API + '/groups/users/create', groupInfo);
 			if (response.data.err === 0) {
 				var newUsernames = groupInfo.usernames;
-				console.log(newUsernames);
-				var oldUsernames = store.getters ['user/usernames'];
-				console.log(oldUsernames);
-				// for (let username of newUsernames) {
-				// 	console.log(username);
-				// }
-				// store.commit('usernames', oldUsernames);
+				var oldUsernames = store.getters ['usernames'];
+				for (let username of oldUsernames) {
+					newUsernames.push(username);
+				}
+				store.commit('usernames', newUsernames);
 				return true;
 			} else {
-				return false;
+				return false;//bootstrap notify
 			}
 		},
 		async sendTask(store, taskInfo) {

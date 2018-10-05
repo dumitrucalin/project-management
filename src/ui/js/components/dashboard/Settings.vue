@@ -112,7 +112,6 @@ module.exports = {
 							if (state) {
 								this.usernames.push(this.username);
 								this.usernamesShow.push(this.username);
-								console.log('succeed');
 								// TODO: TOAST FOR SUCCEDING ADDING THE USERS IN THE GROUP
 							} else {
 								console.log('user not existing');
@@ -150,7 +149,6 @@ module.exports = {
 	watch: {
 		groupName: async function() {
 			await this.$store.dispatch ('user/getUsers', this.groupName);
-			console.log(this.currentUsernames);
 		}
 	},
 
