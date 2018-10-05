@@ -97,8 +97,8 @@ module.exports = {
 					fullName: this.fullName,
 					email: this.email
 				};
-				let updated = await this.$store.dispatch ('user/updateUserInfo', userInfo);
-				if (updated) {
+				let state = await this.$store.dispatch ('user/updateUserInfo', userInfo);
+				if (state) {
 					await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
 				}
 			} else {
@@ -131,13 +131,16 @@ module.exports = {
 			this.username='';
 		},
 		async submitGroup(){
-			await this.$store.dispatch ('user/updateGroup', {
+			let state = await this.$store.dispatch ('user/updateGroup', {
 				groupName: this.groupName,
 				usernames: this.usernames
 			});
-			this.groupName = '';
-			this.username = '';
-			this.usernames = '';
+			if (state) {
+				this.groupName = '';
+				this.username = '';
+				this.usernames = '';
+				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
+			}	
 		},
 		exitGroup() {
 			console.log(this.exitGroupName);

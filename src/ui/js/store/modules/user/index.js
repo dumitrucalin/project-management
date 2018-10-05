@@ -16,6 +16,7 @@ module.exports = {
 		token: window.localStorage.getItem(KEY_TOKEN),
 		user: null,
 		usernames: null,
+		fullNames: null,
 		tasks: null,
 		showTasks: false,
 		groupName: null
@@ -32,8 +33,11 @@ module.exports = {
 		user(state) {
 			return state.user;
 		},
-		usernames(state){
+		usernames(state) {
 			return state.usernames;
+		},
+		fullNames(state) {
+			return state.fullNames;
 		},
 		tasks(state) {
 			return state.tasks;
@@ -155,6 +159,15 @@ module.exports = {
 					newUsernames.push(username);
 				}
 				store.commit('usernames', newUsernames);
+
+				let newResponse = await Vue.http.post(setup.API + '/users/usernames/get', {usernames: newUsernames});
+				if (newResponse.data.err === 0)
+					var fullNames = newResponse.data.fullNames;
+				else {
+					console.log(newResponse.data.message);
+					return false;
+				}
+				store.commit('fullNames', fullNames);
 				return true;
 			} else {
 				return false;//bootstrap notify
@@ -178,9 +191,19 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/groups/users/get', {groupName: groupName});
 				if (response.data.err === 0) {
 					store.commit ('usernames', response.data.usernames);
-					return true;
+				} else {
+					return false;
 				}
-				return false;//bootsrap notify
+
+				let newResponse = await Vue.http.post(setup.API + '/users/usernames/get', {usernames: response.data.usernames});
+				if (newResponse.data.err === 0)
+					var fullNames = newResponse.data.fullNames;
+				else {
+					console.log(newResponse.data.message);
+					return false;
+				}
+				store.commit('fullNames', fullNames);
+				return true;//bootsrap notify
 			} catch (e) {
 				return false;//bootsrap notify
 			}
@@ -263,6 +286,9 @@ module.exports = {
 		},
 		usernames(state, value) {
 			state.usernames = value;
+		},
+		fullNames(state, value) {
+			state.fullNames = value;
 		},
 		tasks(state, value) {
 			state.tasks = value;

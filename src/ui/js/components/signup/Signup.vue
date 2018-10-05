@@ -2,8 +2,9 @@
 	<div>
 		<div class="signupForm">
 			<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="signup" v-model="username" />
-			<input type="text" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
-			<input type="text" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
+			<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
+			<input type="password" id="confirmPassword" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
+			<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password<br>
 			<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
 			<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
 			<button class="submitButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
@@ -24,8 +25,10 @@ module.exports = {
 			username: '',
 			password: '',
 			confirmPassword: '',
+			viewPassword: false,
 			email: '',
 			fullName: '',
+
 			matchingPasswords: {
 				title: 'The passwords do not match',
 				message: 'Please insert your password again',
@@ -91,7 +94,17 @@ module.exports = {
 				Vue.toast.customToast(this.wrongUsername);
 			}
 		},
-
+		togglePassword () {
+			var password = document.getElementById('password');
+			var confirmPassword = document.getElementById('confirmPassword');
+			if (this.viewPassword === true) {
+				password.setAttribute('type', 'password');
+				confirmPassword.setAttribute('type', 'password');
+			} else {
+				password.setAttribute('type', 'text');
+				confirmPassword.setAttribute('type', 'text');
+			}
+		}
 	},
 };
 

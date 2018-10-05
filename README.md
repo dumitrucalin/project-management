@@ -2,8 +2,9 @@
 
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
-		- * eventual sa iti arate la useri fullname-ul, si nu username-ul
-		- * checkbox to view or hide password
+		- * nu imi arata bine numele din taskList
+		- * getUsers se apeleaza de 2 ori la reload de dashboard
+		- * eventual sa iti arate la users fullname-ul, si nu username-ul
 		- * functia pentru butonul de parasire a grupului in settings.vue && validator pentru exitGroup din settings
 		- un singur tabel pentru tasksList
 		- fiecare celula din tasksList trebuie sa contina atat titlurile corespondente task-urilor, cat si valorile, nu doua linii separate (daca nu ai inteles exact, intreaba-ma!!!!!!!!!)
@@ -23,3 +24,5 @@ TODO:
         4. Send mails when approaching the deadline, when task deleted or when a user dropped a task by exiting the group
 		5. Messages per task (like a mini watsapp)
 		6. To be able to upload a file, as well as download it
+
+		OPTIONAL: UML diagram

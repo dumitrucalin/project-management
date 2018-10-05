@@ -120,6 +120,24 @@ privateApp.get('/get', async function(req, res) {
 	}
 });
 
+privateApp.post('/usernames/get', async function(req, res) {
+	debug('Searching for users with usernames');
+	var fullNames = [];
+	for (let username of req.body.usernames) {
+		var user = await db.user.findByUsername(username);
+
+		if (!user) {
+			debug('Couldn\'t find the given username');
+			return res.status(200).send({ err: 1, message: 'Couldn\'t find the user with the given username!' });
+		}
+
+		fullNames.push(user.fullName);
+	}
+
+	debug('Users found');
+	return res.status(200).send({ err: 0, fullNames: fullNames });
+});
+
 privateApp.post('/check/name', async function (req, res) {
 	var username = req.body.username;
 	console.log(username);

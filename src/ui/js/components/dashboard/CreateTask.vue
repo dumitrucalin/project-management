@@ -21,11 +21,11 @@
 					</select>
 
 					<div>DeadLine</div>
-					<input type="checkbox" @click="this.checkboxDeadline = !this.checkboxDeadline;">
+					<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
 					<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
 
 					<div>Priority</div>
-					<input type="checkbox" @click="this.checkboxPriority = !this.checkboxPriority;">
+					<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 					<select v-if="checkboxPriority" v-model="taskPriority">
 						<option name="Urgent" value="urgent">Urgent</option>
 						<option name="Moderate" value="moderate">Moderate</option>
@@ -33,7 +33,7 @@
 					</select><br>
 
 					<div>Status</div>
-					<input type="checkbox" @click="this.changeStatus = !this.changeStatus;">
+					<input type="checkbox" @click="changeStatus = !changeStatus;"><br>
 
 					<button @click="submitTask">Create Task</button>
 				</form>

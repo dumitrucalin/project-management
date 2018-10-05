@@ -115,14 +115,11 @@ module.exports = {
 
 	async created() {
 		var user = await this.$store.dispatch ('user/getUser');
-		var viewTasks = false;
 		if (user.groupNames.length !== 0) {
-			viewTasks = true;
-			await this.$store.dispatch ('user/changeTasksView', viewTasks);
+			await this.$store.dispatch ('user/changeTasksView', true);
 			this.groupName = user.groupNames[0];
 		} else {
-			viewTasks = false;
-			await this.$store.dispatch ('user/changeTasksView', viewTasks);
+			await this.$store.dispatch ('user/changeTasksView', false);
 		}
 	}
 };

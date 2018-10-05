@@ -2,7 +2,8 @@
 	<div>
 		<div class="loginForm">
 			<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="login" v-model="username" />
-			<input type="text" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
+			<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
+			<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password
 			<button class="submitButton" name="Submit" value="Login"  @click="login" >Login</button>
 			<a href="signup.html" >Sign Up</a>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
@@ -24,6 +25,7 @@ module.exports = {
 		return {
 			username: '',
 			password: '',
+			viewPassword: false,
 
 			loadingSize: 20,
 			loadingColor: '#0000ff',
@@ -87,6 +89,13 @@ module.exports = {
 				Vue.toast.customToast(this.wrongUsername);
 			}
 		},
+		togglePassword () {
+			var input = document.getElementById('password');
+			if (this.viewPassword === true)
+				input.setAttribute('type', 'password');
+			else
+				input.setAttribute('type', 'text');
+		}
 	},
 };
 
