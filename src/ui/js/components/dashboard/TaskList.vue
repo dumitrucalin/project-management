@@ -3,6 +3,9 @@
 		<select v-if="this.groupNamesSorted.length" v-model="groupName">
 			<option v-for="(groupNameIndex, index) in this.groupNamesSorted" :key=index >{{ groupNameIndex }}</option>
 		</select>
+		<div v-else>
+			You are in no group at the moment.<br> Please first create a group or wait for an invitation!
+		</div>
 		<div v-if="showTasks">
 			<div v-if="tasks" class="taskList">
 				The users in the same group with you are:
