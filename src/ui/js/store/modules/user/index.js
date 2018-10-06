@@ -23,7 +23,7 @@ module.exports = {
 	},
 	data: {
 		intervalStatus: null,
-		notifications:false,//To show, change to true, trebuie facut buton in dashboard
+		notifications:true,//To show, change to true, trebuie facut buton in dashboard
 	},
 
 	getters: {
