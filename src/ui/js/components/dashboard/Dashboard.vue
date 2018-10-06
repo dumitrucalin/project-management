@@ -6,7 +6,7 @@
 				<p @click="logIt()">Hello {{ this.user.fullName }}</p>
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
-				<button class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
+				<button v-if="user.groupNames.length" class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
 				<button class="submitButton" name="Submit" value="Settings" @click="settings">Settings</button>
 				<button v-if="user.groupNames.length" type="button" @click="exitGroup">Leave Group</button>
 			</div>
