@@ -117,11 +117,8 @@ module.exports = {
 				if (fullName !== this.user.fullName)
 					this.fullNamesShowed.push(fullName);
 			}
-			// this.usernamesShowed = this.usernamesShowed.sort();
 
 			await this.$store.dispatch ('user/changeTasksView', true);
-			// var user = await this.$store.dispatch('user/getUser');
-			// if (user !== null) {
 			await this.$store.dispatch('user/stopCheckTasksStatus');
 			this.userInfo = {
 				username: this.user.username,
