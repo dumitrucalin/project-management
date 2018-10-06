@@ -11,16 +11,17 @@
 				<button class="submitButton" name="Submit" @click="submitInfo" >Submit</button>
 			</div><br><br><br><br>
 
+			<div>Group</div>
 			<select v-model="exitGroupName">
-				<div>Group</div>
 				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 			</select><br>
 			<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
 
+			<div>Group</div>
 			<select v-model="groupName">
-				<div>Group</div>
 				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 			</select><br>
+
 			<div class="form-group">
 				<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
 				<button @click="addUserGroup">Add User</button>
@@ -48,12 +49,17 @@ var Vue = require('vue');
 module.exports = {
 	name: 'Settings',
 
+	components: {
+		Loading
+	},
+	
 	data() {
 		return {
 			loadingSize: 20,
 			loadingColor: '#0000ff',
 			loadingDuration: 1500,
-
+			groupNamesSorted: [''],
+			usernamesSorted: [''],
 			wrongUsername: {
 				title: 'Username contains invalid characters',
 				message: 'Please insert your username again',
@@ -69,7 +75,7 @@ module.exports = {
 				message: 'Please insert another user',
 				type: 'warning'
 			},
-
+			
 			fullName: '',
 			email: '',
 			exitGroupName: '',
@@ -78,15 +84,16 @@ module.exports = {
 			usernames: [],
 			usernamesShow: [],
 
-			groupNamesSorted: [],
-			usernamesSorted: [],
-
 			changeInfo: false
 		};
 	},
 
-	components: {
-		Loading
+
+	computed: {
+		...mapGetters ({
+			user: 'user/user',
+			currentUsernames: 'user/usernames'
+		})
 	},
 
 	methods: {
@@ -142,22 +149,21 @@ module.exports = {
 				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
 			}	
 		},
-		exitGroup() {
-			console.log(this.exitGroupName);
+		async exitGroup(){
+			let state = await this.$store.dispatch ('user/deleteUserFromGroup', {
+				groupName:this.exitGroupName,
+				username:this.user.username
+			});
+			if (state) {
+				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
+			}
 		}
 	},
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch ('user/getUsers', this.groupName);
+			await this.$store.dispatch('user/getUsers', this.groupName);
 		}
-	},
-
-	computed: {
-		...mapGetters ({
-			user: 'user/user',
-			currentUsernames: 'user/usernames'
-		})
 	},
 
 	async created() {
@@ -168,7 +174,6 @@ module.exports = {
 		for (let username of this.usernames)
 			this.usernamesSorted.push(username);
 		this.usernamesSorted = this.usernamesSorted.sort();
-
 		await this.$store.dispatch('user/stopCheckTasksStatus');
 	}
 };

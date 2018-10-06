@@ -73,38 +73,36 @@ module.exports = {
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 			}
 		},
-		async exitGroup(){
-			await this.$store.dispatch ('user/deleteUserFromGroup', {
-				groupInfo:this.userInfo
-			});
-		},
-		createGroup: function() {
+		createGroup(){
 			this.createGroupView = true;
 			this.createTaskView = false;
 			this.taskListView = false;
 			this.settingsView = false;
 		},
-		createTask: function() {
+		createTask() {
 			this.createGroupView = false;
 			this.createTaskView = true;
 			this.taskListView = false;
 			this.settingsView = false;
 		},
-		taskList: function() {
+		taskList() {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = true;
 			this.settingsView = false;
 		},
-		settings: function() {
+		settings() {
 			this.createGroupView = false;
 			this.createTaskView = false;
 			this.taskListView = false;
 			this.settingsView = true;
 		},
-		logIt:function(){
+		logIt(){
 			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
-		},	
+		},
+		exitGroup(){
+			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
+		},		
 	},
 
 	computed: {
