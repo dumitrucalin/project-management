@@ -14,36 +14,47 @@
 				<p>Hello Tasker mister fucker mother you</p>
 				<div>
 					Tasks Received
-					<table style="width:100%">
+					<table>
 						<tr>
-							<th>Task Name</th>
-							<th>Task Details</th>
-							<th>Creator</th>
-							<th>Priority</th>
+							<th>Tasks Recieved</th>
+							<th>Tasks Given</th>
 						</tr>
-						<tr v-for="(task,index) in this.tasks.tasksReceived" :key=index>
-							<td>{{task.taskName}}</td>
-							<td>{{task.taskString}}</td>
-							<td>{{task.usernameCreator}}</td>
-							<td>{{task.taskPriority}}</td>
+						<tr>
+							<td>
+								<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index>
+									<tr>
+										<th>Task Name</th>
+										<th>Task Details</th>
+										<th>Creator</th>
+										<th>Priority</th>
+									</tr>
+									<tr>
+										<td>{{task.taskName}}</td>
+										<td>{{task.taskString}}</td>
+										<td>{{task.usernameCreator}}</td>
+										<td>{{task.taskPriority}}</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table v-for="(task,index) in this.tasks.tasksGiven" :key=index>
+									<tr>
+										<th>Task Name</th>
+										<th>Task Details</th>
+										<th>Receiver</th>
+										<th>Priority</th>
+									</tr>
+									<tr>
+										<td>{{task.taskName}}</td>
+										<td>{{task.taskString}}</td>
+										<td>{{task.usernameReceiver}}</td>
+										<td>{{task.taskPriority}}</td>
+									</tr>
+								</table>
+							</td>
 						</tr>
 					</table>
-					<br>Tasks Given
-					<table style="width:100%">
-						<tr>
-							<th>Task Name</th>
-							<th>Task Details</th>
-							<th>Receiver</th>
-							<th>Priority</th>
-						</tr>
-						<tr v-for="(task,index) in this.tasks.tasksGiven" :key=index>
-							<td>{{task.taskName}}</td>
-							<td>{{task.taskString}}</td>
-							<td>{{task.usernameReceiver}}</td>
-							<td>{{task.taskPriority}}</td>
-							<td><button @click="deleteTask(task.taskId)">X</button></td>
-						</tr>
-					</table>
+
 				</div>
 			</div>
 			<div v-else>
