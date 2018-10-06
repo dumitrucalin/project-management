@@ -20,12 +20,12 @@ var taskSchema = mongoose.Schema({
 		type: Date,
 		// required: true
 	},
-	showStatus: {
-		type: Boolean,
-		// required: true
-	},
 	taskPriority: {
 		type: String, 
+		// required: true
+	},
+	showStatus: {
+		type: Boolean,
 		// required: true
 	},
 	taskStatus: {
@@ -59,19 +59,24 @@ function createTaskId() {
 	return uuid.v4() + uuid.v4() + uuid.v4() + uuid.v4();
 }
 
-function createTask(taskName, taskString, taskPriority, usernameCreator, usernameReceiver) {
+function createTask(taskInfo) {
+	console.log(taskInfo);
 	var taskId = createTaskId();
+	taskInfo.taskId = taskId;
+	// Object.assign({taskId: taskId}, taskInfo);
+	console.log(taskInfo);
 	
-	var task = new Task(_.assign({}, {
-		taskId: taskId,
-		taskName: taskName,
-		taskString: taskString,
-		taskPriority: taskPriority,
-		usernameReceiver: usernameReceiver,
-		usernameCreator: usernameCreator
-	}));
+	// var task = new Task(_.assign({}, {
+	// 	taskId: taskId,
+	// 	taskName: taskInfo.taskName,
+	// 	taskString: taskInfo.taskString,
+	// 	usernameReceiver: taskInfo.usernameReceiver,
+	// 	usernameCreator: taskInfo.usernameCreator
+	// }));
 
+	var task = new Task(_.assign({}, taskInfo));
 	task.save();
+
 	return taskId;
 }
 

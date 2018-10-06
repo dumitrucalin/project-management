@@ -13,17 +13,20 @@ privateApp.post('/create', async function(req, res) {
 	var usernameReceiver = req.body.usernameReceiver;
 	var groupName = req.body.groupName;
 	var taskName = req.body.taskName;
-	var taskString = req.body.taskString;
-	var taskPriority = req.body.taskPriority;
-	// var taskDeadline = req.body.taskDeadline;
-	// var taskStatus = req.body.taskStatus;
-	// var showStatus = req.body.showStatus;
+	// var taskString = req.body.taskString;
+	
+	// if (req.body.taskDeadline)
+	// 	var taskDeadline = req.body.taskDeadline;
+	// if (req.body.taskPriority)
+	// 	var taskStatus = req.body.taskStatus;
+	// if (req.body.taskStatus)
+	// 	var showStatus = req.body.showStatus;
 
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
 		var user = await db.user.findByUsername(usernameReceiver);
 		if (user) {
-			var taskId = await db.task.createTask(taskName, taskString, taskPriority, usernameCreator, usernameReceiver);
+			var taskId = await db.task.createTask(req.body);
 			debug('Task ' + taskName + ' created');
 
 			if (usernameCreator === usernameReceiver) {

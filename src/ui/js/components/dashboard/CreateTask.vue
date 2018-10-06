@@ -24,7 +24,7 @@
 
 				<div>DeadLine</div>
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
-				<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
+				<input v-if="checkboxDeadline" type="date" name="DeadLine" v-model="taskDeadline"><br>
 
 				<div>Priority</div>
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
@@ -63,6 +63,7 @@ module.exports = {
 			groupName: '',
 			taskName: '',
 			taskString: '',
+			taskDeadline: null,
 			taskPriority: '',
 			taskStatus: false,
 
@@ -100,6 +101,7 @@ module.exports = {
 
 	methods: {
 		async submitTask(){
+			console.log('hai sa trimitem task-ul');
 			if(this.taskName)
 			{	
 				if(this.taskString)
@@ -114,6 +116,9 @@ module.exports = {
 								groupName: this.groupName,//musts exist
 								taskName: this.taskName,//must exist
 								taskString: this.taskString,//must exist
+								taskDeadline: this.taskDeadline,
+								taskPriority: this.taskPriority,
+								taskStatus: this.taskStatus
 							});
 							if (state)
 								console.log('heeeeei');

@@ -3,11 +3,12 @@
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
 		- * bootstrap notify pe index.js
+		- * show ok the date given, or save it differently
 
 	SERVER:
+		- To do the status property for the tasks
 		- To update and send only the new tasks, and not all of them
-		- To implement the rest of the details about the task
-		- Try/catch ?
+		- Try/catch
 		- Implement token with redis
 
 	IDEAS:

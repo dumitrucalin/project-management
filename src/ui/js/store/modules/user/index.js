@@ -271,17 +271,19 @@ module.exports = {
 		},
 		async sendTask(store, taskInfo) {
 			try {
-				this.$set(taskInfo, 'taskPriority', 'moderate');
-				console.log(taskInfo);
-				setTimeout(function() {
-					console.log('aici sunt in index');
-				}, 4000);
+				if (taskInfo.taskDeadline === null)
+					delete (taskInfo.taskDeadline);
+				if (taskInfo.taskPriority === '')
+					delete (taskInfo.taskPriority);
+				if (taskInfo.taskStatus === false)
+					delete (taskInfo.taskStatus);
+
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
 					if(this.notifications)
 						Vue.toast.customToast({
 							title:'SendTask:Success',
-							message:'The task has been sent: '+taskInfo,
+							message:'The task has been set!',
 							type:'info'
 						});
 					return true;

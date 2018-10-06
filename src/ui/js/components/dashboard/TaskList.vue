@@ -23,32 +23,37 @@
 							<td>
 								<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index>
 									<tr>
+										<th>Creator</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
-										<th>Creator</th>
-										<th>Priority</th>
+										<th v-if="task.taskDeadline">Deadline</th>
+										<th v-if="task.taskPriority">Priority</th>
 									</tr>
 									<tr>
-										<td>{{task.taskName}}</td>
-										<td>{{task.taskString}}</td>
-										<td>{{task.usernameCreator}}</td>
-										<td>{{task.taskPriority}}</td>
+										<td>{{ task.usernameCreator }}</td>
+										<td>{{ task.taskName }}</td>
+										<td>{{ task.taskString }}</td>
+										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									</tr>
 								</table>
 							</td>
 							<td>
 								<table v-for="(task,index) in this.tasks.tasksGiven" :key=index>
 									<tr>
+										<th>Receiver</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
-										<th>Receiver</th>
-										<th>Priority</th>
+										<th v-if="task.taskDeadline">Deadline</th>
+										<th v-if="task.taskPriority">Priority</th>
 									</tr>
 									<tr>
-										<td>{{task.taskName}}</td>
-										<td>{{task.taskString}}</td>
-										<td>{{task.usernameReceiver}}</td>
-										<td>{{task.taskPriority}}</td>
+										<td>{{ task.usernameReceiver }}</td>
+										<td>{{ task.taskName }}</td>
+										<td>{{ task.taskString }}</td>
+										<td v-if="task.taskDeadline" @click="day(task.taskDeadline)">{{ task.taskDeadline }}</td>
+										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+										<td><button @click="deleteTask(task.taskId)">X</button></td>
 									</tr>
 								</table>
 							</td>
@@ -99,6 +104,15 @@ module.exports = {
 			};
 			await this.$store.dispatch('user/stopCheckTasksStatus');
 			await this.$store.dispatch('user/checkTasksStatus', userInfo);
+		},
+		day (taskDeadline) {
+			console.log(taskDeadline.getDate());
+		},
+		month(taskDeadline) {
+			console.log(taskDeadline.getMonth());
+		},
+		year(taskDeadline) {
+			console.log(taskDeadline.getFullYear());
 		}
 	},
 
@@ -128,18 +142,14 @@ module.exports = {
 				if (fullName !== this.user.fullName)
 					this.fullNamesShowed.push(fullName);
 			}
-			// this.usernamesShowed = this.usernamesShowed.sort();
 
 			await this.$store.dispatch ('user/changeTasksView', true);
-			// var user = await this.$store.dispatch('user/getUser');
-			// if (user !== null) {
 			await this.$store.dispatch('user/stopCheckTasksStatus');
 			this.userInfo = {
 				username: this.user.username,
 				groupName: this.groupName
 			};
 			await this.$store.dispatch ('user/checkTasksStatus', this.userInfo);
-			// }
 		}
 	},
 
