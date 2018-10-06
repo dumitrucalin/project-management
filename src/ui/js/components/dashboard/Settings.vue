@@ -15,7 +15,7 @@
 				<div>Group</div>
 				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 			</select><br>
-			<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
+			<button class="submitButton" name="Submit" @click="exitGroup">Exit Group</button><br><br><br><br>
 
 			<select v-model="groupName">
 				<div>Group</div>
