@@ -11,27 +11,29 @@
 				<button class="submitButton" name="Submit" @click="submitInfo" >Submit</button>
 			</div><br><br><br><br>
 
-			<div>Group</div>
-			<select v-model="exitGroupName">
-				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
-			</select><br>
-			<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
+			<div v-if="user.groupNames.length">
+				<div>Group</div>
+				<select v-model="exitGroupName">
+					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
+				</select><br>
+				<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
 
-			<div>Group</div>
-			<select v-model="groupName">
-				<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
-			</select><br>
+				<div>Group</div>
+				<select v-model="groupName">
+					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
+				</select><br>
 
-			<div class="form-group">
-				<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
-				<button @click="addUserGroup">Add User</button>
+				<div class="form-group">
+					<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
+					<button @click="addUserGroup">Add User</button>
+				</div>
+				<ul>
+					<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
+						<p>{{ groupUserShow }}</p>
+					</li>
+				</ul>
+				<button @click="submitGroup">Update Group</button>
 			</div>
-			<ul>
-				<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
-					<p>{{ groupUserShow }}</p>
-				</li>
-			</ul>
-			<button @click="submitGroup">Update Group</button>
 		</div>
 		<div v-else>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
