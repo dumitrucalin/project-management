@@ -208,15 +208,15 @@ module.exports = {
 				return false;//bootsrap notify
 			}
 		},
-		async deleteUserFromGroup(deleteInfo) {
+		async deleteUserFromGroup(store,deleteInfo) {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/user/delete', deleteInfo);
 				if(response.data.err === 0) {
-					return response.data.err;
+					return true;
 				}
-				return null;//bootstrap notify 
+				return false;//bootstrap notify 
 			} catch (e) {
-				return null;//bootstrap notify
+				return false;//bootstrap notify
 			}
 		},
 		async checkTasksStatus(store, userInfo) {
