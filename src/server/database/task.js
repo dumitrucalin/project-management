@@ -24,12 +24,12 @@ var taskSchema = mongoose.Schema({
 		type: Boolean,
 		// required: true
 	},
-	taskStatus: {
-		type: String,
-		// required: true
-	},
 	taskPriority: {
 		type: String, 
+		// required: true
+	},
+	taskStatus: {
+		type: String,
 		// required: true
 	},
 	usernameReceiver: {

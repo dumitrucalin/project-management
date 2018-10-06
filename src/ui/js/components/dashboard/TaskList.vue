@@ -13,10 +13,7 @@
 					<div>{{ fullNamesShowed[index]}}</div>
 					<div>{{ username }}</div><br>
 				</div>
-				<p>This is the Task View</p>
-				<p>Hello Tasker mister fucker mother you</p>
 				<div>
-					Tasks Received
 					<table>
 						<tr>
 							<th>Tasks Recieved</th>

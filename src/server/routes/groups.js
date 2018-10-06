@@ -119,9 +119,10 @@ privateApp.post('/user/delete', async function (req, res) {
 			}
 			await db.group.deleteUser(groupName, username);
 			await db.user.deleteGroup(username, groupName);
-			if (Object.keys(group.users).length === 0) {
+
+			if (Object.keys(group.users).length === 1)
 				await db.group.deleteGroup(groupName);
-			}
+
 			debug('The user ' + username + ' was deleted from the group ' + groupName);
 			return res.status(200).send({ err: 0 });
 		} else {

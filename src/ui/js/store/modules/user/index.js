@@ -175,6 +175,11 @@ module.exports = {
 		},
 		async sendTask(store, taskInfo) {
 			try {
+				this.$set(taskInfo, 'taskPriority', 'moderate');
+				console.log(taskInfo);
+				setTimeout(function() {
+					console.log('aici sunt in index');
+				}, 4000);
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
 					console.log('got it');
@@ -236,7 +241,7 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					if (response.data.tasksModified) {
-						let response = await Vue.http.post(setup.API + '/tasks/get');
+						let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
 						store.commit('tasks', response.data.tasks);
 						console.log(response.data.tasks);
 					}
