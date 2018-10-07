@@ -4,6 +4,7 @@ TODO:
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
 		- * bootstrap notify pe index.js
 		- * data sa fie frumos prezentata
+		- * adaugat si ora pentru deadline, salvata in aceeasi variabila cu data, si anume taskDeadline
 		- * adaugat loading-uri oriunde e nevoie
 		- * text de scris pentru partea de settings
 
