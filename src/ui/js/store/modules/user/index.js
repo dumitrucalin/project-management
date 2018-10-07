@@ -275,8 +275,6 @@ module.exports = {
 					delete (taskInfo.taskDeadline);
 				if (taskInfo.taskPriority === '')
 					delete (taskInfo.taskPriority);
-				if (taskInfo.taskStatus === false)
-					delete (taskInfo.taskStatus);
 
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
@@ -461,6 +459,21 @@ module.exports = {
 						type:'warning'
 					});
 				return false;
+			}
+		},
+		async changeTaskStatus(store, task) {
+			let response = await Vue.http.post(setup.API + '/tasks/change/status', {
+				taskId: task.taskId, 
+				taskStatus: task.taskStatus, 
+				groupName: task.groupName, 
+				usernameReceiver: task.usernameReceiver, 
+				usernameCreator: task.usernameCreator
+			});
+			
+			if (response.data.err === 0) {
+				return true;//bootstrap
+			} else {
+				return false;//bootstrap
 			}
 		}
 	},
