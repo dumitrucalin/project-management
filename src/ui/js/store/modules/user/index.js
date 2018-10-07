@@ -21,9 +21,9 @@ module.exports = {
 		showTasks: false,
 		groupName: null
 	},
-
 	data: {
-		intervalStatus: null
+		intervalStatus: null,
+		notifications:true,//To show, change to true, trebuie facut buton in dashboard
 	},
 
 	getters: {
@@ -56,11 +56,24 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/login', credentials);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'Login:Success',
+							message:'The token is good',
+							type:'info'
+						});
 					return true;
 				}
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'Login:Fail',
+						message:'The token is not good',
+						type:'warning'
+					});
 				return false;
 			} catch (e) {
 				console.log('Login fail ' + e);//bootsrap notify
+				//Login fail
 				return false;
 			}
 		},
@@ -69,11 +82,22 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/signup', credentials);
 				if (response.data.token) {
 					store.commit('token', response.data.token);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'SignUp:Success',
+							message:'The token is good',
+							type:'info'
+						});
 					return true;
 				}
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'SignUp:Fail',
+						message:'The token is not good',
+						type:'warning'
+					});
 				return false;
 			} catch (e) {
-				console.log('Sign up fail ' + e);//bootsrap notify
 				return false;
 			}
 		},
@@ -82,12 +106,23 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/logout', token);
 				store.commit('token', null);
 				if (response.data.err === 0) {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'LogOut:Success',
+							message:'Token null-ified',
+							type:'info'
+						});
 					return true;
 				} else {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'LogOut:Fail',
+							message:'Could not complete the logout',
+							type:'warning'
+						});
 					return false;
 				}
 			} catch (e) {
-				console.log('Logout fail ' + e);//bootsrap notify
 				return false;
 			}
 		},
@@ -100,8 +135,20 @@ module.exports = {
 				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'GetUser:Success',
+							message:'The user has been retrieved: '+ response.data.user.username,
+							type:'info'
+						});
 					return response.data.user;
 				}
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'GetUser:Fail',
+						message:'The user has not been retrieved',
+						type:'warning'
+					});
 				return null;//bootsrap notify
 			} catch (e) {
 				return null;//bootsrap notify
@@ -112,9 +159,21 @@ module.exports = {
 				let response = await Vue.http.get(setup.API + '/users/info');
 				if (response.data.err === 0) {
 					store.commit('user', response.data.user);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'UpdateUser:Success',
+							message:'The user has been updated: '+ response.data.user,
+							type:'info'
+						});
 					return true;
 				} else {//bootsrap notify
 					// TODO toast token expired
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'UpdateUser:Fail',
+							message:'The user token expired',
+							type:'warning'
+						});
 					store.commit('user', null);
 					store.commit('token', null);
 					return false;
@@ -123,6 +182,7 @@ module.exports = {
 				if (e.status === 401) {
 					store.commit('user', null);
 					store.commit('token', null);
+					
 				}
 				// TODO toast network error
 				return false;//bootsrap notify
@@ -132,8 +192,20 @@ module.exports = {
 			let response = await Vue.http.post(setup.API + '/users/update', userInfo);
 			if (response.data.err === 0) {
 				store.commit ('user', response.data.user);
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'UpdateUserInfo:Success',
+						message:'The user info has been updated: '+response.data.user,
+						type:'info'
+					});
 				return true;
 			} else {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'UpdateUserInfo:Fail',
+						message:'The user info has not been updated',
+						type:'warning'
+					});
 				return null;
 			}
 		},
@@ -142,8 +214,20 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/groups/create', groupInfo);
 				if (response.data.err === 0) {
 					store.commit('user', response.data.user);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'SendGroup:Success',
+							message:'The group has been sent: '+groupInfo,
+							type:'info'
+						});
 					return true;
 				} else {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'SendGroup:Fail',
+							message:'The group has not been sent',
+							type:'warning'
+						});
 					return false;//bootsrap notify
 				}
 			} catch(e) {
@@ -165,9 +249,21 @@ module.exports = {
 					var fullNames = newResponse.data.fullNames;
 				else {
 					console.log(newResponse.data.message);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'UpdateGroup:Fail',
+							message:newResponse.data.message,
+							type:'warning'
+						});
 					return false;
 				}
 				store.commit('fullNames', fullNames);
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'UpdateGroup:Success',
+						message:'The group has been updated',
+						type:'info'
+					});
 				return true;
 			} else {
 				return false;//bootstrap notify
@@ -175,11 +271,27 @@ module.exports = {
 		},
 		async sendTask(store, taskInfo) {
 			try {
+				if (taskInfo.taskDeadline === null)
+					delete (taskInfo.taskDeadline);
+				if (taskInfo.taskPriority === '')
+					delete (taskInfo.taskPriority);
+
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 				if (response.data.err === 0) {
-					console.log('got it');
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'SendTask:Success',
+							message:'The task has been set!',
+							type:'info'
+						});
 					return true;
 				} else {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'SendTask:Fail',
+							message:'The task has not been sent: ',
+							type:'warning'
+						});
 					return false;//bootsrap notify
 				}
 			} catch(e) {
@@ -190,8 +302,20 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/users/get', {groupName: groupName});
 				if (response.data.err === 0) {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'GetUsers:Success',
+							message:'The users have been retrieved',
+							type:'info'
+						});
 					store.commit ('usernames', response.data.usernames);
 				} else {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'GetUsers:Fail',
+							message:'The users have not been retrieved',
+							type:'warning'
+						});
 					return false;
 				}
 
@@ -200,9 +324,21 @@ module.exports = {
 					var fullNames = newResponse.data.fullNames;
 				else {
 					console.log(newResponse.data.message);
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'GetUsers:Fail',
+							message:newResponse.data.message,
+							type:'warning'
+						});
 					return false;
 				}
 				store.commit('fullNames', fullNames);
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'GetUsers:Success',
+						message:'Returned fullNames: '+ fullNames,
+						type:'info'
+					});
 				return true;//bootsrap notify
 			} catch (e) {
 				return false;//bootsrap notify
@@ -212,8 +348,20 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/user/delete', deleteInfo);
 				if(response.data.err === 0) {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'DeleteUserFromGroup:Success',
+							message:'User ' + deleteInfo.username + ' deleted from ' + deleteInfo.groupName,
+							type:'info'
+						});
 					return true;
 				}
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'DeleteUserFromGroup:Fail',
+						message:'User ' + deleteInfo.username + ' has not been deleted from ' + deleteInfo.groupName,
+						type:'warning'
+					});
 				return false;//bootstrap notify 
 			} catch (e) {
 				return false;//bootstrap notify
@@ -228,6 +376,12 @@ module.exports = {
 			let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
 
 			if (response.data.err === 0) {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'CheckTasksStatus:Success',
+						message:'Task checked succsessful',
+						type:'info'
+					});
 				store.commit ('tasks', response.data.tasks);
 			}
 
@@ -236,20 +390,54 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					if (response.data.tasksModified) {
-						let response = await Vue.http.post(setup.API + '/tasks/get');
+						let response = await Vue.http.post(setup.API + '/tasks/get', taskInfo);
 						store.commit('tasks', response.data.tasks);
+						if(this.notifications)
+							Vue.toast.customToast({
+								title:'CheckTasksStatus:Success',
+								message:'Task comitted succsessful: ' + response.data.tasks,
+								type:'info'
+							});
 						console.log(response.data.tasks);
 					}
 				} else {
+					if(this.notifications)
+						Vue.toast.customToast({
+							title:'CheckTasksStatus:Fail',
+							message:'Task chheck failed ',
+							type:'warning'
+						});
 					// TODO: TOAST//bootsrap notify
 				}
-			}, 1000);
+			}, 5000);
 		},
 		async deleteTask(store, taskId) {
 			var groupName = store.getters['groupName'];
 			let response = await Vue.http.post(setup.API + '/tasks/exist', {taskId: taskId});
 			if (response.data.err === 0) {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'DeleteTask:Success',
+						message:'Task deleted succsessfuly: ' + taskId + ' from ' + groupName,
+						type:'info'
+					});
 				await Vue.http.post(setup.API + '/tasks/delete', {taskId: taskId, groupName: groupName});
+			} else {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'DeleteTask:Fail',
+						message:'Task not deleted',
+						type:'warning'
+					});
+			}
+			
+		},
+		async deleteTaskId(store, taskIdInfo) {
+			let response = await Vue.http.post(setup.API + '/groups/task/delete', {taskId: taskIdInfo.taskId, groupName: taskIdInfo.groupName, username: taskIdInfo.username});
+			if (response.data.err === 0) {
+				return true;
+			} else {
+				return false;
 			}
 		},
 		setGroupName(store, groupName) {
@@ -264,9 +452,36 @@ module.exports = {
 		async checkUsername(store, username) {
 			let response = await Vue.http.post(setup.API + '/users/check/name', {username: username});
 			if (response.data.err === 0) {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'CheckUsername:Success',
+						message:'Username returned',
+						type:'info'
+					});
 				return true;
 			} else {
+				if(this.notifications)
+					Vue.toast.customToast({
+						title:'CheckUsername:Fail',
+						message:'Username no returned',
+						type:'warning'
+					});
 				return false;
+			}
+		},
+		async changeTaskStatus(store, task) {
+			let response = await Vue.http.post(setup.API + '/tasks/change/status', {
+				taskId: task.taskId, 
+				taskStatus: task.taskStatus, 
+				groupName: task.groupName, 
+				usernameReceiver: task.usernameReceiver, 
+				usernameCreator: task.usernameCreator
+			});
+			
+			if (response.data.err === 0) {
+				return true;//bootstrap
+			} else {
+				return false;//bootstrap
 			}
 		}
 	},

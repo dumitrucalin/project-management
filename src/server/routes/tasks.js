@@ -12,19 +12,12 @@ privateApp.post('/create', async function(req, res) {
 	var usernameCreator = req.body.usernameCreator;
 	var usernameReceiver = req.body.usernameReceiver;
 	var groupName = req.body.groupName;
-	var taskName = req.body.taskName;
-	var taskString = req.body.taskString;
-	var taskPriority = req.body.taskPriority;
-	// var taskDeadline = req.body.taskDeadline;
-	// var taskStatus = req.body.taskStatus;
-	// var showStatus = req.body.showStatus;
 
 	var group = await db.group.findByGroupName(groupName);
 	if (group) {
 		var user = await db.user.findByUsername(usernameReceiver);
 		if (user) {
-			var taskId = await db.task.createTask(taskName, taskString, taskPriority, usernameCreator, usernameReceiver);
-			debug('Task ' + taskName + ' created');
+			var taskId = await db.task.createTask(req.body);
 
 			if (usernameCreator === usernameReceiver) {
 				await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
@@ -144,6 +137,24 @@ privateApp.post('/exist', async function(req, res) {
 	var taskId = req.body.taskId;
 	var task = await db.task.findByTaskId(taskId);
 	if (task) {
+		return res.status(200).send({ err: 0 });
+	} else {
+		debug('The task with the given taskId doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'THe task with the given taskId doesn\' exist!' });
+	}
+});
+
+privateApp.post('/change/status', async function(req, res) {
+	var taskId = req.body.taskId;
+	var taskStatus = req.body.taskStatus;
+	var groupName = req.body.groupName;
+	var usernameReceiver = req.body.usernameReceiver;
+	var usernameCreator = req.body.usernameCreator;
+
+	var task = await db.task.changeTaskStatus(taskId, taskStatus);
+	if (task) {
+		await db.group.setTasksStatus(groupName, usernameCreator, true);
+		await db.group.setTasksStatus(groupName, usernameReceiver, true);
 		return res.status(200).send({ err: 0 });
 	} else {
 		debug('The task with the given taskId doesn\'t exist');

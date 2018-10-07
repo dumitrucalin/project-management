@@ -84,6 +84,7 @@ module.exports = {
 						} else {
 							console.log('user not existing');
 							// TODO: TOAST FOR NOT EXISTING USER
+							this.userNameGroup='';
 						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);

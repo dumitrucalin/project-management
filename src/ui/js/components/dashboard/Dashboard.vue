@@ -3,12 +3,11 @@
 		<div v-if="user">
 			<div class="dashboard">
 				<h3 @click="taskList">This is the dashboard!</h3>
-				<p @click="logIt()">Hello {{ this.user.fullName }}</p>
+				<p @click="logIt()">Hello {{ this.user.fullName }}<br>{{ this.user.username }}</p>
 				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
 				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
 				<button v-if="user.groupNames.length" class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
 				<button class="submitButton" name="Submit" value="Settings" @click="settings">Settings</button>
-				<button v-if="user.groupNames.length" type="button" @click="exitGroup">Leave Group</button>
 			</div>
 
 			<Settings v-if="settingsView" />
@@ -99,10 +98,7 @@ module.exports = {
 		},
 		logIt(){
 			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
-		},
-		exitGroup(){
-			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
-		},		
+		}	
 	},
 
 	computed: {

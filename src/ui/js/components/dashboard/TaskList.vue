@@ -13,10 +13,7 @@
 					<div>{{ fullNamesShowed[index]}}</div>
 					<div>{{ username }}</div><br>
 				</div>
-				<p>This is the Task View</p>
-				<p>Hello Tasker mister fucker mother you</p>
 				<div>
-					Tasks Received
 					<table>
 						<tr>
 							<th>Tasks Recieved</th>
@@ -26,38 +23,49 @@
 							<td>
 								<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index>
 									<tr>
+										<th>Creator</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
-										<th>Creator</th>
-										<th>Priority</th>
+										<th>Task Status</th>
+										<th v-if="task.taskDeadline">Deadline</th>
+										<th v-if="task.taskPriority">Priority</th>
 									</tr>
 									<tr>
-										<td>{{task.taskName}}</td>
-										<td>{{task.taskString}}</td>
-										<td>{{task.usernameCreator}}</td>
-										<td>{{task.taskPriority}}</td>
+										<td>{{ task.usernameCreator }}</td>
+										<td>{{ task.taskName }}</td>
+										<td>{{ task.taskString }}</td>
+										<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernameReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									</tr>
 								</table>
 							</td>
 							<td>
 								<table v-for="(task,index) in this.tasks.tasksGiven" :key=index>
 									<tr>
+										<th>Receiver</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
-										<th>Receiver</th>
-										<th>Priority</th>
+										<th>Task Status</th>
+										<th v-if="task.taskDeadline">Deadline</th>
+										<th v-if="task.taskPriority">Priority</th>
 									</tr>
 									<tr>
-										<td>{{task.taskName}}</td>
-										<td>{{task.taskString}}</td>
-										<td>{{task.usernameReceiver}}</td>
-										<td>{{task.taskPriority}}</td>
+										<td>{{ task.usernameReceiver }}</td>
+										<td>{{ task.taskName }}</td>
+										<td>{{ task.taskString }}</td>
+										<td>{{ task.taskStatus }}</td>
+										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+										<td><button @click="deleteTask(task.taskId)">X</button></td>
 									</tr>
 								</table>
 							</td>
 						</tr>
 					</table>
+					<div v-if="editingTask">
 
+					</div>
 				</div>
 			</div>
 			<div v-else>
@@ -84,7 +92,8 @@ module.exports = {
 			groupName: '',
 			groupNamesSorted: [],
 			usernamesShowed: [],
-			fullNamesShowed: []
+			fullNamesShowed: [],
+			editingTask: false,
 		};
 	},
 
@@ -95,6 +104,29 @@ module.exports = {
 	methods: {
 		async deleteTask(taskId) {
 			await this.$store.dispatch('user/deleteTask', taskId);
+			var groupName = await this.$store.getters['user/groupName'];
+			var userInfo = {
+				username: this.user.username,
+				groupName: groupName
+			};
+			await this.$store.dispatch('user/stopCheckTasksStatus');
+			await this.$store.dispatch('user/checkTasksStatus', userInfo);
+		},
+		async changeTaskStatus(taskId, taskStatus, usernameReceiver, usernameCreator) {
+			if (taskStatus === 'Not yet started')
+				taskStatus = 'In progress';
+			else if (taskStatus === 'In progress')
+				taskStatus = 'Finished';
+			
+			if (taskStatus === 'Finished') {
+				if (usernameReceiver === usernameCreator) {
+					await this.$store.dispatch('user/deleteTask', taskId);
+				} else {
+					await this.$store.dispatch('user/deleteTaskId', {taskId: taskId, groupName: this.groupName, username: usernameReceiver});
+				}
+			} 
+
+			await this.$store.dispatch('user/changeTaskStatus', {taskId: taskId, taskStatus: taskStatus, groupName: this.groupName, usernameReceiver: usernameReceiver, usernameCreator: usernameCreator});
 			var groupName = await this.$store.getters['user/groupName'];
 			var userInfo = {
 				username: this.user.username,
@@ -139,7 +171,6 @@ module.exports = {
 				groupName: this.groupName
 			};
 			await this.$store.dispatch ('user/checkTasksStatus', this.userInfo);
-			// }
 		}
 	},
 

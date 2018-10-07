@@ -1,6 +1,7 @@
 <template>
 	<div>
-		<div v-if="user">
+		<div v-if="user"><br><br>
+			Your username is {{ user.username }}<br>
 			Your email is {{ user.email }}<br>
 			Your fullName is {{ user.fullName }}<br>
 
@@ -12,27 +13,30 @@
 			</div><br><br><br><br>
 
 			<div v-if="user.groupNames.length">
-				<div>Group</div>
+				<div>Exit from the group</div>
 				<select v-model="exitGroupName">
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
 				<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
 
-				<div>Group</div>
+				<div>Add new users to the group</div>
 				<select v-model="groupName">
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
 
-				<div class="form-group">
-					<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
-					<button @click="addUserGroup">Add User</button>
+				<div v-if="groupName">
+					<div class="form-group">
+						<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
+						<button @click="addUserGroup">Add User</button>
+					</div>
+					<ul>
+						<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
+							<p>{{ groupUserShow }}</p>
+						</li>
+					</ul>
 				</div>
-				<ul>
-					<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
-						<p>{{ groupUserShow }}</p>
-					</li>
-				</ul>
-				<button @click="submitGroup">Update Group</button>
+				<button @click="submitGroup">Update Group</button><br><br>
+				<button @click="redirectDashboard">Task View</button>
 			</div>
 		</div>
 		<div v-else>
@@ -139,7 +143,7 @@ module.exports = {
 			}
 			this.username='';
 		},
-		async submitGroup(){
+		async submitGroup() {
 			let state = await this.$store.dispatch ('user/updateGroup', {
 				groupName: this.groupName,
 				usernames: this.usernames
@@ -151,7 +155,7 @@ module.exports = {
 				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
 			}	
 		},
-		async exitGroup(){
+		async exitGroup() {
 			let state = await this.$store.dispatch ('user/deleteUserFromGroup', {
 				groupName:this.exitGroupName,
 				username:this.user.username
@@ -159,6 +163,9 @@ module.exports = {
 			if (state) {
 				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
 			}
+		},
+		async redirectDashboard() {
+			await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 		}
 	},
 

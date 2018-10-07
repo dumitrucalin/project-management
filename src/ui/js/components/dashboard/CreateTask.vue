@@ -3,41 +3,40 @@
 		<p>This is the task creator!</p>
 		<p>Hello {{ this.user.fullName }}</p>
 		<p>This is the task creator!</p>
-		<form>
+		<div>
 			<div class="form-group">
 				<input id="task-Title" type="text" class="form-control input-sm chat-input"  placeholder="Task Title" v-model="taskName" />
 			</div>
+
 			<div class="form-group">
 				<textarea name="message" rows="10" cols="30" v-model="taskString">Input your task.</textarea>
 			</div>
-				<form id="options">
-					<select v-model="groupName">
-						<div>Group</div>
-						<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
-					</select><br>
 
-					<select v-if="groupName" v-model="usernameReceiver" >
-						<option v-for="(username, index) in this.usernamesSorted" :key=index :value="username">{{ username }}</option>
-					</select>
+			<div id="options">
+				<select v-model="groupName">
+					<div>Group</div>
+					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
+				</select><br>
 
-					<div>DeadLine</div>
-					<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
-					<input v-if="checkboxDeadline" type="date" name="DeadLine"><br>
+				<select v-if="groupName" v-model="usernameReceiver" >
+					<option v-for="(username, index) in this.usernamesSorted" :key=index :value="username">{{ username }}</option>
+				</select>
 
-					<div>Priority</div>
-					<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
-					<select v-if="checkboxPriority" v-model="taskPriority">
-						<option name="Urgent" value="urgent">Urgent</option>
-						<option name="Moderate" value="moderate">Moderate</option>
-						<option name="At leisure" value="atLeisure">At leisure</option>
-					</select><br>
+				<div>DeadLine</div>
+				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
+				<input type="date" v-model="taskDeadline" name="Deadline" v-if="checkboxDeadline"><br>
 
-					<div>Status</div>
-					<input type="checkbox" @click="changeStatus = !changeStatus;"><br>
+				<div>Priority</div>
+				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
+				<select v-if="checkboxPriority" v-model="taskPriority">
+					<option name="Urgent" value="urgent">Urgent</option>
+					<option name="Moderate" value="moderate">Moderate</option>
+					<option name="At leisure" value="atLeisure">At leisure</option>
+				</select><br>
 
-					<button @click="submitTask">Create Task</button>
-				</form>
-		</form>
+				<button @click="submitTask">Create Task</button>
+			</div>
+		</div>
 	</div>
 </template>
 
@@ -54,6 +53,10 @@ module.exports = {
 			checkboxPriority: false,
 			checkboxDeadline: false,
 
+			days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+			months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
+			hours: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
+
 			groupNamesSorted: [],
 			usernamesSorted: [],
 
@@ -62,7 +65,7 @@ module.exports = {
 			taskName: '',
 			taskString: '',
 			taskPriority: '',
-			taskStatus: false,
+			taskDeadline: null,
 
 			groupNameNotify: {
 				title: 'The group field is needed',
@@ -106,15 +109,19 @@ module.exports = {
 					{
 						if(this.usernameReceiver)
 						{
-							await this.$store.dispatch ('user/sendTask', {
+							let state = await this.$store.dispatch ('user/sendTask', {
 								usernameCreator: this.user.username,
 								usernameReceiver: this.usernameReceiver,//must exist
 								groupName: this.groupName,//musts exist
 								taskName: this.taskName,//must exist
 								taskString: this.taskString,//must exist
+								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
+								taskStatus: 'Not yet started'
 							});
-							await this.$store.dispatch('settings/redirect', 'DASHBOARD');
+							if (state) {
+								await this.$store.dispatch('settings/redirect', 'DASHBOARD');
+							}
 						} else {
 							Vue.toast.customToast(this.usernameReceiverNotify);
 						}

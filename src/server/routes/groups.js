@@ -119,9 +119,10 @@ privateApp.post('/user/delete', async function (req, res) {
 			}
 			await db.group.deleteUser(groupName, username);
 			await db.user.deleteGroup(username, groupName);
-			if (Object.keys(group.users).length === 0) {
+
+			if (Object.keys(group.users).length === 1)
 				await db.group.deleteGroup(groupName);
-			}
+
 			debug('The user ' + username + ' was deleted from the group ' + groupName);
 			return res.status(200).send({ err: 0 });
 		} else {
@@ -142,6 +143,21 @@ privateApp.post('/users/get', async function (req, res) {
 		var usernames = Object.keys(group.users);
 		usernames = usernames.sort();
 		return res.status(200).send({ err: 0, usernames: usernames });
+	} else {
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+	}
+});
+
+privateApp.post('/task/delete', async function (req, res) {
+	var taskId = req.body.taskId;
+	var groupName = req.body.groupName;
+	var username = req.body.username;
+
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		await db.group.deleteTaskReceived(groupName, username, taskId);
+		return res.status(200).send({ err: 0 });
 	} else {
 		debug('The group ' + groupName + ' doesn\'t exist');
 		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
