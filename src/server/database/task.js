@@ -24,13 +24,9 @@ var taskSchema = mongoose.Schema({
 		type: String, 
 		// required: true
 	},
-	showStatus: {
-		type: Boolean,
-		// required: true
-	},
 	taskStatus: {
 		type: String,
-		// required: true
+		required: true
 	},
 	usernameReceiver: {
 		type: String,
@@ -60,19 +56,9 @@ function createTaskId() {
 }
 
 function createTask(taskInfo) {
-	console.log(taskInfo);
 	var taskId = createTaskId();
-	taskInfo.taskId = taskId;
-	// Object.assign({taskId: taskId}, taskInfo);
 	console.log(taskInfo);
-	
-	// var task = new Task(_.assign({}, {
-	// 	taskId: taskId,
-	// 	taskName: taskInfo.taskName,
-	// 	taskString: taskInfo.taskString,
-	// 	usernameReceiver: taskInfo.usernameReceiver,
-	// 	usernameCreator: taskInfo.usernameCreator
-	// }));
+	taskInfo.taskId = taskId;
 
 	var task = new Task(_.assign({}, taskInfo));
 	task.save();
@@ -88,10 +74,15 @@ function deleteTask(taskId) {
 	return Task.deleteOne({ taskId: taskId });
 }
 
+function changeTaskStatus(taskId, taskStatus) {
+	return Task.updateOne({ taskId: taskId }, { $set: { taskStatus: taskStatus } });
+}
+
 var task = {
 	createTask,
 	findByTaskId,
-	deleteTask
+	deleteTask,
+	changeTaskStatus
 };
 
 module.exports = task;

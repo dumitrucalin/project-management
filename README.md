@@ -6,7 +6,7 @@ TODO:
 		- * show ok the date given, or save it differently
 
 	SERVER:
-		- To do the status property for the tasks
+		- Delete the finished task only to the receiver
 		- To update and send only the new tasks, and not all of them
 		- Try/catch
 		- Implement token with redis

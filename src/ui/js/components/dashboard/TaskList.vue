@@ -26,6 +26,7 @@
 										<th>Creator</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
+										<th>Task Status</th>
 										<th v-if="task.taskDeadline">Deadline</th>
 										<th v-if="task.taskPriority">Priority</th>
 									</tr>
@@ -33,6 +34,7 @@
 										<td>{{ task.usernameCreator }}</td>
 										<td>{{ task.taskName }}</td>
 										<td>{{ task.taskString }}</td>
+										<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernameReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									</tr>
@@ -44,6 +46,7 @@
 										<th>Receiver</th>
 										<th>Task Name</th>
 										<th>Task Details</th>
+										<th>Task Status</th>
 										<th v-if="task.taskDeadline">Deadline</th>
 										<th v-if="task.taskPriority">Priority</th>
 									</tr>
@@ -51,7 +54,8 @@
 										<td>{{ task.usernameReceiver }}</td>
 										<td>{{ task.taskName }}</td>
 										<td>{{ task.taskString }}</td>
-										<td v-if="task.taskDeadline" @click="day(task.taskDeadline)">{{ task.taskDeadline }}</td>
+										<td>{{ task.taskStatus }}</td>
+										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 										<td><button @click="deleteTask(task.taskId)">X</button></td>
 									</tr>
@@ -59,7 +63,9 @@
 							</td>
 						</tr>
 					</table>
+					<div v-if="editingTask">
 
+					</div>
 				</div>
 			</div>
 			<div v-else>
@@ -86,7 +92,8 @@ module.exports = {
 			groupName: '',
 			groupNamesSorted: [],
 			usernamesShowed: [],
-			fullNamesShowed: []
+			fullNamesShowed: [],
+			editingTask: false,
 		};
 	},
 
@@ -105,14 +112,26 @@ module.exports = {
 			await this.$store.dispatch('user/stopCheckTasksStatus');
 			await this.$store.dispatch('user/checkTasksStatus', userInfo);
 		},
-		day (taskDeadline) {
-			console.log(taskDeadline.getDate());
-		},
-		month(taskDeadline) {
-			console.log(taskDeadline.getMonth());
-		},
-		year(taskDeadline) {
-			console.log(taskDeadline.getFullYear());
+		async changeTaskStatus(taskId, taskStatus, usernameReceiver, usernameCreator) {
+			if (taskStatus === 'Not yet started')
+				taskStatus = 'In progress';
+			else if (taskStatus === 'In progress')
+				taskStatus = 'Finished';
+			if (taskStatus === 'Finished') {
+				setTimeout(function() {
+
+				}, 2000);
+				await this.$store.dispatch('user/deleteTask', taskId);
+				// TODO: NOT DELETE TASK FROM DB, BUT TASKID FROM THE USER!!!!!!
+			} else
+				await this.$store.dispatch('user/changeTaskStatus', {taskId: taskId, taskStatus: taskStatus, groupName: this.groupName, usernameReceiver: usernameReceiver, usernameCreator: usernameCreator});
+			var groupName = await this.$store.getters['user/groupName'];
+			var userInfo = {
+				username: this.user.username,
+				groupName: groupName
+			};
+			await this.$store.dispatch('user/stopCheckTasksStatus');
+			await this.$store.dispatch('user/checkTasksStatus', userInfo);
 		}
 	},
 
