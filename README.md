@@ -3,13 +3,14 @@
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
 		- * bootstrap notify pe index.js
-		- * show ok the date given, or save it differently
+		- * data sa fie frumos prezentata
+		- * adaugat loading-uri oriunde e nevoie
+		- * text de scris pentru partea de settings
 
 	SERVER:
-		- Delete the finished task only to the receiver
 		- To update and send only the new tasks, and not all of them
 		- Try/catch
-		- Implement token with redis
+		- Implement token and tasksMOdified variables checking with redis
 
 	IDEAS:
         1. A given task can be assigned to multiple persons, and one of them has to take it -> reassigment of task will be used in case of deleting a user

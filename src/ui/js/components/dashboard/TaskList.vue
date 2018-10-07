@@ -117,14 +117,16 @@ module.exports = {
 				taskStatus = 'In progress';
 			else if (taskStatus === 'In progress')
 				taskStatus = 'Finished';
+			
 			if (taskStatus === 'Finished') {
-				setTimeout(function() {
+				if (usernameReceiver === usernameCreator) {
+					await this.$store.dispatch('user/deleteTask', taskId);
+				} else {
+					await this.$store.dispatch('user/deleteTaskId', {taskId: taskId, groupName: this.groupName, username: usernameReceiver});
+				}
+			} 
 
-				}, 2000);
-				await this.$store.dispatch('user/deleteTask', taskId);
-				// TODO: NOT DELETE TASK FROM DB, BUT TASKID FROM THE USER!!!!!!
-			} else
-				await this.$store.dispatch('user/changeTaskStatus', {taskId: taskId, taskStatus: taskStatus, groupName: this.groupName, usernameReceiver: usernameReceiver, usernameCreator: usernameCreator});
+			await this.$store.dispatch('user/changeTaskStatus', {taskId: taskId, taskStatus: taskStatus, groupName: this.groupName, usernameReceiver: usernameReceiver, usernameCreator: usernameCreator});
 			var groupName = await this.$store.getters['user/groupName'];
 			var userInfo = {
 				username: this.user.username,

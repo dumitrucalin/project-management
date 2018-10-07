@@ -409,7 +409,7 @@ module.exports = {
 						});
 					// TODO: TOAST//bootsrap notify
 				}
-			}, 1000);
+			}, 5000);
 		},
 		async deleteTask(store, taskId) {
 			var groupName = store.getters['groupName'];
@@ -431,6 +431,14 @@ module.exports = {
 					});
 			}
 			
+		},
+		async deleteTaskId(store, taskIdInfo) {
+			let response = await Vue.http.post(setup.API + '/groups/task/delete', {taskId: taskIdInfo.taskId, groupName: taskIdInfo.groupName, username: taskIdInfo.username});
+			if (response.data.err === 0) {
+				return true;
+			} else {
+				return false;
+			}
 		},
 		setGroupName(store, groupName) {
 			store.commit('groupName', groupName);

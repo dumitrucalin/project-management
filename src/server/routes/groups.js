@@ -149,4 +149,19 @@ privateApp.post('/users/get', async function (req, res) {
 	}
 });
 
+privateApp.post('/task/delete', async function (req, res) {
+	var taskId = req.body.taskId;
+	var groupName = req.body.groupName;
+	var username = req.body.username;
+
+	var group = await db.group.findByGroupName(groupName);
+	if (group) {
+		await db.group.deleteTaskReceived(groupName, username, taskId);
+		return res.status(200).send({ err: 0 });
+	} else {
+		debug('The group ' + groupName + ' doesn\'t exist');
+		return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+	}
+});
+
 module.exports.privateRoutes = privateApp;
