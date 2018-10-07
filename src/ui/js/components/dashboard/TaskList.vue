@@ -3,6 +3,9 @@
 		<select v-if="this.groupNamesSorted.length" v-model="groupName">
 			<option v-for="(groupNameIndex, index) in this.groupNamesSorted" :key=index >{{ groupNameIndex }}</option>
 		</select>
+		<div v-else>
+			You are in no group at the moment.<br> Please first create a group or wait for an invitation!
+		</div>
 		<div v-if="showTasks">
 			<div v-if="tasks" class="taskList">
 				The users in the same group with you are:
@@ -14,36 +17,47 @@
 				<p>Hello Tasker mister fucker mother you</p>
 				<div>
 					Tasks Received
-					<table style="width:100%">
+					<table>
 						<tr>
-							<th>Task Name</th>
-							<th>Task Details</th>
-							<th>Creator</th>
-							<th>Priority</th>
+							<th>Tasks Recieved</th>
+							<th>Tasks Given</th>
 						</tr>
-						<tr v-for="(task,index) in this.tasks.tasksReceived" :key=index>
-							<td>{{task.taskName}}</td>
-							<td>{{task.taskString}}</td>
-							<td>{{task.usernameCreator}}</td>
-							<td>{{task.taskPriority}}</td>
+						<tr>
+							<td>
+								<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index>
+									<tr>
+										<th>Task Name</th>
+										<th>Task Details</th>
+										<th>Creator</th>
+										<th>Priority</th>
+									</tr>
+									<tr>
+										<td>{{task.taskName}}</td>
+										<td>{{task.taskString}}</td>
+										<td>{{task.usernameCreator}}</td>
+										<td>{{task.taskPriority}}</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table v-for="(task,index) in this.tasks.tasksGiven" :key=index>
+									<tr>
+										<th>Task Name</th>
+										<th>Task Details</th>
+										<th>Receiver</th>
+										<th>Priority</th>
+									</tr>
+									<tr>
+										<td>{{task.taskName}}</td>
+										<td>{{task.taskString}}</td>
+										<td>{{task.usernameReceiver}}</td>
+										<td>{{task.taskPriority}}</td>
+									</tr>
+								</table>
+							</td>
 						</tr>
 					</table>
-					<br>Tasks Given
-					<table style="width:100%">
-						<tr>
-							<th>Task Name</th>
-							<th>Task Details</th>
-							<th>Receiver</th>
-							<th>Priority</th>
-						</tr>
-						<tr v-for="(task,index) in this.tasks.tasksGiven" :key=index>
-							<td>{{task.taskName}}</td>
-							<td>{{task.taskString}}</td>
-							<td>{{task.usernameReceiver}}</td>
-							<td>{{task.taskPriority}}</td>
-							<td><button @click="deleteTask(task.taskId)">X</button></td>
-						</tr>
-					</table>
+
 				</div>
 			</div>
 			<div v-else>
