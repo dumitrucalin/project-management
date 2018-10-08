@@ -36,19 +36,18 @@ module.exports = {
 				if (response.data.err === 0) {
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'SendTask:Success',
-							message:'The task has been set!',
-							type:'info'
+							title: 'Create Task: Success',
+							message: 'The task has been created!',
+							type: 'info'
 						});
 
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SendTask:Fail',
-							message:'The task has not been sent: ',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Create Task: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -59,11 +58,6 @@ module.exports = {
 
 		async check(store, userInfo) {
 			try {
-				// var taskInfo = {
-				// 	username: userInfo.username,
-				// 	groupName: userInfo.groupName
-				// };
-
 				let response = await Vue.http.post(setup.API + '/tasks/get', {
 					username: userInfo.username,
 					groupName: userInfo.groupName
@@ -71,13 +65,12 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					store.commit('tasks', response.data.tasks);
-
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'CheckTasksStatus:Success',
-							message:'Task checked succsessful',
-							type:'info'
-						});
+				} else {
+					Vue.toast.customToast({
+						title: 'Check if Tasks were Modified: Failed',
+						message: response.data.message,
+						type: 'warning'
+					});
 				}
 
 				console.log(response.data.tasks);
@@ -96,23 +89,15 @@ module.exports = {
 							});
 
 							store.commit('tasks', response.data.tasks);
-
-							if(this.notifications)
-								Vue.toast.customToast({
-									title:'CheckTasksStatus:Success',
-									message:'Task comitted succsessful: ' + response.data.tasks,
-									type:'info'
-								});
 								
 							console.log(response.data.tasks);
 						}
 					} else {
-						if(this.notifications)
-							Vue.toast.customToast({
-								title:'CheckTasksStatus:Fail',
-								message:'Task chheck failed ',
-								type:'warning'
-							});
+						Vue.toast.customToast({
+							title: 'Check if Tasks were Modified: Failed',
+							message: response.data.message,
+							type: 'warning'
+						});
 					}
 				}, 5000);
 			} catch(e) {
@@ -137,19 +122,18 @@ module.exports = {
 
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'DeleteTask:Success',
-							message:'Task deleted succsessfuly: ' + taskId + ' from ' + groupName,
-							type:'info'
+							title: 'Task Deleted: Success',
+							message: 'Task deleted succsessfuly.',
+							type: 'info'
 						});
 
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'DeleteTask:Fail',
-							message:'Task not deleted',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Task Deleted: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -167,9 +151,15 @@ module.exports = {
 				});
 
 				if (response.data.err === 0) {
-					return true;//bootstrap notify custom
+					return true;
 				} else {
-					return false;//bootstrap notify custom
+					Vue.toast.customToast({
+						title: 'Task Deleted from Personal List: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
 				}
 			} catch(e) {
 				return false;//bootstrap notify server
@@ -182,14 +172,20 @@ module.exports = {
 					taskId: task.taskId, 
 					taskStatus: task.taskStatus, 
 					groupName: task.groupName, 
-					usernameReceiver: task.usernameReceiver, 
+					usernamesReceiver: task.usernamesReceiver, 
 					usernameCreator: task.usernameCreator
 				});
 				
 				if (response.data.err === 0) {
-					return true;//bootstrap notify custom
+					return true;
 				} else {
-					return false;//bootstrap notify custom
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
 				}
 			} catch(e) {
 				return false;//bootstrap notify server

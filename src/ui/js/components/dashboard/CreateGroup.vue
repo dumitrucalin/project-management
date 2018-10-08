@@ -39,18 +39,18 @@ module.exports = {
 			groupUsersShow:[],
 
 			wrongUsername: {
-				title: 'Username contains invalid characters',
-				message: 'Please insert your username again',
+				title: 'Checking the Username: Fail',
+				message: 'The username contains invalid characters.',
 				type: 'warning'
 			},
 			allreadyAdded: {
-				title: 'The user is allready in the group',
-				message: 'Please insert another user',
+				title: 'Checking the Username: Fail',
+				message: 'The user is already in the group.',
 				type: 'warning'
 			},
 			userCreatorIs: {
-				title: 'You are already in the group',
-				message: 'Please insert another user',
+				title: 'Checking the Username: Fail',
+				message: 'You are already in the group.',
 				type: 'warning'
 			}
 		};

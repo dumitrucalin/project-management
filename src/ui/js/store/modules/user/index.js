@@ -33,22 +33,13 @@ module.exports = {
 
 				if (response.data.token) {
 					store.commit('token', response.data.token);
-
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'Login:Success',
-							message:'The token is good',
-							type:'info'
-						});
-
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'Login:Fail',
-							message:'The token is not good',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Login: Fail',
+						message: 'You couldn\'t be logged in.',
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -63,22 +54,13 @@ module.exports = {
 
 				if (response.data.token) {
 					store.commit('token', response.data.token);
-
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SignUp:Success',
-							message:'The token is good',
-							type:'info'
-						});
-
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SignUp:Fail',
-							message:'The token is not good',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Sign Up: Fail',
+						message: 'Your user couldn\'t be created.',
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -93,21 +75,13 @@ module.exports = {
 				store.commit('token', null);
 
 				if (response.data.err === 0) {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'LogOut:Success',
-							message:'Token null-ified',
-							type:'info'
-						});
-
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'LogOut:Fail',
-							message:'Could not complete the logout',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Log Out: Fail',
+						message: 'Could not complete the logout.',
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -127,22 +101,13 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);
-
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'GetUser:Success',
-							message:'The user has been retrieved: '+ response.data.user.username,
-							type:'info'
-						});
-
 					return response.data.user;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'GetUser:Fail',
-							message:'The user has not been retrieved',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Get the User:Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return null;
 				}
@@ -160,18 +125,18 @@ module.exports = {
 
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'UpdateUserInfo:Success',
-							message:'The user info has been updated: '+response.data.user,
-							type:'info'
+							title: 'Update Personal Informations: Success',
+							message: 'The personal informations have been updated.',
+							type: 'info'
 						});
 
 					return true;
 				} else {
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'UpdateUserInfo:Fail',
-							message:'The user info has not been updated',
-							type:'warning'
+							title: 'Update Personal Informations: Fail',
+							message: response.data.message,
+							type: 'warning'
 						});
 
 					return false;
@@ -186,21 +151,13 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/users/check/name', {username: username});
 
 				if (response.data.err === 0) {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'CheckUsername:Success',
-							message:'Username returned',
-							type:'info'
-						});
-
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'CheckUsername:Fail',
-							message:'Username no returned',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Checking the Username: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}

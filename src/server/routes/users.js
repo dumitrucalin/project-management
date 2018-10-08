@@ -55,7 +55,7 @@ publicApp.post('/signup', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -78,7 +78,7 @@ publicApp.post('/login', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -96,7 +96,7 @@ privateApp.post('/logout', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -121,7 +121,7 @@ privateApp.post('/update', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -138,7 +138,7 @@ privateApp.get('/get', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -161,7 +161,7 @@ privateApp.post('/fullNames/get', async function(req, res) {
 		return res.status(200).send({ err: 0, fullNames: fullNames });
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -178,7 +178,7 @@ privateApp.post('/check/name', async function (req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 

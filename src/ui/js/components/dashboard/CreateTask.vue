@@ -19,9 +19,15 @@
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
 
-				<select v-if="groupName" v-model="usernameReceiver" >
+				<select v-if="groupName" v-model="usernameTask" >
 					<option v-for="(username, index) in this.usernamesSorted" :key=index :value="username">{{ username }}</option>
 				</select>
+				<ul>
+					<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
+						<p>{{ taskUserShow }}</p>
+					</li>
+				</ul>
+				<button @click="addUserTask">Add User</button><br>
 
 				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
@@ -56,38 +62,56 @@ module.exports = {
 			groupNamesSorted: [],
 			usernamesSorted: [],
 
-			usernameReceiver: '',
 			groupName: '',
 			taskName: '',
 			taskString: '',
 			taskPriority: '',
 			taskDeadline: null,
+			taskStatus: '',
+
+			usernameTask: '',
+			taskUsers: [],
+			taskUsersShow: [],
 
 			days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
 			months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
 			hours: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 
-			groupNameNotify: {
-				title: 'The group field is needed',
-				message: 'You must select you group',
+			wrongGroupName: {
+				title: 'Create Task: Fail',
+				message: 'You must select a group.',
 				type: 'warning'
 			},
-			taskNameNotify: {
-				title: 'The task name field is needed',
-				message: 'You must write your task name',
+			wrongTaskName: {
+				title: 'Create Task: Fail',
+				message: 'You must write a task name.',
 				type: 'warning'
 			},
-			taskStringNotify: {
-				title: 'The task body field is needed',
-				message: 'You must write something in your task',
+			wrongTaskString: {
+				title: 'Create Task: Fail',
+				message: 'You must have a task description.',
 				type: 'warning'
 			},
-			usernameReceiverNotify: {
-				title: 'The user reciever field is needed',
-				message: 'You must select the recieving user',
+			wrongUsername: {
+				title: 'Create Task: Fail',
+				message: 'You must select a user to give the task to.',
 				type: 'warning'
 			},
-
+			allreadyAdded: {
+				title: 'Checking the Username: Fail',
+				message: 'The user is already in the group.',
+				type: 'warning'
+			},
+			userCreatorIs: {
+				title: 'Checking the Username: Fail',
+				message: 'You are already in the group.',
+				type: 'warning'
+			},
+			onlyCreatorUser: {
+				title: 'Checking the Username: Fail',
+				message: 'For a task, you can either put yourself or other users.',
+				type: 'warning'
+			}
 		};
 	},
 
@@ -100,6 +124,8 @@ module.exports = {
 	},
 
 	async created() {
+		this.usernamesReceiver = [];
+
 		for (let groupName of this.user.groupNames)
 			this.groupNamesSorted.push(groupName);
 		this.groupNamesSorted = this.groupNamesSorted.sort();
@@ -122,32 +148,60 @@ module.exports = {
 			if(this.taskName) {	
 				if(this.taskString) {
 					if(this.groupName) {
-						if(this.usernameReceiver) {
+						if(this.taskUsers.length !== 0) {
+							if (this.taskUsers.length === 1)
+								this.taskStatus = 'Not yet started';
+							else
+								this.taskStatus = 'Not yet assigned';
+
 							let state = await this.$store.dispatch('task/create', {
 								usernameCreator: this.user.username,
-								usernameReceiver: this.usernameReceiver,
+								usernamesReceiver: this.taskUsers,
 								groupName: this.groupName,
 								taskName: this.taskName,
 								taskString: this.taskString,
 								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
-								taskStatus: 'Not yet started'
+								taskStatus: this.taskStatus
 							});
+
+							console.log(state);
 
 							if (state)
 								await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 						} else {
-							Vue.toast.customToast(this.usernameReceiverNotify);
+							Vue.toast.customToast(this.wrongUsername);
 						}
 					} else {
-						Vue.toast.customToast(this.groupNameNotify);
+						Vue.toast.customToast(this.wrongGroupName);
 					}
 				} else {
-					Vue.toast.customToast(this.taskStringNotify);
+					Vue.toast.customToast(this.wrongTaskString);
 				}
 			} else {
-				Vue.toast.customToast(this.taskNameNotify);
+				Vue.toast.customToast(this.wrongTaskName);
 			}	
+		},
+
+		async addUserTask() {
+			if(!this.taskUsers.includes(this.usernameTask)) {
+				if (!this.taskUsers.includes(this.user.username)) {
+					if (this.taskUsers.length === 0 || this.usernameTask !== this.user.username) {
+						let state = await this.$store.dispatch('user/check', this.usernameTask);
+
+						if (state) {
+							this.taskUsersShow.push(this.usernameTask);
+							this.taskUsers.push(this.usernameTask);
+						}
+					} else {
+						Vue.toast.customToast(this.onlyCreatorUser);
+					}
+				} else {
+					Vue.toast.customToast(this.onlyCreatorUser);
+				}
+			} else {
+				Vue.toast.customToast(this.allreadyAdded);
+			}
 		}
 	}
 };

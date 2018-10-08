@@ -43,18 +43,18 @@ module.exports = {
 			next: urlParams.get ('redirect'),
 			
 			wrongPassword: {
-				title: 'Password contains invalid characters',
-				message: 'Please insert your password again',
+				title: 'Checking the Password: Fail',
+				message: 'The password contains invalid characters.',
 				type: 'warning'
 			},
 			wrongUsername: {
-				title: 'Username contains invalid characters',
-				message: 'Please insert your username again',
+				title: 'Checking the Username: Fail',
+				message: 'The username contains invalid characters.',
 				type: 'warning'
 			},
 			wrongLogIn: {
 				title: 'Incorrect Log In!',
-				message: 'Please insert your username and password again.',
+				message: 'A user with this credentials do not exist.',
 				type: 'warning'
 			},
 		};

@@ -37,7 +37,7 @@ privateApp.post('/create', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -67,7 +67,7 @@ privateApp.post('/delete', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -100,7 +100,7 @@ privateApp.post('/users/create', async function (req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -138,7 +138,7 @@ privateApp.post('/user/delete', async function (req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -150,7 +150,7 @@ privateApp.post('/users/get', async function (req, res) {
 		if (group) {
 			var usernames = Object.keys(group.users);
 			usernames = usernames.sort();
-			debug('GOt the users succesfully');
+			debug('Got the users succesfully');
 			return res.status(200).send({ err: 0, usernames: usernames });
 		} else {
 			debug('The group ' + groupName + ' doesn\'t exist');
@@ -158,7 +158,7 @@ privateApp.post('/users/get', async function (req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -179,7 +179,7 @@ privateApp.post('/task/delete', async function (req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
