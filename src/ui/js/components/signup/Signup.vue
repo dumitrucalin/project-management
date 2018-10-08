@@ -1,25 +1,30 @@
 <template>
-	<div>
-		<div class="signupForm">
-			<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="signup" v-model="username" />
-			<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
-			<input type="password" id="confirmPassword" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
-			<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password<br>
-			<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
-			<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
-			<button class="submitButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
-			<a href="login.html" >Log In</a>
-		</div>
+	<div class="signupForm">
+		<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="signup" v-model="username" />
+		<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
+		<input type="password" id="confirmPassword" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
+		<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password<br>
+		<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
+		<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
+		<button class="submitButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
+		<a href="login.html" >Log In</a>
+		<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 	</div>
 </template>
 
 <script>
 
+var Loading = require('../Loading.vue');
 var validator = require('validator');
 var Vue = require('vue');
 
 module.exports = {
 	name: 'Signup',
+
+	components: {
+		Loading
+	},
+
 	data() {
 		return {
 			username: '',
@@ -28,6 +33,11 @@ module.exports = {
 			viewPassword: false,
 			email: '',
 			fullName: '',
+
+			loadingSize: 20,
+			loadingColor: '#0000ff',
+			loadingDuration: 1500,
+			loadingView: false,
 
 			matchingPasswords: {
 				title: 'The passwords do not match',
@@ -54,20 +64,23 @@ module.exports = {
 	},
 
 	methods: {
-		async signup () {
+		async signup() {
 			if (validator.isAlphanumeric(this.username, ['en-US'])) {
 				if (validator.isAlphanumeric(this.password, ['en-US'])) {
 					if (validator.isEmail(this.email, ['en-US'])) {
 						if (this.password === this.confirmPassword) {
-							let signup = await this.$store.dispatch ('user/signup', {
+							this.loadingView = true;
+
+							let signup = await this.$store.dispatch('user/signup', {
 								username: this.username,
 								password: this.password,
 								fullName: this.fullName,
 								email: this.email
 							});
+							this.loadingView = false;
 
 							if (signup) {
-								await this.$store.dispatch ('settings/redirect', 'LOGIN');
+								await this.$store.dispatch('settings/redirect', 'LOGIN');
 							} else {
 								this.username = '';
 								this.password = '';
@@ -94,10 +107,12 @@ module.exports = {
 				Vue.toast.customToast(this.wrongUsername);
 			}
 		},
-		togglePassword () {
+
+		togglePassword() {
 			var password = document.getElementById('password');
 			var confirmPassword = document.getElementById('confirmPassword');
-			if (this.viewPassword === true) {
+
+			if (this.viewPassword) {
 				password.setAttribute('type', 'password');
 				confirmPassword.setAttribute('type', 'password');
 			} else {
@@ -105,7 +120,7 @@ module.exports = {
 				confirmPassword.setAttribute('type', 'text');
 			}
 		}
-	},
+	}
 };
 
 </script>

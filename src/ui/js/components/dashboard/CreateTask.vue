@@ -1,8 +1,9 @@
 <template>
 	<div class="createTask">
-		<p>This is the task creator!</p>
-		<p>Hello {{ this.user.fullName }}</p>
-		<p>This is the task creator!</p>
+		This is the task creator!<br>
+		Hello {{ this.user.fullName }}<br>
+		This is the task creator!<br>
+
 		<div>
 			<div class="form-group">
 				<input id="task-Title" type="text" class="form-control input-sm chat-input"  placeholder="Task Title" v-model="taskName" />
@@ -22,11 +23,11 @@
 					<option v-for="(username, index) in this.usernamesSorted" :key=index :value="username">{{ username }}</option>
 				</select>
 
-				<div>DeadLine</div>
+				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
 				<input type="date" v-model="taskDeadline" name="Deadline" v-if="checkboxDeadline"><br>
 
-				<div>Priority</div>
+				Priority
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 				<select v-if="checkboxPriority" v-model="taskPriority">
 					<option name="Urgent" value="urgent">Urgent</option>
@@ -42,7 +43,7 @@
 
 <script>
 
-var mapGetters = require ('vuex').mapGetters;
+var mapGetters = require('vuex').mapGetters;
 var Vue = require('vue');
 
 module.exports = {
@@ -52,11 +53,6 @@ module.exports = {
 		return {
 			checkboxPriority: false,
 			checkboxDeadline: false,
-
-			days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
-			months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
-			hours: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
-
 			groupNamesSorted: [],
 			usernamesSorted: [],
 
@@ -66,6 +62,10 @@ module.exports = {
 			taskString: '',
 			taskPriority: '',
 			taskDeadline: null,
+
+			days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
+			months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
+			hours: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24],
 
 			groupNameNotify: {
 				title: 'The group field is needed',
@@ -92,36 +92,50 @@ module.exports = {
 	},
 
 	computed: {
-		...mapGetters ({
+		...mapGetters({
 			user: 'user/user',
-			usernames: 'user/usernames'
+			usernames: 'group/usernames'
 		}),
 		
 	},
 
+	async created() {
+		for (let groupName of this.user.groupNames)
+			this.groupNamesSorted.push(groupName);
+		this.groupNamesSorted = this.groupNamesSorted.sort();
+
+		for (let username of this.usernames)
+			this.usernamesSorted.push(username);
+		this.usernamesSorted = this.usernamesSorted.sort();
+
+		await this.$store.dispatch('task/stopCheck');
+	},
+
+	watch: {
+		groupName: async function() {
+			await this.$store.dispatch('group/users', this.groupName);
+		}
+	},
+
 	methods: {
-		async submitTask(){
-			if(this.taskName)
-			{	
-				if(this.taskString)
-				{
-					if(this.groupName)
-					{
-						if(this.usernameReceiver)
-						{
-							let state = await this.$store.dispatch ('user/sendTask', {
+		async submitTask() {
+			if(this.taskName) {	
+				if(this.taskString) {
+					if(this.groupName) {
+						if(this.usernameReceiver) {
+							let state = await this.$store.dispatch('task/create', {
 								usernameCreator: this.user.username,
-								usernameReceiver: this.usernameReceiver,//must exist
-								groupName: this.groupName,//musts exist
-								taskName: this.taskName,//must exist
-								taskString: this.taskString,//must exist
+								usernameReceiver: this.usernameReceiver,
+								groupName: this.groupName,
+								taskName: this.taskName,
+								taskString: this.taskString,
 								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
 								taskStatus: 'Not yet started'
 							});
-							if (state) {
+
+							if (state)
 								await this.$store.dispatch('settings/redirect', 'DASHBOARD');
-							}
 						} else {
 							Vue.toast.customToast(this.usernameReceiverNotify);
 						}
@@ -133,27 +147,8 @@ module.exports = {
 				}
 			} else {
 				Vue.toast.customToast(this.taskNameNotify);
-			}
-			
-		},
-
-	},
-
-	watch: {
-		groupName: async function() {
-			await this.$store.dispatch('user/getUsers', this.groupName);
+			}	
 		}
-	},
-
-	async created() {
-		for (let groupName of this.user.groupNames)
-			this.groupNamesSorted.push(groupName);
-		this.groupNamesSorted = this.groupNamesSorted.sort();
-
-		for (let username of this.usernames)
-			this.usernamesSorted.push(username);
-		this.usernamesSorted = this.usernamesSorted.sort();
-		await this.$store.dispatch('user/stopCheckTasksStatus');
 	}
 };
 

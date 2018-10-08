@@ -11,11 +11,15 @@ Vue.use (Validator);
 
 var settings = require ('../modules/settings');
 var user = require ('../modules/user');
+var group = require ('../modules/group');
+var task = require ('../modules/task');
 
 module.exports = new Vuex.Store ({
 	modules: {
 		settings,
-		user
+		user,
+		group,
+		task
 	},
 	strict: process.env.NODE_ENV !== 'production'
 });

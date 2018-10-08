@@ -6,6 +6,7 @@
 			Your fullName is {{ user.fullName }}<br>
 
 			<button v-if="!changeInfo" @click="changeInfo = true">Change personal info</button>
+
 			<div v-if="changeInfo">
 				<input type="text" class="inputDesign" placeholder="Full Name" v-model="fullName" />
 				<input type="text" class="inputDesign" placeholder="E-Mail" v-model="email" />
@@ -13,13 +14,14 @@
 			</div><br><br><br><br>
 
 			<div v-if="user.groupNames.length">
-				<div>Exit from the group</div>
+				Exit from the group<br>
 				<select v-model="exitGroupName">
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
+
 				<button class="submitButton" name="Submit" @click="exitGroup" >Exit Group</button><br><br><br><br>
 
-				<div>Add new users to the group</div>
+				Add new users to the group<br>
 				<select v-model="groupName">
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
@@ -29,16 +31,19 @@
 						<input id="username" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="username" />
 						<button @click="addUserGroup">Add User</button>
 					</div>
+
 					<ul>
 						<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
 							<p>{{ groupUserShow }}</p>
 						</li>
 					</ul>
 				</div>
+
 				<button @click="submitGroup">Update Group</button><br><br>
 				<button @click="redirectDashboard">Task View</button>
 			</div>
 		</div>
+		
 		<div v-else>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
 		</div>
@@ -47,8 +52,8 @@
 
 <script>
 
-var mapGetters = require ('vuex').mapGetters;
-var Loading = require ('../Loading.vue');
+var mapGetters = require('vuex').mapGetters;
+var Loading = require('../Loading.vue');
 var validator = require('validator');
 var Vue = require('vue');
 
@@ -61,11 +66,21 @@ module.exports = {
 	
 	data() {
 		return {
+			fullName: '',
+			email: '',
+			exitGroupName: '',
+			groupName: '',
+			username: '',
+			usernames: [],
+			usernamesShow: [],
+			changeInfo: false,
+			groupNamesSorted: [''],
+			usernamesSorted: [''],
+
 			loadingSize: 20,
 			loadingColor: '#0000ff',
 			loadingDuration: 1500,
-			groupNamesSorted: [''],
-			usernamesSorted: [''],
+
 			wrongUsername: {
 				title: 'Username contains invalid characters',
 				message: 'Please insert your username again',
@@ -80,56 +95,69 @@ module.exports = {
 				title: 'You are already in the group',
 				message: 'Please insert another user',
 				type: 'warning'
-			},
-			
-			fullName: '',
-			email: '',
-			exitGroupName: '',
-			groupName: '',
-			username: '',
-			usernames: [],
-			usernamesShow: [],
-
-			changeInfo: false
+			}
 		};
 	},
 
 
 	computed: {
-		...mapGetters ({
+		...mapGetters({
 			user: 'user/user',
-			currentUsernames: 'user/usernames'
+			currentUsernames: 'group/usernames'
 		})
+	},
+
+	async created() {
+		await this.$store.dispatch('task/stopCheck');
+
+		for (let groupName of this.user.groupNames)
+			this.groupNamesSorted.push(groupName);
+		this.groupNamesSorted = this.groupNamesSorted.sort();
+
+		for (let username of this.usernames)
+			this.usernamesSorted.push(username);
+		this.usernamesSorted = this.usernamesSorted.sort();
+	},
+
+	watch: {
+		groupName: async function() {
+			await this.$store.dispatch('group/users', this.groupName);
+		}
 	},
 
 	methods: {
 		async submitInfo() {
 			if (validator.isEmail(this.email, ['en-US'])) {
-				var userInfo = {
+				// var userInfo = {
+				// 	username: this.user.username,
+				// 	fullName: this.fullName,
+				// 	email: this.email
+				// };
+				let state = await this.$store.dispatch('user/update', {
 					username: this.user.username,
 					fullName: this.fullName,
 					email: this.email
-				};
-				let state = await this.$store.dispatch ('user/updateUserInfo', userInfo);
-				if (state) {
-					await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
-				}
+				});
+
+				if (state)
+					await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 			} else {
 				this.fullName = '';
+				this.email = '';
 				// TOAST FOR INCORRECT EMAIL
 			}
 		},
+
 		async addUserGroup() {
 			if(this.username !== this.user.username) {
 				if(!this.usernames.includes(this.username)) {
 					if (validator.isAlphanumeric(this.username, ['en-US'])) {
-						let state = await this.$store.dispatch('user/checkUsername', this.username);
+						let state = await this.$store.dispatch('user/check', this.username);
+
 						if (state) {
 							this.usernames.push(this.username);
 							this.usernamesShow.push(this.username);
-							// TODO: TOAST FOR SUCCEDING ADDING THE USERS IN THE GROUP
 						} else {
-							console.log('user not existing');
 							// TODO: TOAST FOR USER NOT EXISTING
 						}
 					} else {
@@ -141,49 +169,37 @@ module.exports = {
 			} else {
 				Vue.toast.customToast(this.userCreatorIs);
 			}
+
 			this.username='';
 		},
+
 		async submitGroup() {
-			let state = await this.$store.dispatch ('user/updateGroup', {
+			let state = await this.$store.dispatch('group/update', {
 				groupName: this.groupName,
 				usernames: this.usernames
 			});
+
 			if (state) {
 				this.groupName = '';
 				this.username = '';
 				this.usernames = '';
-				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
+				await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 			}	
 		},
+
 		async exitGroup() {
-			let state = await this.$store.dispatch ('user/deleteUserFromGroup', {
+			let state = await this.$store.dispatch('group/delete', {
 				groupName:this.exitGroupName,
 				username:this.user.username
 			});
-			if (state) {
-				await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
-			}
+
+			if (state)
+				await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 		},
+
 		async redirectDashboard() {
 			await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 		}
-	},
-
-	watch: {
-		groupName: async function() {
-			await this.$store.dispatch('user/getUsers', this.groupName);
-		}
-	},
-
-	async created() {
-		for (let groupName of this.user.groupNames)
-			this.groupNamesSorted.push(groupName);
-		this.groupNamesSorted = this.groupNamesSorted.sort();
-
-		for (let username of this.usernames)
-			this.usernamesSorted.push(username);
-		this.usernamesSorted = this.usernamesSorted.sort();
-		await this.$store.dispatch('user/stopCheckTasksStatus');
 	}
 };
 

@@ -1,51 +1,86 @@
 
-	html {
-		font-size: 16px;
-	}
-	body{
-		background-color: rgb(118, 76, 196);
-	}
-
-//Form LogIn	
+body{
+	background-color: rgb(106, 122, 136);
+}
+#content {
+    width: 400px;
+    margin: auto;
+}
+div.hexagon {
+    height: 10em;
+    position: relative }
+div.hexagon a {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+div.hexagon button {
+	margin: 0;
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+.input1 {
+	margin: 0;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+.input2 {
+	margin: 0;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}		
 .hexagon {
-	//position: absolute;
-	//width: 400px; 
-	height: 230.94px;
-	background-color: #2b5355;
-	margin: 115.47px 0;
+  position: relative;
+  width: 300px; 
+  height: 173.21px;
+  background-color: #64C7CC;
+  margin: 86.60px 0;
+}
 
-	max-width: 700px;
-	margin: 0 auto;
-	padding: 3% 0; 
-	height: auto;
-	text-align: center;
-	width:100%;
-  }
-  
-  .hexagon:before,
-  .hexagon:after {
-	content: "";
-	position: absolute;
-	width: 50%;
-	border-left: 200px solid transparent;
-	border-right: 200px solid transparent;
-  }
-  
-  .hexagon:before {
-	bottom: 100%;
-	border-bottom: 115.47px solid #2b5355;
-  }
-  
-  .hexagon:after {
-	top: 100%;
-	width: 50%;
-	border-top: 115.47px solid #2b5355;
-  }
+.hexagon:before,
+.hexagon:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 150px solid transparent;
+  border-right: 150px solid transparent;
+}
 
+.hexagon:before {
+  bottom: 100%;
+  border-bottom: 86.60px solid #64C7CC;
+}
 
-.submitButton {
-	color: rgba(213, 210, 224, 0.8);
-	background: rgb(57, 113, 121);
+.hexagon:after {
+  top: 100%;
+  width: 0;
+  border-top: 86.60px solid #64C7CC;
+}
+
+#loginForm {
+	background: rgb(137, 160, 182);
+	color:  rgb(194, 175, 207);
+	width: 100%;
+	border: 0;
+	margin: 0 0 15px;
+	padding: 15px;
+}
+.notSubmitButton {
+	color: rgba(213, 210, 224, 0.897);
+	background: rgba(199, 199, 199, 0.9);
+	-webkit-text-fill-color: black;
 	border-radius: 5px;
 	-webkit-transition: all 0.3 ease;
 	transition: all 0.3 ease;

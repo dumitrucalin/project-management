@@ -6,15 +6,18 @@
 		<div class="form-group">
 			<input id="groupName" type="text" class="form-control input-sm chat-input"  placeholder="Group Name" v-model="groupName" />
 		</div>
+
 		<div class="form-group">
 			<input id="userName" type="text" class="form-control input-sm chat-input"  placeholder="User Name" v-model="userNameGroup" />
 			<button @click="addUserGroup">Add User</button>
 		</div>
+
 		<ul>
 			<li v-for="(groupUserShow, index) in groupUsersShow" :key="index">
 				<p>{{ groupUserShow }}</p>
 			</li>
 		</ul>
+
 		<button @click="submitGroup">Create Group</button>
 	</div>
 </template>
@@ -34,6 +37,7 @@ module.exports = {
 			userNameGroup:'',
 			groupUsers:[],
 			groupUsersShow:[],
+
 			wrongUsername: {
 				title: 'Username contains invalid characters',
 				message: 'Please insert your username again',
@@ -53,56 +57,56 @@ module.exports = {
 	},
 
 	computed: {
-		...mapGetters ({
+		...mapGetters({
 			user: 'user/user'
 		})
 	},
 
+	async created() {
+		await this.$store.dispatch('task/stopCheck');
+	},
+
 	methods: {
-		async submitGroup(){
+		async submitGroup() {
 			this.groupUsers.push(this.user.username);
-			var state = await this.$store.dispatch ('user/sendGroup', {
+
+			var state = await this.$store.dispatch('group/create', {
 				groupName:this.groupName,//ruta daca e unic on create
 				usernames:this.groupUsers,
 			});
-			if (state) {
+
+			if (state)
 				this.$store.dispatch('settings/redirect', 'DASHBOARD');
-			} else {
-				console.log('could\'t create the group');
+			else
+				console.log();
 				// TODO: TOAST
-			}
 		},
+
 		async addUserGroup() {
 			if(this.userNameGroup !== this.user.username) {
 				if(!this.groupUsers.includes(this.userNameGroup)) {
 					if (validator.isAlphanumeric(this.userNameGroup, ['en-US'])) {
-						let state = await this.$store.dispatch('user/checkUsername', this.userNameGroup);
+						let state = await this.$store.dispatch('user/check', this.userNameGroup);
+
 						if (state) {
 							this.groupUsersShow.push(this.userNameGroup);
 							this.groupUsers.push(this.userNameGroup);//ruta daca exista
-							this.userNameGroup='';
 						} else {
 							console.log('user not existing');
 							// TODO: TOAST FOR NOT EXISTING USER
-							this.userNameGroup='';
 						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);
-						this.userNameGroup='';
 					}
 				} else {
 					Vue.toast.customToast(this.allreadyAdded);
-					this.userNameGroup='';
 				}
 			} else {
 				Vue.toast.customToast(this.userCreatorIs);
-				this.userNameGroup='';
 			}
-		},
-	},
 
-	async created() {
-		await this.$store.dispatch('user/stopCheckTasksStatus');
+			this.userNameGroup='';
+		}
 	}
 };
 
