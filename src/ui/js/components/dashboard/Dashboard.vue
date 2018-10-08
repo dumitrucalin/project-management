@@ -64,12 +64,12 @@ module.exports = {
 	},
 
 	async created() {
-		var user = await this.$store.dispatch('user/getUser');
+		var user = await this.$store.dispatch('user/get');
 		
 		if (user.groupNames.length) {
-			await this.$store.dispatch('user/changeTasksView', true);
+			await this.$store.dispatch('task/view', true);
 		} else {
-			await this.$store.dispatch('user/changeTasksView', false);
+			await this.$store.dispatch('task/view', false);
 		}
 	},
 
@@ -81,7 +81,7 @@ module.exports = {
 			});
 
 			if (logout) {
-				await this.$store.dispatch('user/stopCheckTasksStatus');
+				await this.$store.dispatch('task/stopCheck');
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 			}
 		},

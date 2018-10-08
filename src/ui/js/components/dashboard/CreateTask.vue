@@ -94,7 +94,7 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			usernames: 'user/usernames'
+			usernames: 'group/usernames'
 		}),
 		
 	},
@@ -108,12 +108,12 @@ module.exports = {
 			this.usernamesSorted.push(username);
 		this.usernamesSorted = this.usernamesSorted.sort();
 
-		await this.$store.dispatch('user/stopCheckTasksStatus');
+		await this.$store.dispatch('task/stopCheck');
 	},
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('user/getUsers', this.groupName);
+			await this.$store.dispatch('group/users', this.groupName);
 		}
 	},
 
@@ -123,7 +123,7 @@ module.exports = {
 				if(this.taskString) {
 					if(this.groupName) {
 						if(this.usernameReceiver) {
-							let state = await this.$store.dispatch('user/sendTask', {
+							let state = await this.$store.dispatch('task/create', {
 								usernameCreator: this.user.username,
 								usernameReceiver: this.usernameReceiver,
 								groupName: this.groupName,

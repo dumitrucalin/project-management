@@ -20,12 +20,13 @@ new Vue({
 
 	async created() {
 		if (!this.$store.getters['user/token'])
-			await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
+			await this.$store.dispatch('settings/redirect', 'BAD_DASHBOARD');
 		else {
-			var user = await this.$store.dispatch ('user/getUser');
+			var user = await this.$store.dispatch('user/get');
+			
 			if (user === null) {
-				await this.$store.dispatch ('user/deleteToken');
-				await this.$store.dispatch ('settings/redirect', 'BAD_DASHBOARD');
+				await this.$store.dispatch('user/token');
+				await this.$store.dispatch('settings/redirect', 'BAD_DASHBOARD');
 			}
 		}
 	}

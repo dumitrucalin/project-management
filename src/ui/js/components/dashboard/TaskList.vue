@@ -108,10 +108,10 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			usernames: 'user/usernames',
-			fullNames: 'user/fullNames',
-			tasks: 'user/tasks',
-			showTasks: 'user/showTasks'
+			usernames: 'group/usernames',
+			fullNames: 'group/fullNames',
+			tasks: 'task/tasks',
+			showTasks: 'task/show'
 		})
 	},
 
@@ -127,12 +127,12 @@ module.exports = {
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('user/setGroupName', this.groupName);
+			await this.$store.dispatch('group/set', this.groupName);
 
 			this.usernamesShowed = [];
 			this.fullNamesShowed = [];
 
-			await this.$store.dispatch('user/getUsers', this.groupName);
+			await this.$store.dispatch('group/users', this.groupName);
 
 			for (let username of this.usernames) {
 				if (username !== this.user.username)
@@ -144,31 +144,26 @@ module.exports = {
 					this.fullNamesShowed.push (fullName);
 			}
 
-			await this.$store.dispatch('user/changeTasksView', true);
-			await this.$store.dispatch('user/stopCheckTasksStatus');
-			// var userInfo = {
-			// 	username: this.user.username,
-			// 	groupName: this.groupName
-			// };
-			await this.$store.dispatch('user/checkTasksStatus', {
+			await this.$store.dispatch('task/view', true);
+			await this.$store.dispatch('task/stopCheck');
+
+			await this.$store.dispatch('task/check', {
 				username: this.user.username,
-				groupName: groupName
+				groupName: this.groupName
 			});
 		}
 	},
 
 	methods: {
 		async deleteTask(taskId) {
-			await this.$store.dispatch('user/deleteTask', taskId);
-			var groupName = await this.$store.getters ['user/groupName'];
+			await this.$store.dispatch('task/delete', {
+				taskId: taskId, 
+				groupName: this.groupName
+			});
+			var groupName = await this.$store.getters ['group/groupName'];
 
-			// var userInfo = {
-			// 	username: this.user.username,
-			// 	groupName: groupName
-			// };
-
-			await this.$store.dispatch('user/stopCheckTasksStatus');
-			await this.$store.dispatch('user/checkTasksStatus', {
+			await this.$store.dispatch('task/stopCheck');
+			await this.$store.dispatch('task/check', {
 				username: this.user.username,
 				groupName: groupName
 			});
@@ -181,7 +176,7 @@ module.exports = {
 				taskStatus = 'Finished';
 			}
 
-			await this.$store.dispatch('user/changeTaskStatus', {
+			await this.$store.dispatch('task/change', {
 				taskId: taskId, 
 				taskStatus: taskStatus, 
 				groupName: this.groupName, 
@@ -192,13 +187,10 @@ module.exports = {
 			if (taskStatus === 'Finished')
 				this.deleteTaskIdView = true;
 
-			var groupName = await this.$store.getters ['user/groupName'];
-			// var userInfo = {
-			// 	username: this.user.username,
-			// 	groupName: groupName
-			// };
-			await this.$store.dispatch('user/stopCheckTasksStatus');
-			await this.$store.dispatch('user/checkTasksStatus', {
+			var groupName = await this.$store.getters ['group/groupName'];
+
+			await this.$store.dispatch('task/stopCheck');
+			await this.$store.dispatch('task/check', {
 				username: this.user.username,
 				groupName: groupName
 			});
@@ -207,9 +199,12 @@ module.exports = {
 		async deleteTaskId(taskId, taskStatus, usernameReceiver, usernameCreator) {
 			if (taskStatus === 'Finished') {
 				if (usernameReceiver === usernameCreator) {
-					await this.$store.dispatch('user/deleteTask', taskId);
+					await this.$store.dispatch('task/delete', {
+						taskId: taskId,
+						groupName: this.groupName
+					});
 				} else {
-					await this.$store.dispatch('user/deleteTaskId', {
+					await this.$store.dispatch('task/deleteId', {
 						taskId: taskId, 
 						groupName: this.groupName, 
 						username: usernameReceiver
@@ -217,13 +212,10 @@ module.exports = {
 				}
 			} 
 
-			var groupName = await this.$store.getters ['user/groupName'];
-			// var userInfo = {
-			// 	username: this.user.username,
-			// 	groupName: groupName
-			// };
-			await this.$store.dispatch('user/stopCheckTasksStatus');
-			await this.$store.dispatch('user/checkTasksStatus', {
+			var groupName = await this.$store.getters ['group/groupName'];
+
+			await this.$store.dispatch('task/stopCheck');
+			await this.$store.dispatch('task/check', {
 				username: this.user.username,
 				groupName: groupName
 			});
