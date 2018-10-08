@@ -7,8 +7,8 @@ TODO:
 	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
-		- * in cazul in care task-ul a fost luat, la ceilalti useri sa nu le mai apara decat un mesaj pe care il pot sterge. Pe scurt, pentru fiecare task la care (modificare pe array-ul primit, direct in js in componenta .vue):
-			-> usernamesReceiver.length === 1 && usernamesReceiver[0] !== user.usernam, arata mesaj si buton de stergere a task din lista proprie (fata tot task-ul)
+		- * in cazul in care task-ul a fost luat, la ceilalti useri sa nu le mai apara decat un mesaj pe care il pot sterge. Pe scurt, pentru fiecare task la care (modificare pe array-ul primit, direct in js in componenta .vue, prin crearea a trei noi array-uri):
+			-> usernamesReceiver.length === 1 && usernamesReceiver[0] !== user.username, arata mesaj si buton de stergere a task din lista proprie
 			-> usernamesReceiver.length !== 1, buton cu care fiecare poate sa il stearga doar din lista proprie de task-uri
 			-> usernamesReceiver.length === 1 && usernamesReceiver[0] === user.username, afiseaza task-ul normal
 		- toate task-urile care au fost assigned dar nu user-ului respectiv, sau au fost terminate, sa fie asezate in partea de jos a tabelului
