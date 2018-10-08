@@ -16,6 +16,7 @@ TODO:
 		- * in momentul in care un user a refuzat un task care inca nu a fost assigned, sa i se stearga numele din lista de useri ce pot da assigned la task
 		- * ruta pentru cazul in care un user care a primit taskul apasa pe 'Not assigned yet'
 		- * buton pentru stergerea user-ului daca a fost adaugat in lista cu userii pentru crearea unui grup/task
+		- * notifications remain even if reload the page; show the success notifications, or make a button in settings
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
