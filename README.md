@@ -2,17 +2,17 @@
 
 TODO: 
 	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
+	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE
 		- * bootstrap notify pe index.js
 		- * data sa fie frumos prezentata
 		- * adaugat si ora pentru deadline, salvata in aceeasi variabila cu data, si anume taskDeadline
 		- * adaugat loading-uri oriunde e nevoie
 		- * text de scris pentru partea de settings
-		- * dupa ce un user a terminat un task, sa nu ii dispara, ci doar sa capete posibilitatea de a-l sterge din lista sa proprie de taskuri primite
 
 	SERVER:
 		- To update and send only the new tasks, and not all of them
 		- Try/catch
-		- Implement token and tasksMOdified variables checking with redis
+		- Implement token and tasksModified variables checking with redis
 
 	IDEAS:
         1. A given task can be assigned to multiple persons, and one of them has to take it -> reassigment of task will be used in case of deleting a user

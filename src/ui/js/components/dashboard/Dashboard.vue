@@ -17,6 +17,7 @@
 
 			<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
 		</div>
+
 		<div v-else>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
 		</div>
@@ -34,24 +35,6 @@ var TaskList = require('../dashboard/TaskList.vue');
 
 module.exports = {
 	name: 'Dashboard',
-	
-	data() {
-		return {
-			loadingSize: 20,
-			loadingColor: '#0000ff',
-			loadingDuration: 1500,
-			
-			settingsView: false,
-			createGroupView: false,
-			createTaskView: false,
-			taskListView: true,
-
-			userInfo:{
-				username:'',
-				groupName:'',
-			},
-		};
-	},
 
 	components: {
 		Settings,
@@ -60,19 +43,50 @@ module.exports = {
 		TaskList,
 		Loading
 	},
+	
+	data() {
+		return {
+			settingsView: false,
+			createGroupView: false,
+			createTaskView: false,
+			taskListView: true,
+
+			loadingSize: 20,
+			loadingColor: '#0000ff',
+			loadingDuration: 1500
+		};
+	},
+
+	computed: {
+		...mapGetters({
+			user: 'user/user'
+		})
+	},
+
+	async created() {
+		var user = await this.$store.dispatch('user/getUser');
+		
+		if (user.groupNames.length) {
+			await this.$store.dispatch('user/changeTasksView', true);
+		} else {
+			await this.$store.dispatch('user/changeTasksView', false);
+		}
+	},
 
 	methods: {
 		async logout() {
-			let token = await this.$store.getters['user/token'];
+			let token = await this.$store.getters ['user/token'];
 			let logout = await this.$store.dispatch('user/logout', {
 				token: token
 			});
+
 			if (logout) {
 				await this.$store.dispatch('user/stopCheckTasksStatus');
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 			}
 		},
-		createGroup(){
+
+		createGroup() {
 			this.createGroupView = true;
 			this.createTaskView = false;
 			this.taskListView = false;
@@ -96,25 +110,9 @@ module.exports = {
 			this.taskListView = false;
 			this.settingsView = true;
 		},
-		logIt(){
+		logIt() {
 			console.log(this.groupName);//console log pt click pe numele utilizatorului la ce ma-ta vrei
 		}	
-	},
-
-	computed: {
-		...mapGetters ({
-			user: 'user/user'
-		})
-	},
-
-	async created() {
-		var user = await this.$store.dispatch ('user/getUser');
-		if (user.groupNames.length !== 0) {
-			await this.$store.dispatch ('user/changeTasksView', true);
-			this.groupName = user.groupNames[0];
-		} else {
-			await this.$store.dispatch ('user/changeTasksView', false);
-		}
 	}
 };
 
