@@ -1,12 +1,17 @@
 <template>
-	<div id="loginForm">
-		<input type="text" id="inputDesign" placeholder="Username" @keyup.enter="login" v-model="username" />
-		<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
-		<input id="checkyBox" type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password
-		<button class="submitButton" name="Submit" value="Login"  @click="login" >Login</button>
-		<a href="signup.html" >Sign Up</a>
+<div class="container">
+	<div id="content">
+		<div class="hexagon">
+			<input type="text" class="input1" placeholder="Username" @keyup.enter="login" v-model="username" /><br>
+			<input type="password" class="input2" placeholder="Password" @keyup.enter="login" v-model="password" /><br>
+			<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password<br>
+			<button class="notSubmitButton" name="Submit" value="Login"  @click="login" >Login</button>
+			<a href="signup.html" >Sign Up</a>
+			
+		</div>
 		<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 	</div>
+</div>
 </template>
 
 <script>
