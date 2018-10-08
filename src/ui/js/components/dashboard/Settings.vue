@@ -157,8 +157,6 @@ module.exports = {
 						if (state) {
 							this.usernames.push(this.username);
 							this.usernamesShow.push(this.username);
-						} else {
-							// TODO: TOAST FOR USER NOT EXISTING
 						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);
@@ -179,12 +177,8 @@ module.exports = {
 				usernames: this.usernames
 			});
 
-			if (state) {
-				this.groupName = '';
-				this.username = '';
-				this.usernames = '';
-				await this.$store.dispatch('settings/redirect', 'DASHBOARD');
-			}	
+			if (state)
+				await this.$store.dispatch('settings/redirect', 'DASHBOARD');	
 		},
 
 		async exitGroup() {

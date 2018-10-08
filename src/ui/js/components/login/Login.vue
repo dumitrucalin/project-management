@@ -64,13 +64,13 @@ module.exports = {
 				if (validator.isAlphanumeric(this.password, ['en-US'])) {
 					this.loadingView = true;
 
-					let login = await this.$store.dispatch('user/login', {
+					let state = await this.$store.dispatch('user/login', {
 						username: this.username,
 						password: this.password
 					});
 					this.loadingView = false;
 
-					if (login)
+					if (state)
 						await this.$store.dispatch('settings/redirect', this.next);
 					else {
 						Vue.toast.customToast(this.wrongLogIn);

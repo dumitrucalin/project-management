@@ -66,21 +66,20 @@ module.exports = {
 	async created() {
 		var user = await this.$store.dispatch('user/get');
 		
-		if (user.groupNames.length) {
+		if (user.groupNames.length)
 			await this.$store.dispatch('task/view', true);
-		} else {
+		else
 			await this.$store.dispatch('task/view', false);
-		}
 	},
 
 	methods: {
 		async logout() {
 			let token = await this.$store.getters ['user/token'];
-			let logout = await this.$store.dispatch('user/logout', {
+			let state = await this.$store.dispatch('user/logout', {
 				token: token
 			});
 
-			if (logout) {
+			if (state) {
 				await this.$store.dispatch('task/stopCheck');
 				await this.$store.dispatch('settings/redirect', 'LOGIN');
 			}

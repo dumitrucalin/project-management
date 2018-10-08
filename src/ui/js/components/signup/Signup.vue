@@ -71,7 +71,7 @@ module.exports = {
 						if (this.password === this.confirmPassword) {
 							this.loadingView = true;
 
-							let signup = await this.$store.dispatch('user/signup', {
+							let state = await this.$store.dispatch('user/signup', {
 								username: this.username,
 								password: this.password,
 								fullName: this.fullName,
@@ -79,7 +79,7 @@ module.exports = {
 							});
 							this.loadingView = false;
 
-							if (signup) {
+							if (state) {
 								await this.$store.dispatch('settings/redirect', 'LOGIN');
 							} else {
 								this.username = '';
