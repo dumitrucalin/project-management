@@ -152,7 +152,7 @@ module.exports = {
 			// };
 			await this.$store.dispatch('user/checkTasksStatus', {
 				username: this.user.username,
-				groupName: groupName
+				groupName: this.groupName
 			});
 		}
 	},

@@ -1,21 +1,86 @@
 
-	body{
-		background-color: rgb(118, 76, 196);
-	}
-	
+body{
+	background-color: rgb(106, 122, 136);
+}
+#content {
+    width: 400px;
+    margin: auto;
+}
+div.hexagon {
+    height: 10em;
+    position: relative }
+div.hexagon a {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+div.hexagon button {
+	margin: 0;
+    position: absolute;
+    top: 75%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+.input1 {
+	margin: 0;
+    position: absolute;
+    top: 0%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}
+.input2 {
+	margin: 0;
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    margin-right: -50%;
+	transform: translate(-50%, -50%) 
+}		
+.hexagon {
+  position: relative;
+  width: 300px; 
+  height: 173.21px;
+  background-color: #64C7CC;
+  margin: 86.60px 0;
+}
 
+.hexagon:before,
+.hexagon:after {
+  content: "";
+  position: absolute;
+  width: 0;
+  border-left: 150px solid transparent;
+  border-right: 150px solid transparent;
+}
+
+.hexagon:before {
+  bottom: 100%;
+  border-bottom: 86.60px solid #64C7CC;
+}
+
+.hexagon:after {
+  top: 100%;
+  width: 0;
+  border-top: 86.60px solid #64C7CC;
+}
 
 #loginForm {
-	background: rgb(73, 57, 131);
-	color:  rgb(133, 91, 211);
+	background: rgb(137, 160, 182);
+	color:  rgb(194, 175, 207);
 	width: 100%;
 	border: 0;
 	margin: 0 0 15px;
 	padding: 15px;
 }
-.submitButton {
+.notSubmitButton {
 	color: rgba(213, 210, 224, 0.897);
-	background: rgb(10, 148, 125, 0.2);
+	background: rgba(199, 199, 199, 0.9);
+	-webkit-text-fill-color: black;
 	border-radius: 5px;
 	-webkit-transition: all 0.3 ease;
 	transition: all 0.3 ease;
