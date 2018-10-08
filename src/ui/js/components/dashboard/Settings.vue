@@ -103,12 +103,12 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			currentUsernames: 'user/usernames'
+			currentUsernames: 'group/usernames'
 		})
 	},
 
 	async created() {
-		await this.$store.dispatch('user/stopCheckTasksStatus');
+		await this.$store.dispatch('task/stopCheck');
 
 		for (let groupName of this.user.groupNames)
 			this.groupNamesSorted.push(groupName);
@@ -121,7 +121,7 @@ module.exports = {
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('user/getUsers', this.groupName);
+			await this.$store.dispatch('group/users', this.groupName);
 		}
 	},
 
@@ -133,7 +133,7 @@ module.exports = {
 				// 	fullName: this.fullName,
 				// 	email: this.email
 				// };
-				let state = await this.$store.dispatch('user/updateUserInfo', {
+				let state = await this.$store.dispatch('user/update', {
 					username: this.user.username,
 					fullName: this.fullName,
 					email: this.email
@@ -152,7 +152,7 @@ module.exports = {
 			if(this.username !== this.user.username) {
 				if(!this.usernames.includes(this.username)) {
 					if (validator.isAlphanumeric(this.username, ['en-US'])) {
-						let state = await this.$store.dispatch('user/checkUsername', this.username);
+						let state = await this.$store.dispatch('user/check', this.username);
 
 						if (state) {
 							this.usernames.push(this.username);
@@ -174,7 +174,7 @@ module.exports = {
 		},
 
 		async submitGroup() {
-			let state = await this.$store.dispatch('user/updateGroup', {
+			let state = await this.$store.dispatch('group/update', {
 				groupName: this.groupName,
 				usernames: this.usernames
 			});
@@ -188,7 +188,7 @@ module.exports = {
 		},
 
 		async exitGroup() {
-			let state = await this.$store.dispatch('user/deleteUserFromGroup', {
+			let state = await this.$store.dispatch('group/delete', {
 				groupName:this.exitGroupName,
 				username:this.user.username
 			});

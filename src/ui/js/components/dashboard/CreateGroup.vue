@@ -63,14 +63,14 @@ module.exports = {
 	},
 
 	async created() {
-		await this.$store.dispatch('user/stopCheckTasksStatus');
+		await this.$store.dispatch('task/stopCheck');
 	},
 
 	methods: {
 		async submitGroup() {
 			this.groupUsers.push(this.user.username);
 
-			var state = await this.$store.dispatch('user/sendGroup', {
+			var state = await this.$store.dispatch('group/create', {
 				groupName:this.groupName,//ruta daca e unic on create
 				usernames:this.groupUsers,
 			});
@@ -86,7 +86,7 @@ module.exports = {
 			if(this.userNameGroup !== this.user.username) {
 				if(!this.groupUsers.includes(this.userNameGroup)) {
 					if (validator.isAlphanumeric(this.userNameGroup, ['en-US'])) {
-						let state = await this.$store.dispatch('user/checkUsername', this.userNameGroup);
+						let state = await this.$store.dispatch('user/check', this.userNameGroup);
 
 						if (state) {
 							this.groupUsersShow.push(this.userNameGroup);

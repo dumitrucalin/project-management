@@ -120,7 +120,7 @@ privateApp.get('/get', async function(req, res) {
 	}
 });
 
-privateApp.post('/usernames/get', async function(req, res) {
+privateApp.post('/fullNames/get', async function(req, res) {
 	debug('Searching for users with usernames');
 	var fullNames = [];
 	for (let username of req.body.usernames) {
