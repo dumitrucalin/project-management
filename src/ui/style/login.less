@@ -1,33 +1,60 @@
 
+	html {
+		font-size: 16px;
+	}
 	body{
 		background-color: rgb(118, 76, 196);
 	}
-	
+
+//Form LogIn	
+.hexagon {
+	//position: absolute;
+	//width: 400px; 
+	height: 230.94px;
+	background-color: #2b5355;
+	margin: 115.47px 0;
+
+	max-width: 700px;
+	margin: 0 auto;
+	padding: 3% 0; 
+	height: auto;
+	text-align: center;
+	width:100%;
+  }
+  
+  .hexagon:before,
+  .hexagon:after {
+	content: "";
+	position: absolute;
+	width: 50%;
+	border-left: 200px solid transparent;
+	border-right: 200px solid transparent;
+  }
+  
+  .hexagon:before {
+	bottom: 100%;
+	border-bottom: 115.47px solid #2b5355;
+  }
+  
+  .hexagon:after {
+	top: 100%;
+	width: 50%;
+	border-top: 115.47px solid #2b5355;
+  }
 
 
-#loginForm {
-	background: rgb(73, 57, 131);
-	color:  rgb(133, 91, 211);
-	width: 100%;
-	border: 0;
-	margin: 0 0 15px;
-	padding: 15px;
-}
 .submitButton {
-	color: rgba(213, 210, 224, 0.897);
-	background: rgb(10, 148, 125, 0.2);
+	color: rgba(213, 210, 224, 0.8);
+	background: rgb(57, 113, 121);
 	border-radius: 5px;
 	-webkit-transition: all 0.3 ease;
 	transition: all 0.3 ease;
 }
 
 
-#password {
-	border-radius: 20px;
-	text-align: center;
-}
-
 #inputDesign {
+	height: 3rem;
+	width: 9rem;
 	border-radius: 20px;
 	text-align: center;
 

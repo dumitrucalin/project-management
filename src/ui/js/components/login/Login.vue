@@ -1,7 +1,7 @@
 <template>
-	<div id="loginForm">
+	<div class="hexagon">
 		<input type="text" id="inputDesign" placeholder="Username" @keyup.enter="login" v-model="username" />
-		<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
+		<input type="password" id="inputDesign" class="inputDesign" placeholder="Password" @keyup.enter="login" v-model="password" />
 		<input id="checkyBox" type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password
 		<button class="submitButton" name="Submit" value="Login"  @click="login" >Login</button>
 		<a href="signup.html" >Sign Up</a>
