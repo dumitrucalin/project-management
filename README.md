@@ -22,7 +22,16 @@ TODO:
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
 		- Route for assigning a person for a task
-		- Route for deleting a user from the usernamesReceiver array from a specific task, along with the taskId from the user
+		- Route for deleting some users from the usernamesReceiver array in a specific task
+
+	CSS:
+		- sa nu mai apara niciunde acel highlight albastru din jurul atributului pe care il apesi cu mouse-ul (exemplu, input din login)
+		- toate paginile sa aibe elementele incadrate la stanga, intr-un div care nu acopera toate latimea ecranului, ci are un maximumWidth
+		- schimbat fontul din tot site-ul
+		- in tabelul mare, cu tasksGiven si tasksReceived, task-urile sa nu mai apara centrate pe inaltime (daca nu intelegi, intreba-ma pe mine sau pe many)
+		- lista cu userii sa se afle in partea dreapta a ecranului, si sa nu fie fie foarte mari (vezi facebook)
+		- butonul de logout sa se afle in partea din dreapta a dashboard-ului, alaturi de acel mesaj cu hello, username-ul si fullName-ul
+		- sa nu mai apara propunerile de la google chrome pentru input-uri
 
 	IDEAS:
 		1. Have sticky notes per task
