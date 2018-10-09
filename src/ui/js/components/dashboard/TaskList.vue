@@ -8,7 +8,7 @@
 			You are in no group at the moment.<br> Please first create a group or wait for an invitation!
 		</div>
 
-		<div v-if="showTasks">
+		<div v-if="show">
 			<div v-if="tasks" class="taskList">
 				The users in the same group with you are:
 				<div v-for="(username, index) in this.usernamesShowed" :key=index>
@@ -37,10 +37,10 @@
 									<td>{{ task.usernameCreator }}</td>
 									<td>{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
-									<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernameReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+									<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-									<td v-if="deleteTaskIdView"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernameReceiver, task.usernameCreator)">X</button></td>
+									<td v-if="deleteTaskIdView"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 								</tr>
 							</table>
 						</td>
@@ -57,7 +57,7 @@
 								</tr>
 
 								<tr>
-									<td>{{ task.usernameReceiver }}</td>
+									<td>{{ task.usernamesReceiver[0] }}</td>
 									<td>{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
 									<td>{{ task.taskStatus }}</td>
@@ -94,7 +94,7 @@ module.exports = {
 		return {
 			groupName: '',
 			groupNamesSorted: [],
-			usernamesShowed: [],
+			usernamesed: [],
 			fullNamesShowed: [],
 			editingTask: false,
 			deleteTaskIdView: false,
@@ -111,7 +111,7 @@ module.exports = {
 			usernames: 'group/usernames',
 			fullNames: 'group/fullNames',
 			tasks: 'task/tasks',
-			showTasks: 'task/show'
+			show: 'task/show'
 		})
 	},
 
@@ -132,73 +132,97 @@ module.exports = {
 			this.usernamesShowed = [];
 			this.fullNamesShowed = [];
 
-			await this.$store.dispatch('group/users', this.groupName);
+			let state = await this.$store.dispatch('group/users', this.groupName);
 
-			for (let username of this.usernames) {
-				if (username !== this.user.username)
-					this.usernamesShowed.push (username);
+			if (state) {
+				for (let username of this.usernames) {
+					if (username !== this.user.username)
+						this.usernamesShowed.push (username);
+				}
+
+				for (let fullName of this.fullNames) {
+					if (fullName !== this.user.fullName)
+						this.fullNamesShowed.push (fullName);
+				}
+
+				await this.$store.dispatch('task/view', true);
+				await this.$store.dispatch('task/stopCheck');
+
+				await this.$store.dispatch('task/check', {
+					username: this.user.username,
+					groupName: this.groupName
+				});
 			}
-
-			for (let fullName of this.fullNames) {
-				if (fullName !== this.user.fullName)
-					this.fullNamesShowed.push (fullName);
-			}
-
-			await this.$store.dispatch('task/view', true);
-			await this.$store.dispatch('task/stopCheck');
-
-			await this.$store.dispatch('task/check', {
-				username: this.user.username,
-				groupName: this.groupName
-			});
 		}
 	},
 
 	methods: {
 		async deleteTask(taskId) {
-			await this.$store.dispatch('task/delete', {
+			let state = await this.$store.dispatch('task/delete', {
 				taskId: taskId, 
 				groupName: this.groupName
 			});
-			var groupName = await this.$store.getters ['group/groupName'];
 
-			await this.$store.dispatch('task/stopCheck');
-			await this.$store.dispatch('task/check', {
-				username: this.user.username,
-				groupName: groupName
-			});
+			if (state) {
+				var groupName = await this.$store.getters ['group/groupName'];
+
+				await this.$store.dispatch('task/stopCheck');
+				await this.$store.dispatch('task/check', {
+					username: this.user.username,
+					groupName: groupName
+				});
+			}
 		},
 
-		async changeTaskStatus(taskId, taskStatus, usernameReceiver, usernameCreator) {
-			if (taskStatus === 'Not yet started')
+		async changeTaskStatus(taskId, taskStatus, usernamesReceiver, usernameCreator) {
+			if (taskStatus === 'Not yet started') {
 				taskStatus = 'In progress';
-			else if (taskStatus === 'In progress') {
+			} else if (taskStatus === 'In progress') {
 				taskStatus = 'Finished';
+			} else if (taskStatus === 'Not yet assigned') {
+				var usernamesToDelete = [];
+				for (let username of usernamesReceiver) {
+					if (username !== this.user.username)
+						usernamesToDelete.push(username);
+				}
+
+				await this.$store.dispatch('task/assign', {
+					taskId: taskId,
+					usernameReceiver: this.user.username,
+					usernamesToDelete: usernamesToDelete
+				});
+
+				// UNCOMMENT WHEN ASSIGN METHOD WORKS
+				// if (otherState)
+				// 	taskStatus = 'Not yet started';
 			}
 
-			await this.$store.dispatch('task/change', {
+			let state = await this.$store.dispatch('task/change', {
 				taskId: taskId, 
 				taskStatus: taskStatus, 
 				groupName: this.groupName, 
-				usernameReceiver: usernameReceiver, 
+				usernamesReceiver: usernamesReceiver, 
 				usernameCreator: usernameCreator
 			});
 
-			if (taskStatus === 'Finished')
-				this.deleteTaskIdView = true;
+			if (state) {
+				if (taskStatus === 'Finished') {
+					this.deleteTaskIdView = true;
+				}
 
-			var groupName = await this.$store.getters ['group/groupName'];
+				var groupName = await this.$store.getters ['group/groupName'];
 
-			await this.$store.dispatch('task/stopCheck');
-			await this.$store.dispatch('task/check', {
-				username: this.user.username,
-				groupName: groupName
-			});
+				await this.$store.dispatch('task/stopCheck');
+				await this.$store.dispatch('task/check', {
+					username: this.user.username,
+					groupName: groupName
+				});
+			}
 		},
 
-		async deleteTaskId(taskId, taskStatus, usernameReceiver, usernameCreator) {
+		async deleteTaskId(taskId, taskStatus, usernamesReceiver, usernameCreator) {
 			if (taskStatus === 'Finished') {
-				if (usernameReceiver === usernameCreator) {
+				if (usernamesReceiver[0] === usernameCreator) {
 					await this.$store.dispatch('task/delete', {
 						taskId: taskId,
 						groupName: this.groupName
@@ -207,7 +231,7 @@ module.exports = {
 					await this.$store.dispatch('task/deleteId', {
 						taskId: taskId, 
 						groupName: this.groupName, 
-						username: usernameReceiver
+						username: this.user.username
 					});
 				}
 			} 

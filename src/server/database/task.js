@@ -28,8 +28,8 @@ var taskSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	usernameReceiver: {
-		type: String,
+	usernamesReceiver: {
+		type: [String],
 		required: true
 	},
 	usernameCreator: {

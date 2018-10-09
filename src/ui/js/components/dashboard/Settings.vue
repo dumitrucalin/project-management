@@ -82,18 +82,18 @@ module.exports = {
 			loadingDuration: 1500,
 
 			wrongUsername: {
-				title: 'Username contains invalid characters',
-				message: 'Please insert your username again',
+				title: 'Update Users in the Group: Fail',
+				message: 'The username contains invalid characters.',
 				type: 'warning'
 			},
 			allreadyAdded: {
-				title: 'The user is allready in the group',
-				message: 'Please insert another user',
+				title: 'Update Users in the Group: Fail',
+				message: 'The user is already in the group.',
 				type: 'warning'
 			},
 			userCreatorIs: {
-				title: 'You are already in the group',
-				message: 'Please insert another user',
+				title: 'Update Users in the Group: Fail',
+				message: 'You are already in the group.',
 				type: 'warning'
 			}
 		};
@@ -157,8 +157,6 @@ module.exports = {
 						if (state) {
 							this.usernames.push(this.username);
 							this.usernamesShow.push(this.username);
-						} else {
-							// TODO: TOAST FOR USER NOT EXISTING
 						}
 					} else {
 						Vue.toast.customToast(this.wrongUsername);
@@ -179,12 +177,8 @@ module.exports = {
 				usernames: this.usernames
 			});
 
-			if (state) {
-				this.groupName = '';
-				this.username = '';
-				this.usernames = '';
-				await this.$store.dispatch('settings/redirect', 'DASHBOARD');
-			}	
+			if (state)
+				await this.$store.dispatch('settings/redirect', 'DASHBOARD');	
 		},
 
 		async exitGroup() {

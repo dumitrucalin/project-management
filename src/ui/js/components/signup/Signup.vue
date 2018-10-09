@@ -40,23 +40,23 @@ module.exports = {
 			loadingView: false,
 
 			matchingPasswords: {
-				title: 'The passwords do not match',
-				message: 'Please insert your password again',
+				title: 'Checking the Password: Fail',
+				message: 'The passwords do not match.',
 				type: 'warning'
 			},
 			notEmail: {
-				title: 'That is not an email',
-				message: 'Please insert a valid email adress',
+				title: 'Checking the E-mail: Fail',
+				message: 'The e-mail address is not valid.',
 				type: 'warning'
 			},
 			wrongPassword: {
-				title: 'Password contains invalid characters',
-				message: 'Please insert your password again',
+				title: 'Checking the Password: Fail',
+				message: 'The password contains invalid characters.',
 				type: 'warning'
 			},
 			wrongUsername: {
-				title: 'Username contains invalid characters',
-				message: 'Please insert your username again',
+				title: 'Checking the Username: Fail',
+				message: 'The username contains invalid characters.',
 				type: 'warning'
 			},
 
@@ -71,7 +71,7 @@ module.exports = {
 						if (this.password === this.confirmPassword) {
 							this.loadingView = true;
 
-							let signup = await this.$store.dispatch('user/signup', {
+							let state = await this.$store.dispatch('user/signup', {
 								username: this.username,
 								password: this.password,
 								fullName: this.fullName,
@@ -79,7 +79,7 @@ module.exports = {
 							});
 							this.loadingView = false;
 
-							if (signup) {
+							if (state) {
 								await this.$store.dispatch('settings/redirect', 'LOGIN');
 							} else {
 								this.username = '';

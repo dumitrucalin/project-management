@@ -43,18 +43,18 @@ module.exports = {
 			next: urlParams.get ('redirect'),
 			
 			wrongPassword: {
-				title: 'Password contains invalid characters',
-				message: 'Please insert your password again',
+				title: 'Checking the Password: Fail',
+				message: 'The password contains invalid characters.',
 				type: 'warning'
 			},
 			wrongUsername: {
-				title: 'Username contains invalid characters',
-				message: 'Please insert your username again',
+				title: 'Checking the Username: Fail',
+				message: 'The username contains invalid characters.',
 				type: 'warning'
 			},
 			wrongLogIn: {
 				title: 'Incorrect Log In!',
-				message: 'Please insert your username and password again.',
+				message: 'A user with this credentials do not exist.',
 				type: 'warning'
 			},
 		};
@@ -69,13 +69,13 @@ module.exports = {
 				if (validator.isAlphanumeric(this.password, ['en-US'])) {
 					this.loadingView = true;
 
-					let login = await this.$store.dispatch('user/login', {
+					let state = await this.$store.dispatch('user/login', {
 						username: this.username,
 						password: this.password
 					});
 					this.loadingView = false;
 
-					if (login)
+					if (state)
 						await this.$store.dispatch('settings/redirect', this.next);
 					else {
 						Vue.toast.customToast(this.wrongLogIn);
