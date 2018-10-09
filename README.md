@@ -21,6 +21,7 @@ TODO:
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
+		- To see how you can reassign a task from a user who exit the group
 
 	CSS:
 		- sa nu mai apara niciunde acel highlight albastru din jurul atributului pe care il apesi cu mouse-ul (exemplu, input din login)
