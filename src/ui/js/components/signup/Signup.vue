@@ -1,12 +1,12 @@
 <template>
 	<div class="signupForm">
-		<input type="text" class="inputDesign" placeholder="Username" @keyup.enter="signup" v-model="username" />
+		<input type="text" class="inputDesign" id="username" placeholder="Username" @keyup.enter="signup" v-model="username" />
 		<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
 		<input type="password" id="confirmPassword" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
-		<input type="checkbox" v-model="viewPassword" @click="togglePassword" />View Password<br>
+		<input type="checkbox" id="viewPassword" v-model="viewPassword" @click="togglePassword" />View Password<br>
 		<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
 		<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
-		<button class="submitButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
+		<button class="submitButton" id="signupButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
 		<a href="login.html" >Log In</a>
 		<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 	</div>

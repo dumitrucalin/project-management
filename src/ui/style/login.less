@@ -1,7 +1,8 @@
-
-body{
-	background-color: rgb(106, 122, 136);
+body {
+	
+	background-color: rgb(19, 112, 104);
 }
+
 #content {
     width: 400px;
     margin: auto;
@@ -27,6 +28,12 @@ div.hexagon button {
 }
 .input1 {
 	margin: 0;
+	color: rgb(24, 21, 21);
+	background: none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 3px solid rgba(12, 5, 54, 0.925, 0.5);
     position: absolute;
     top: 0%;
     left: 50%;
@@ -35,18 +42,31 @@ div.hexagon button {
 }
 .input2 {
 	margin: 0;
+	color: rgb(24, 21, 21);
+	background: none;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-bottom: 3px solid rgba(12, 5, 54, 0.925, 0.5);
     position: absolute;
     top: 25%;
     left: 50%;
     margin-right: -50%;
 	transform: translate(-50%, -50%) 
-}		
+}	
+
+.input3 {
+	position: relative;
+	top: 5%;
+}
+
 .hexagon {
   position: relative;
   width: 300px; 
   height: 173.21px;
-  background-color: #64C7CC;
+  background-color:  #64C7CC;
   margin: 86.60px 0;
+
 }
 
 .hexagon:before,
@@ -63,11 +83,7 @@ div.hexagon button {
   border-bottom: 86.60px solid #64C7CC;
 }
 
-.hexagon:after {
-  top: 100%;
-  width: 0;
-  border-top: 86.60px solid #64C7CC;
-}
+
 
 #loginForm {
 	background: rgb(137, 160, 182);
@@ -77,14 +93,7 @@ div.hexagon button {
 	margin: 0 0 15px;
 	padding: 15px;
 }
-.notSubmitButton {
-	color: rgba(213, 210, 224, 0.897);
-	background: rgba(199, 199, 199, 0.9);
-	-webkit-text-fill-color: black;
-	border-radius: 5px;
-	-webkit-transition: all 0.3 ease;
-	transition: all 0.3 ease;
-}
+
 
 
 #inputDesign {
@@ -94,3 +103,17 @@ div.hexagon button {
 	text-align: center;
 
 }
+
+.notSubmitButton {
+	color: rgba(213, 210, 224, 0.897);
+	background: rgba(199, 199, 199, 0.9);
+	-webkit-text-fill-color: black;
+	border-radius: 5px;
+	-webkit-transition: all 0.3 ease;
+	transition: all 0.3 ease;
+}
+.hexagon:after {
+	top: 100%;
+	width: 0;
+	border-top: 86.60px solid #64C7CC;
+  }
