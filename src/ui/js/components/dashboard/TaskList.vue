@@ -40,7 +40,7 @@
 									<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-									<td v-if="deleteTaskIdView"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+									<td v-if="(user.username !== task.usernamesReceiver[0]) || (task.taskStatus === 'Not yet assigned') || (task.taskStatus === 'Finished')"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 								</tr>
 							</table>
 						</td>
@@ -60,7 +60,7 @@
 									<td>{{ task.usernamesReceiver[0] }}</td>
 									<td>{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
-									<td>{{ task.taskStatus }}</td>
+									<td v-if="user.username">{{ task.taskStatus }}</td>
 									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									<td><button @click="deleteTask(task.taskId)">X</button></td>
@@ -174,7 +174,7 @@ module.exports = {
 			}
 		},
 
-		async changeTaskStatus(taskId, taskStatus, usernamesReceiver, usernameCreator) {
+		async changeTaskStatus(taskId, taskStatus, usernamesReceiver) {
 			if (taskStatus === 'Not yet started') {
 				taskStatus = 'In progress';
 			} else if (taskStatus === 'In progress') {
@@ -186,29 +186,23 @@ module.exports = {
 						usernamesToDelete.push(username);
 				}
 
-				await this.$store.dispatch('task/assign', {
+				var otherState = await this.$store.dispatch('task/receivers', {
 					taskId: taskId,
-					usernameReceiver: this.user.username,
-					usernamesToDelete: usernamesToDelete
+					usernamesReceiver: [this.user.username]
 				});
 
-				// UNCOMMENT WHEN ASSIGN METHOD WORKS
-				// if (otherState)
-				// 	taskStatus = 'Not yet started';
+				if (otherState)
+					taskStatus = 'Not yet started';
 			}
 
 			let state = await this.$store.dispatch('task/change', {
 				taskId: taskId, 
-				taskStatus: taskStatus, 
-				groupName: this.groupName, 
-				usernamesReceiver: usernamesReceiver, 
-				usernameCreator: usernameCreator
+				taskStatus: taskStatus
 			});
 
 			if (state) {
-				if (taskStatus === 'Finished') {
+				if (taskStatus === 'Finished' || (usernamesReceiver.length === 1 && usernamesReceiver[0] !== this.user.username))
 					this.deleteTaskIdView = true;
-				}
 
 				var groupName = await this.$store.getters ['group/groupName'];
 
@@ -234,7 +228,32 @@ module.exports = {
 						username: this.user.username
 					});
 				}
-			} 
+			} else if (taskStatus === 'Not yet started') {
+				await this.$store.dispatch('task/deleteId', {
+					taskId: taskId, 
+					groupName: this.groupName, 
+					username: this.user.username
+				});
+			} else if (taskStatus === 'Not yet assigned') {
+				var newUsernamesReceiver = [];
+				for (let username of usernamesReceiver) {
+					if (username !== this.user.username)
+						newUsernamesReceiver.push(username);
+				}
+
+				let state = await this.$store.dispatch('task/receivers', {
+					taskId: taskId,
+					usernamesReceiver: newUsernamesReceiver
+				});
+
+				if (state) {
+					await this.$store.dispatch('task/deleteId', {
+						taskId: taskId, 
+						groupName: this.groupName, 
+						username: this.user.username
+					});
+				}
+			}
 
 			var groupName = await this.$store.getters ['group/groupName'];
 

@@ -43,8 +43,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -64,8 +65,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -85,8 +87,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -111,8 +114,9 @@ module.exports = {
 
 					return null;
 				}
-			} catch (e) {
-				return null;//bootsrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return null;
 			}
 		},
 
@@ -141,8 +145,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -161,8 +166,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		}
 	},

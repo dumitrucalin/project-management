@@ -51,8 +51,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootsrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -100,8 +101,9 @@ module.exports = {
 						});
 					}
 				}, 5000);
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -137,8 +139,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -161,8 +164,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -170,10 +174,7 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/change/status', {
 					taskId: task.taskId, 
-					taskStatus: task.taskStatus, 
-					groupName: task.groupName, 
-					usernamesReceiver: task.usernamesReceiver, 
-					usernameCreator: task.usernameCreator
+					taskStatus: task.taskStatus
 				});
 				
 				if (response.data.err === 0) {
@@ -187,16 +188,39 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
-		assign(store, taskInfo) {
+		async receivers(store, taskInfo) {
 			try {
-				console.log(taskInfo);
-			} catch(e) {
-				return false;//bootstrap notify server
+				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
+					taskId: taskInfo.taskId,
+					usernamesReceiver: taskInfo.usernamesReceiver
+				});
+
+				if (response.data.err === 0) {
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Success',
+						message: 'Task assigned successfully to you.',
+						type: 'info'
+					});
+
+					return true;
+				} else {
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
+				}
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 

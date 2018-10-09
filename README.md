@@ -13,16 +13,14 @@ TODO:
 			-> usernamesReceiver.length === 1 && usernamesReceiver[0] === user.username, afiseaza task-ul normal
 		- toate task-urile care au fost assigned dar nu user-ului respectiv, sau au fost terminate, sa fie asezate in partea de jos a tabelului
 		- toate task-urile care trebuie sa fie assigned sa fie asezate in partea de sus a tabelului
-		- * in momentul in care un user a refuzat un task care inca nu a fost assigned, sa i se stearga numele din lista de useri ce pot da assigned la task
+		- la cel care a creat un task pentru mai multe persoane, sa ii arate ce persoane mai pot inca lua task-ul
 		- * buton pentru stergerea user-ului daca a fost adaugat in lista cu userii pentru crearea unui grup/task
-		- * ruta de assign in index
 		- * buton pentru a afisa notificarile de succes sau nu
 		- * sa incercam sa face ca notificarile sa ramana chiar daca pagina s-a reincarcat
+		- * refacut partea cu afisarea username-urilor si a fullName-urilor din fiecare grup
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
-		- Route for assigning a person for a task
-		- Route for deleting some users from the usernamesReceiver array in a specific task
 
 	CSS:
 		- sa nu mai apara niciunde acel highlight albastru din jurul atributului pe care il apesi cu mouse-ul (exemplu, input din login)

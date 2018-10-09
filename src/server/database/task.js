@@ -70,6 +70,12 @@ function findByTaskId(taskId) {
 	return Task.findOne({ taskId: taskId });
 }
 
+function setTaskReceiver(taskId, usernamesReceiver) {
+	console.log(taskId);
+	console.log(usernamesReceiver[0] + '\n\n\n\n\n\n\n\n');
+	return Task.updateOne({ taskId: taskId }, { usernamesReceiver: usernamesReceiver });
+}
+
 function deleteTask(taskId) {
 	return Task.deleteOne({ taskId: taskId });
 }
@@ -81,6 +87,7 @@ function changeTaskStatus(taskId, taskStatus) {
 var task = {
 	createTask,
 	findByTaskId,
+	setTaskReceiver,
 	deleteTask,
 	changeTaskStatus
 };

@@ -179,15 +179,9 @@ privateApp.post('/change/status', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var taskStatus = req.body.taskStatus;
-		var groupName = req.body.groupName;
-		var usernamesReceiver = req.body.usernamesReceiver;
-		var usernameCreator = req.body.usernameCreator;
 
 		var task = await db.task.changeTaskStatus(taskId, taskStatus);
 		if (task) {
-			await db.group.setTasksStatus(groupName, usernameCreator, true);
-			for (let usernameReceiver of usernamesReceiver)
-				await db.group.setTasksStatus(groupName, usernameReceiver, true);
 			debug('Changed the task status succesfully');
 			return res.status(200).send({ err: 0 });
 		} else {
@@ -200,9 +194,13 @@ privateApp.post('/change/status', async function(req, res) {
 	}
 });
 
-privateApp.post('/assign', function(req, res) {
+privateApp.post('/receivers', async function(req, res) {
 	try {
-		console.log(req);
+		var taskId = req.body.taskId;
+		var usernamesReceiver = req.body.usernamesReceiver;
+
+		await db.task.setTaskReceiver(taskId, usernamesReceiver);
+		return res.status(200).send({ err: 0 });
 	} catch(e) {
 		debug('Server error');
 		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });

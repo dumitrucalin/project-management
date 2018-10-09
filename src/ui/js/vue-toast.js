@@ -4,7 +4,7 @@ require ('bootstrap-notify');
 module.exports.install = function(Vue) {
 	let data = {};
 	Vue.toast = {
-		serverToast() {
+		serverErrorToast(error) {
 			let time = 3000;
 
 			if (!data['error']) {
@@ -16,7 +16,7 @@ module.exports.install = function(Vue) {
 
 				$.notify({
 					title: 'SERVER ERROR',
-					message: 'Couldn\'t connect to the server!<br>Please try again later.'
+					message: 'Couldn\'t connect to the server!<br>Error: ' + error + '.<br>Please try again later.'
 				}, {
 					type: 'danger',
 					delay: time,

@@ -32,8 +32,6 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/groups/create', groupInfo);
 
 				if (response.data.err === 0) {
-					// store.commit('user', response.data.user); TO SEE IF IT STLL WORKS
-
 					if(this.notifications)
 						Vue.toast.customToast({
 							title: 'Create Group: Success',
@@ -51,8 +49,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootsrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -104,8 +103,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -149,8 +149,9 @@ module.exports = {
 				store.commit('fullNames', fullNames);
 
 				return true;
-			} catch (e) {
-				return false;//bootsrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -177,8 +178,9 @@ module.exports = {
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
