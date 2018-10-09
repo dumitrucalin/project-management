@@ -192,6 +192,14 @@ module.exports = {
 			}
 		},
 
+		assign(store, taskInfo) {
+			try {
+				console.log(taskInfo);
+			} catch(e) {
+				return false;//bootstrap notify server
+			}
+		},
+
 		stopCheck() {
 			clearInterval(this.intervalStatus);
 		},

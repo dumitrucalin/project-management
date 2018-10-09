@@ -175,12 +175,27 @@ module.exports = {
 		},
 
 		async changeTaskStatus(taskId, taskStatus, usernamesReceiver, usernameCreator) {
-			if (taskStatus === 'Not yet started')
+			if (taskStatus === 'Not yet started') {
 				taskStatus = 'In progress';
-			else if (taskStatus === 'In progress')
+			} else if (taskStatus === 'In progress') {
 				taskStatus = 'Finished';
-			else if (taskStatus === 'Not yet assigned')
-				console.log('to do the assigment route');
+			} else if (taskStatus === 'Not yet assigned') {
+				var usernamesToDelete = [];
+				for (let username of usernamesReceiver) {
+					if (username !== this.user.username)
+						usernamesToDelete.push(username);
+				}
+
+				await this.$store.dispatch('task/assign', {
+					taskId: taskId,
+					usernameReceiver: this.user.username,
+					usernamesToDelete: usernamesToDelete
+				});
+
+				// UNCOMMENT WHEN ASSIGN METHOD WORKS
+				// if (otherState)
+				// 	taskStatus = 'Not yet started';
+			}
 
 			let state = await this.$store.dispatch('task/change', {
 				taskId: taskId, 
@@ -191,8 +206,9 @@ module.exports = {
 			});
 
 			if (state) {
-				if (taskStatus === 'Finished')
+				if (taskStatus === 'Finished') {
 					this.deleteTaskIdView = true;
+				}
 
 				var groupName = await this.$store.getters ['group/groupName'];
 

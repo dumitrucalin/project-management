@@ -11,7 +11,8 @@ TODO:
 			-> usernamesReceiver.length === 1 && usernamesReceiver[0] === user.username, afiseaza task-ul normal
 		- * toate task-urile care au dost assignate dar nu user-ului respectiv, sau au fost terminate, sa fie asezate in partea de jos a tabelului
 		- * toate task-urile care trebuie sa fie assignate sa fie asezate in partea de sus a tabelului
-		- * ruta pentru cazul in care un user care a primit taskul apasa pe 'Not assigned yet'
+		- * ruta de assign in index
+		- * buton pentru a afisa notificarile de succes sau nu
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
