@@ -34,12 +34,20 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 
 				if (response.data.err === 0) {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title: 'Create Task: Success',
-							message: 'The task has been created!',
-							type: 'info'
-						});
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					taskInfo.taskId = response.data.taskId;
+					if (taskInfo.usernamesReceiver.length === 1 && taskInfo.usernameCreator === taskInfo.usernamesReceiver[0])
+						tasks.tasksReceived.push(taskInfo);
+					else
+						tasks.tasksGiven.push(taskInfo);
+
+					store.commit('tasks', tasks);
+
+					Vue.toast.customToast({
+						title: 'Create Task: Success',
+						message: 'The task has been created!',
+						type: 'info'
+					});
 
 					return true;
 				} else {
@@ -57,7 +65,7 @@ module.exports = {
 			}
 		},
 
-		async check(store, userInfo) {
+		async checkOnce(store, userInfo) {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/get', {
 					username: userInfo.username,
@@ -76,6 +84,14 @@ module.exports = {
 
 				console.log(response.data.tasks);
 
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
+			}
+		},
+
+		check(store, userInfo) {
+			try {
 				this.intervalStatus = setInterval( async function() {
 					let response = await Vue.http.post(setup.API + '/tasks/status/get', {
 						username: userInfo.username,
@@ -100,7 +116,7 @@ module.exports = {
 							type: 'warning'
 						});
 					}
-				}, 5000);
+				}, 1000);
 			} catch(error) {
 				Vue.toast.serverErrorToast(error);
 				return false;
@@ -112,22 +128,25 @@ module.exports = {
 				var taskId = taskInfo.taskId;
 				var groupName = taskInfo.groupName;
 				
-				let response = await Vue.http.post(setup.API + '/tasks/exist', {
-					taskId: taskId
+				let response = await Vue.http.post(setup.API + '/tasks/delete', {
+					taskId: taskId, 
+					groupName: groupName
 				});
 
 				if (response.data.err === 0) {
-					await Vue.http.post(setup.API + '/tasks/delete', {
-						taskId: taskId, 
-						groupName: groupName
-					});
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					for (var id in tasks.tasksGiven) {
+						if (tasks.tasksGiven[id].taskId === taskInfo.taskId)
+							tasks.tasksGiven.splice(id, 1);
+					}
 
-					if(this.notifications)
-						Vue.toast.customToast({
-							title: 'Task Deleted: Success',
-							message: 'Task deleted succsessfuly.',
-							type: 'info'
-						});
+					store.commit('tasks', tasks);
+
+					Vue.toast.customToast({
+						title: 'Task Deleted: Success',
+						message: 'Task deleted succsessfuly.',
+						type: 'info'
+					});
 
 					return true;
 				} else {
@@ -154,6 +173,15 @@ module.exports = {
 				});
 
 				if (response.data.err === 0) {
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					var tasksReceived = tasks.tasksReceived;
+					tasksReceived = tasksReceived.filter(function(taskDeleteId) {
+						return taskDeleteId.taskId !== taskIdInfo.taskId;
+					});
+
+					tasks.tasksReceived = tasksReceived;
+					store.commit('tasks', tasks);
+
 					return true;
 				} else {
 					Vue.toast.customToast({
@@ -172,12 +200,22 @@ module.exports = {
 
 		async change(store, task) {
 			try {
-				let response = await Vue.http.post(setup.API + '/tasks/change/status', {
+				let response = await Vue.http.post(setup.API + '/tasks/status/change', {
 					taskId: task.taskId, 
-					taskStatus: task.taskStatus
+					taskStatus: task.taskStatus,
+					usernameCreator: task.usernameCreator,
+					groupName: task.groupName
 				});
-				
+
 				if (response.data.err === 0) {
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					for (let id in tasks.tasksReceived) {
+						if (tasks.tasksReceived[id].taskId === task.taskId)
+							tasks.tasksReceived[id].taskStatus = task.taskStatus;
+					}
+
+					store.commit('tasks', tasks);
+
 					return true;
 				} else {
 					Vue.toast.customToast({

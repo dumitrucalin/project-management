@@ -140,6 +140,14 @@ module.exports = {
 	watch: {
 		groupName: async function() {
 			await this.$store.dispatch('group/users', this.groupName);
+			this.taskUsersShow = [];
+			this.taskUsers = [];
+			this.usernamesSorted = [];
+			for (let username of this.usernames) {
+				this.usernamesSorted.push(username);
+			}
+
+			this.usernamesSorted = this.usernamesSorted.sort();
 		}
 	},
 
@@ -154,7 +162,7 @@ module.exports = {
 							else
 								this.taskStatus = 'Not yet assigned';
 
-							let state = await this.$store.dispatch('task/create', {
+							await this.$store.dispatch('task/create', {
 								usernameCreator: this.user.username,
 								usernamesReceiver: this.taskUsers,
 								groupName: this.groupName,
@@ -164,11 +172,6 @@ module.exports = {
 								taskPriority: this.taskPriority,
 								taskStatus: this.taskStatus
 							});
-
-							console.log(state);
-
-							if (state)
-								await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 						} else {
 							Vue.toast.customToast(this.wrongUsername);
 						}

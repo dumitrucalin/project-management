@@ -34,9 +34,10 @@ TODO:
 
 	IDEAS:
 		1. Have sticky notes per task
-		2. Send mails when approaching the deadline, when task deleted or when a user dropped a task by exiting the group
-		3. Application on android for buzzers instead of e-mails (but still, keep the e-mails)
-		4. Messages per task (like a mini watsapp)
-		5. To be able to upload a file, as well as download it
+		2. Cache for tasks per groupName
+		3. Send mails when approaching the deadline, when task deleted or when a user dropped a task by exiting the group
+		4. Application on android for buzzers instead of e-mails (but still, keep the e-mails)
+		5. Messages per task (like a mini watsapp)
+		6. To be able to upload a file, as well as download it
 
 		OPTIONAL: UML diagram

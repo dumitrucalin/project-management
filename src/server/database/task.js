@@ -36,6 +36,10 @@ var taskSchema = mongoose.Schema({
 		type: String,
 		required: true
 	}
+	// justCreated: {
+	// 	type: Boolean,
+	// 	required: true
+	// }
 }, {
 	toObject: {
 		transform: function(doc, ret) {
@@ -71,8 +75,6 @@ function findByTaskId(taskId) {
 }
 
 function setTaskReceiver(taskId, usernamesReceiver) {
-	console.log(taskId);
-	console.log(usernamesReceiver[0] + '\n\n\n\n\n\n\n\n');
 	return Task.updateOne({ taskId: taskId }, { usernamesReceiver: usernamesReceiver });
 }
 

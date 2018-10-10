@@ -23,15 +23,14 @@ privateApp.post('/create', async function(req, res) {
 					return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 				}
 			}
+
 			var taskId = await db.task.createTask(req.body);
 
 			if (usernameCreator === usernamesReceiver[0]) {
 				await db.group.setTasksReceived(groupName, usernameCreator, taskId);
-				await db.group.setTasksStatus(groupName, usernameCreator, true);
 				debug('User ' + usernameCreator + ' tasks list updated');
 			} else {
 				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-				await db.group.setTasksStatus(groupName, usernameCreator, true);
 				for (let usernameReceiver of usernamesReceiver) {
 					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
 					await db.group.setTasksStatus(groupName, usernameReceiver, true);
@@ -39,7 +38,7 @@ privateApp.post('/create', async function(req, res) {
 				debug('Users tasks list updated');
 			}
 
-			return res.status(200).send({ err: 0 });
+			return res.status(200).send({ err: 0, taskId: taskId });
 		} else {
 			debug('The group ' + groupName + 'doesn\'t exist');
 			return res.status(200).send({ err: 1, message: 'The group ' + groupName + 'doesn\'t exist!' });
@@ -138,9 +137,12 @@ privateApp.post('/delete', async function(req, res) {
 			var task = await db.task.findByTaskId(taskId);
 			if (task) {
 				await db.task.deleteTask(taskId);
-				await db.group.setTasksStatus(groupName, task.usernameCreator, true);
-				for (let usernameReceiver of task.usernamesReceiver)
-					await db.group.setTasksStatus(groupName, usernameReceiver, true);
+
+				if (task.usernamesReceiver[0] !== task.usernameCreator) {
+					for (let usernameReceiver of task.usernamesReceiver)
+						await db.group.setTasksStatus(groupName, usernameReceiver, true);
+				}
+						
 				debug('Task deleted');
 				return res.status(200).send({ err:0 });
 			} else {
@@ -167,7 +169,7 @@ privateApp.post('/exist', async function(req, res) {
 			return res.status(200).send({ err: 0 });
 		} else {
 			debug('The task with the given taskId doesn\'t exist');
-			return res.status(200).send({ err: 1, message: 'THe task with the given taskId doesn\' exist!' });
+			return res.status(200).send({ err: 1, message: 'The task with the given ID doesn\' exist!' });
 		}
 	} catch(e) {
 		debug('Server error');
@@ -175,13 +177,16 @@ privateApp.post('/exist', async function(req, res) {
 	}
 });
 
-privateApp.post('/change/status', async function(req, res) {
+privateApp.post('/status/change', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var taskStatus = req.body.taskStatus;
+		var usernameCreator = req.body.usernameCreator;
+		var groupName = req.body.groupName;
 
 		var task = await db.task.changeTaskStatus(taskId, taskStatus);
 		if (task) {
+			await db.group.setTasksStatus(groupName, usernameCreator, true);
 			debug('Changed the task status succesfully');
 			return res.status(200).send({ err: 0 });
 		} else {

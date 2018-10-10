@@ -186,7 +186,7 @@ module.exports = {
 
 		set(store, groupName) {
 			store.commit('groupName', groupName);
-		},
+		}
 	},
 	
 	mutations: {

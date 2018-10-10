@@ -115,13 +115,15 @@ module.exports = {
 		})
 	},
 
-	created() {
+	async created() {
 		if (this.user.groupNames.length) {
 			for (let groupNameTemp of this.user.groupNames)
 				this.groupNamesSorted.push(groupNameTemp);
 
 			this.groupNamesSorted = this.groupNamesSorted.sort();
-			this.groupName = this.groupNamesSorted[0];
+			var tempGroupName = await this.$store.getters ['group/groupName'];
+			if (tempGroupName !== this.groupName)
+				this.groupName = tempGroupName;
 		}
 	},
 
@@ -146,8 +148,11 @@ module.exports = {
 				}
 
 				await this.$store.dispatch('task/view', true);
+				await this.$store.dispatch('task/checkOnce', {
+					username: this.user.username,
+					groupName: this.groupName
+				});
 				await this.$store.dispatch('task/stopCheck');
-
 				await this.$store.dispatch('task/check', {
 					username: this.user.username,
 					groupName: this.groupName
@@ -174,7 +179,7 @@ module.exports = {
 			}
 		},
 
-		async changeTaskStatus(taskId, taskStatus, usernamesReceiver) {
+		async changeTaskStatus(taskId, taskStatus, usernamesReceiver, usernameCreator) {
 			if (taskStatus === 'Not yet started') {
 				taskStatus = 'In progress';
 			} else if (taskStatus === 'In progress') {
@@ -197,7 +202,9 @@ module.exports = {
 
 			let state = await this.$store.dispatch('task/change', {
 				taskId: taskId, 
-				taskStatus: taskStatus
+				taskStatus: taskStatus,
+				usernameCreator: usernameCreator,
+				groupName: this.groupName
 			});
 
 			if (state) {
