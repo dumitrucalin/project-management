@@ -14,7 +14,7 @@
 
 		<ul>
 			<li v-for="(groupUserShow, index) in groupUsersShow" :key="index">
-				<p>{{ groupUserShow }}</p>
+				<p>{{ groupUserShow }} <button @click="outWithUser(groupUserShow)">x</button> </p>
 			</li>
 		</ul>
 
@@ -100,6 +100,13 @@ module.exports = {
 			}
 
 			this.userNameGroup='';
+		},
+		outWithUser(username) {
+			var index = this.groupUsersShow.indexOf(username);
+			if (index > -1) {
+				this.groupUsersShow.splice(index, 1);
+				this.groupUsers.splice(index, 1);
+			}
 		}
 	}
 };

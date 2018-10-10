@@ -264,13 +264,27 @@ privateApp.post('/receivers', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var usernamesReceiver = req.body.usernamesReceiver;
+		var usernameCreator = req.body.usernameCreator;
+		var groupName = req.body.groupName;
+
+		await db.task.setTaskReceiver(taskId, usernamesReceiver);
+		await db.group.setTasksStatus(groupName, usernameCreator, true);
+		return res.status(200).send({ err: 0 });
+	} catch(e) {
+		debug('Server error');
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
+	}
+});
+
+privateApp.post('/reload', async function(req, res) {
+	try {
 		var groupName = req.body.groupName;
 		var usernamesToDelete = req.body.usernamesToDelete;
 
-		await db.task.setTaskReceiver(taskId, usernamesReceiver);
 		for (let username of usernamesToDelete) {
 			await db.group.setTasksStatus(groupName, username, true);
 		}
+
 		return res.status(200).send({ err: 0 });
 	} catch(e) {
 		debug('Server error');
