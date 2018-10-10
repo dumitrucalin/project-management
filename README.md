@@ -16,7 +16,6 @@ TODO:
 
 	CSS:
 		- sa nu mai apara niciunde acel highlight albastru din jurul atributului pe care il apesi cu mouse-ul (exemplu, input din login)
-		- toate paginile sa aibe elementele incadrate la stanga, intr-un div care nu acopera toate latimea ecranului, ci are un maximumWidth
 		- schimbat fontul din tot site-ul
 		- in tabelul mare, cu tasksGiven si tasksReceived, task-urile sa nu mai apara centrate pe inaltime (daca nu intelegi, intreba-ma pe mine sau pe many)
 		- lista cu userii sa se afle in partea dreapta a ecranului, si sa nu fie fie foarte mari (vezi facebook)
