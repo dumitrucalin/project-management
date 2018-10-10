@@ -32,28 +32,26 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/groups/create', groupInfo);
 
 				if (response.data.err === 0) {
-					// store.commit('user', response.data.user); TO SEE IF IT STLL WORKS
-
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'SendGroup:Success',
-							message:'The group has been sent: ' + groupInfo,
-							type:'info'
+							title: 'Create Group: Success',
+							message: 'The group ' + groupInfo.groupName + ' has been created.',
+							type: 'info'
 						});
 
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SendGroup:Fail',
-							message:'The group has not been sent',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Create Group: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootsrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -71,19 +69,18 @@ module.exports = {
 
 					store.commit('usernames', newUsernames);
 
-					let newResponse = await Vue.http.post(setup.API + '/users/usernames/get', {
+					let newResponse = await Vue.http.post(setup.API + '/users/fullNames/get', {
 						usernames: newUsernames
 					});
 
 					if (newResponse.data.err === 0) {
 						var fullNames = newResponse.data.fullNames;
 					} else {
-						if(this.notifications)
-							Vue.toast.customToast({
-								title:'UpdateGroup:Fail',
-								message:newResponse.data.message,
-								type:'warning'
-							});
+						Vue.toast.customToast({
+							title: 'Update Users in the Group: Fail',
+							message: newResponse.data.message,
+							type: 'warning'
+						});
 
 						return false;
 					}
@@ -91,17 +88,24 @@ module.exports = {
 
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'UpdateGroup:Success',
-							message:'The group has been updated',
-							type:'info'
+							title: 'Update Users in the Group: Success',
+							message: 'The group has been updated.',
+							type: 'info'
 						});
 
 					return true;
 				} else {
-					return false;//bootstrap notify custom
+					Vue.toast.customToast({
+						title: 'Update Users in the Group: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -114,12 +118,11 @@ module.exports = {
 				if (response.data.err === 0) {
 					var usernames = response.data.usernames;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'GetUsers:Fail',
-							message:'The users have not been retrieved',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Get Users form the Group: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
@@ -135,9 +138,9 @@ module.exports = {
 				} else {
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'GetUsers:Fail',
-							message:newResponse.data.message,
-							type:'warning'
+							title: 'Get Users form the Group: Fail',
+							message: newResponse.data.message,
+							type: 'warning'
 						});
 
 					return false;
@@ -145,16 +148,10 @@ module.exports = {
 
 				store.commit('fullNames', fullNames);
 
-				if(this.notifications)
-					Vue.toast.customToast({
-						title:'GetUsers:Success',
-						message:'Returned fullNames: '+ fullNames,
-						type:'info'
-					});
-
 				return true;
-			} catch (e) {
-				return false;//bootsrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -165,30 +162,31 @@ module.exports = {
 				if(response.data.err === 0) {
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'DeleteUserFromGroup:Success',
-							message:'User ' + deleteInfo.username + ' deleted from ' + deleteInfo.groupName,
-							type:'info'
+							title: 'Delete User from the Group: Success',
+							message: 'User ' + deleteInfo.username + ' deleted from ' + deleteInfo.groupName + '.',
+							type: 'info'
 						});
 
 					return true;
 				} else {
 					if(this.notifications)
 						Vue.toast.customToast({
-							title:'DeleteUserFromGroup:Fail',
-							message:'User ' + deleteInfo.username + ' has not been deleted from ' + deleteInfo.groupName,
-							type:'warning'
+							title: 'Delete User from the Group: Fail',
+							message: response.data.message,
+							type: 'warning'
 						});
 
 					return false;
 				}
-			} catch (e) {
-				return false;//bootstrap notify server
+			} catch (error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
 		set(store, groupName) {
 			store.commit('groupName', groupName);
-		},
+		}
 	},
 	
 	mutations: {

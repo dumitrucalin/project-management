@@ -18,7 +18,7 @@
 
 				<table>
 					<tr>
-						<th>Tasks Recieved</th>
+						<th @click="consolelogit">Tasks Recieved</th>
 						<th>Tasks Given</th>
 					</tr>
 
@@ -147,7 +147,6 @@ module.exports = {
 
 				await this.$store.dispatch('task/view', true);
 				await this.$store.dispatch('task/stopCheck');
-
 				await this.$store.dispatch('task/check', {
 					username: this.user.username,
 					groupName: this.groupName
@@ -225,6 +224,9 @@ module.exports = {
 				username: this.user.username,
 				groupName: groupName
 			});
+		},
+		consolelogit(){
+			console.log(this.tasks.tasksReceived);
 		}
 	}
 };

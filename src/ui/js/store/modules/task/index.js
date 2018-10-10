@@ -34,30 +34,38 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/tasks/create', taskInfo);
 
 				if (response.data.err === 0) {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SendTask:Success',
-							message:'The task has been set!',
-							type:'info'
-						});
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					taskInfo.taskId = response.data.taskId;
+					if (taskInfo.usernamesReceiver.length === 1 && taskInfo.usernameCreator === taskInfo.usernamesReceiver[0])
+						tasks.tasksReceived.push(taskInfo);
+					else
+						tasks.tasksGiven.push(taskInfo);
+
+					store.commit('tasks', tasks);
+
+					Vue.toast.customToast({
+						title: 'Create Task: Success',
+						message: 'The task has been created!',
+						type: 'info'
+					});
 
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'SendTask:Fail',
-							message:'The task has not been sent: ',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Create Task: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootsrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
-		async check(store, userInfo) {
+		async checkOnce(store, userInfo) {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/get', {
 					username: userInfo.username,
@@ -66,17 +74,24 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					store.commit('tasks', response.data.tasks);
-
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'CheckTasksStatus:Success',
-							message:'Task checked succsessful',
-							type:'info'
-						});
+				} else {
+					Vue.toast.customToast({
+						title: 'Check if Tasks were Modified: Failed',
+						message: response.data.message,
+						type: 'warning'
+					});
 				}
 
 				console.log(response.data.tasks);
 
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
+			}
+		},
+
+		check(store, userInfo) {
+			try {
 				this.intervalStatus = setInterval( async function() {
 					let response = await Vue.http.post(setup.API + '/tasks/status/get', {
 						username: userInfo.username,
@@ -91,27 +106,20 @@ module.exports = {
 							});
 
 							store.commit('tasks', response.data.tasks);
-
-							if(this.notifications)
-								Vue.toast.customToast({
-									title:'CheckTasksStatus:Success',
-									message:'Task comitted succsessful: ' + response.data.tasks,
-									type:'info'
-								});
 								
 							console.log(response.data.tasks);
 						}
 					} else {
-						if(this.notifications)
-							Vue.toast.customToast({
-								title:'CheckTasksStatus:Fail',
-								message:'Task chheck failed ',
-								type:'warning'
-							});
+						Vue.toast.customToast({
+							title: 'Check if Tasks were Modified: Failed',
+							message: response.data.message,
+							type: 'warning'
+						});
 					}
-				}, 5000);
-			} catch(e) {
-				return false;//bootstrap notify server
+				}, 1000);
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -120,36 +128,39 @@ module.exports = {
 				var taskId = taskInfo.taskId;
 				var groupName = taskInfo.groupName;
 				
-				let response = await Vue.http.post(setup.API + '/tasks/exist', {
-					taskId: taskId
+				let response = await Vue.http.post(setup.API + '/tasks/delete', {
+					taskId: taskId, 
+					groupName: groupName
 				});
 
 				if (response.data.err === 0) {
-					await Vue.http.post(setup.API + '/tasks/delete', {
-						taskId: taskId, 
-						groupName: groupName
-					});
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					for (var id in tasks.tasksGiven) {
+						if (tasks.tasksGiven[id].taskId === taskInfo.taskId)
+							tasks.tasksGiven.splice(id, 1);
+					}
 
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'DeleteTask:Success',
-							message:'Task deleted succsessfuly: ' + taskId + ' from ' + groupName,
-							type:'info'
-						});
+					store.commit('tasks', tasks);
+
+					Vue.toast.customToast({
+						title: 'Task Deleted: Success',
+						message: 'Task deleted succsessfuly.',
+						type: 'info'
+					});
 
 					return true;
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title:'DeleteTask:Fail',
-							message:'Task not deleted',
-							type:'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Task Deleted: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
@@ -162,32 +173,92 @@ module.exports = {
 				});
 
 				if (response.data.err === 0) {
-					return true;//bootstrap notify custom
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					var tasksReceived = tasks.tasksReceived;
+					tasksReceived = tasksReceived.filter(function(taskDeleteId) {
+						return taskDeleteId.taskId !== taskIdInfo.taskId;
+					});
+
+					tasks.tasksReceived = tasksReceived;
+					store.commit('tasks', tasks);
+
+					return true;
 				} else {
-					return false;//bootstrap notify custom
+					Vue.toast.customToast({
+						title: 'Task Deleted from Personal List: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 
 		async change(store, task) {
 			try {
-				let response = await Vue.http.post(setup.API + '/tasks/change/status', {
+				let response = await Vue.http.post(setup.API + '/tasks/status/change', {
 					taskId: task.taskId, 
-					taskStatus: task.taskStatus, 
-					groupName: task.groupName, 
-					usernameReceiver: task.usernameReceiver, 
-					usernameCreator: task.usernameCreator
+					taskStatus: task.taskStatus,
+					usernameCreator: task.usernameCreator,
+					groupName: task.groupName
 				});
-				
+
 				if (response.data.err === 0) {
-					return true;//bootstrap notify custom
+					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+					for (let id in tasks.tasksReceived) {
+						if (tasks.tasksReceived[id].taskId === task.taskId)
+							tasks.tasksReceived[id].taskStatus = task.taskStatus;
+					}
+
+					store.commit('tasks', tasks);
+
+					return true;
 				} else {
-					return false;//bootstrap notify custom
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
 				}
-			} catch(e) {
-				return false;//bootstrap notify server
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
+			}
+		},
+
+		async receivers(store, taskInfo) {
+			try {
+				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
+					taskId: taskInfo.taskId,
+					usernamesReceiver: taskInfo.usernamesReceiver
+				});
+
+				if (response.data.err === 0) {
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Success',
+						message: 'Task assigned successfully to you.',
+						type: 'info'
+					});
+
+					return true;
+				} else {
+					Vue.toast.customToast({
+						title: 'Change the Task Status: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
+				}
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
 			}
 		},
 

@@ -11,39 +11,41 @@ debug.log = console.info.bind(console);
 privateApp.post('/create', async function(req, res) {
 	try {
 		var usernameCreator = req.body.usernameCreator;
-		var usernameReceiver = req.body.usernameReceiver;
+		var usernamesReceiver = req.body.usernamesReceiver;
 		var groupName = req.body.groupName;
 
 		var group = await db.group.findByGroupName(groupName);
 		if (group) {
-			var user = await db.user.findByUsername(usernameReceiver);
-			if (user) {
-				var taskId = await db.task.createTask(req.body);
-
-				if (usernameCreator === usernameReceiver) {
-					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
-					await db.group.setTasksStatus(groupName, usernameReceiver, true);
-					debug('User ' + usernameReceiver + ' tasks list updated');
-				} else {
-					await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
-					await db.group.setTasksStatus(groupName, usernameCreator, true);
-					await db.group.setTasksStatus(groupName, usernameReceiver, true);
-					debug('Users tasks list updated');
+			for (let username of usernamesReceiver) {
+				var user = await db.user.findByUsername(username);
+				if (!user) {
+					debug('The user ' + username + ' doesn\'t exist');
+					return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 				}
-
-				return res.status(200).send({ err: 0 });
-			} else {
-				debug('The user ' + usernameReceiver + ' doesn\'t exist');
-				return res.status(200).send({ err: 1, message: 'The user ' + usernameReceiver + ' doesn\'t exist!' });
 			}
+
+			var taskId = await db.task.createTask(req.body);
+
+			if (usernameCreator === usernamesReceiver[0]) {
+				await db.group.setTasksReceived(groupName, usernameCreator, taskId);
+				debug('User ' + usernameCreator + ' tasks list updated');
+			} else {
+				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
+				for (let usernameReceiver of usernamesReceiver) {
+					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
+					await db.group.setTasksStatus(groupName, usernameReceiver, true);
+				}
+				debug('Users tasks list updated');
+			}
+
+			return res.status(200).send({ err: 0, taskId: taskId });
 		} else {
 			debug('The group ' + groupName + 'doesn\'t exist');
 			return res.status(200).send({ err: 1, message: 'The group ' + groupName + 'doesn\'t exist!' });
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -95,7 +97,7 @@ privateApp.post('/get', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -121,7 +123,7 @@ privateApp.post('/status/get', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -135,8 +137,12 @@ privateApp.post('/delete', async function(req, res) {
 			var task = await db.task.findByTaskId(taskId);
 			if (task) {
 				await db.task.deleteTask(taskId);
-				await db.group.setTasksStatus(groupName, task.usernameCreator, true);
-				await db.group.setTasksStatus(groupName, task.usernameReceiver, true);
+
+				if (task.usernamesReceiver[0] !== task.usernameCreator) {
+					for (let usernameReceiver of task.usernamesReceiver)
+						await db.group.setTasksStatus(groupName, usernameReceiver, true);
+				}
+						
 				debug('Task deleted');
 				return res.status(200).send({ err:0 });
 			} else {
@@ -149,7 +155,7 @@ privateApp.post('/delete', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
@@ -163,26 +169,24 @@ privateApp.post('/exist', async function(req, res) {
 			return res.status(200).send({ err: 0 });
 		} else {
 			debug('The task with the given taskId doesn\'t exist');
-			return res.status(200).send({ err: 1, message: 'THe task with the given taskId doesn\' exist!' });
+			return res.status(200).send({ err: 1, message: 'The task with the given ID doesn\' exist!' });
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 
-privateApp.post('/change/status', async function(req, res) {
+privateApp.post('/status/change', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var taskStatus = req.body.taskStatus;
-		var groupName = req.body.groupName;
-		var usernameReceiver = req.body.usernameReceiver;
 		var usernameCreator = req.body.usernameCreator;
+		var groupName = req.body.groupName;
 
 		var task = await db.task.changeTaskStatus(taskId, taskStatus);
 		if (task) {
 			await db.group.setTasksStatus(groupName, usernameCreator, true);
-			await db.group.setTasksStatus(groupName, usernameReceiver, true);
 			debug('Changed the task status succesfully');
 			return res.status(200).send({ err: 0 });
 		} else {
@@ -191,7 +195,20 @@ privateApp.post('/change/status', async function(req, res) {
 		}
 	} catch(e) {
 		debug('Server error');
-		return res.status(400).send({ err: 1, message: 'Server error!' + e });
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
+	}
+});
+
+privateApp.post('/receivers', async function(req, res) {
+	try {
+		var taskId = req.body.taskId;
+		var usernamesReceiver = req.body.usernamesReceiver;
+
+		await db.task.setTaskReceiver(taskId, usernamesReceiver);
+		return res.status(200).send({ err: 0 });
+	} catch(e) {
+		debug('Server error');
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
 	}
 });
 

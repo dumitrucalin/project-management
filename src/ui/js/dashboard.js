@@ -2,9 +2,7 @@ require('bootstrap');
 var Vue = require('vue');
 var store = require('./store/dashboard/store.js');
 var toast = require ('./vue-toast.js');
-var datetime = require('vue-datetime');
 Vue.use(toast);
-Vue.use(datetime);
 Vue.mixin({
 	store
 });

@@ -28,14 +28,18 @@ var taskSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	usernameReceiver: {
-		type: String,
+	usernamesReceiver: {
+		type: [String],
 		required: true
 	},
 	usernameCreator: {
 		type: String,
 		required: true
 	}
+	// justCreated: {
+	// 	type: Boolean,
+	// 	required: true
+	// }
 }, {
 	toObject: {
 		transform: function(doc, ret) {
@@ -70,6 +74,10 @@ function findByTaskId(taskId) {
 	return Task.findOne({ taskId: taskId });
 }
 
+function setTaskReceiver(taskId, usernamesReceiver) {
+	return Task.updateOne({ taskId: taskId }, { usernamesReceiver: usernamesReceiver });
+}
+
 function deleteTask(taskId) {
 	return Task.deleteOne({ taskId: taskId });
 }
@@ -81,6 +89,7 @@ function changeTaskStatus(taskId, taskStatus) {
 var task = {
 	createTask,
 	findByTaskId,
+	setTaskReceiver,
 	deleteTask,
 	changeTaskStatus
 };
