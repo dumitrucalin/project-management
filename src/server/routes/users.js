@@ -74,7 +74,7 @@ publicApp.post('/login', async function(req, res) {
 			return res.status(200).send({ err: 0, token: token });
 		} else {
 			debug('Username or password incorrect');
-			return res.status(200).send({ err: 1, message: 'The username or the password is incorrect!' });
+			return res.status(200).send({ err: 1, message: 'This combination of username and password doesn\'t exist!' });
 		}
 	} catch(e) {
 		debug('Server error');

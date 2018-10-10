@@ -37,7 +37,7 @@ module.exports = {
 				} else {
 					Vue.toast.customToast({
 						title: 'Login: Fail',
-						message: 'You couldn\'t be logged in.',
+						message: response.data.message,
 						type: 'warning'
 					});
 

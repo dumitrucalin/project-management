@@ -51,12 +51,7 @@ module.exports = {
 				title: 'Checking the Username: Fail',
 				message: 'The username contains invalid characters.',
 				type: 'warning'
-			},
-			wrongLogIn: {
-				title: 'Incorrect Log In!',
-				message: 'A user with this credentials do not exist.',
-				type: 'warning'
-			},
+			}
 		};
 	},
 
@@ -77,9 +72,6 @@ module.exports = {
 
 					if (state)
 						await this.$store.dispatch('settings/redirect', this.next);
-					else {
-						Vue.toast.customToast(this.wrongLogIn);
-					}
 				} else {
 					Vue.toast.customToast(this.wrongPassword);
 				}
