@@ -352,6 +352,7 @@ module.exports = {
 				groupName: groupName
 			});
 		},
+		
 		consolelogit(){
 			console.log(this.taks.tasksReceived);
 		}
