@@ -15,7 +15,7 @@
 
 			<div id="options">
 				<select v-model="groupName">
-					<div>Group</div>
+					<div @click="consolelogit">Group</div>
 					<option v-for="(item, index) in this.groupNamesSorted" :key="index" :value="item" >{{ item }}</option>
 				</select><br>
 
@@ -25,8 +25,7 @@
 
 				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
-				<input type="date" v-model="taskDeadline" name="Deadline" v-if="checkboxDeadline"><br>
-
+				<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline"/><br>
 				Priority
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 				<select v-if="checkboxPriority" v-model="taskPriority">
@@ -48,7 +47,6 @@ var Vue = require('vue');
 
 module.exports = {
 	name: 'CreateTask',
-	
 	data() {
 		return {
 			checkboxPriority: false,
@@ -62,6 +60,10 @@ module.exports = {
 			taskString: '',
 			taskPriority: '',
 			taskDeadline: null,
+			day:'',
+			monthIndex:'',
+			year:'',
+			date:'',
 
 			days: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31],
 			months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'Octomber', 'November', 'December'],
@@ -119,6 +121,10 @@ module.exports = {
 
 	methods: {
 		async submitTask() {
+			this.day = this.taskDeadline.getDate();
+			this.monthIndex = this.taskDeadline.getMonth();
+			this.year = this.taskDeadline.getFullYear();
+			this.date = this.day + ' ' + this.months[this.monthIndex] + ' ' + this.year;
 			if(this.taskName) {	
 				if(this.taskString) {
 					if(this.groupName) {
@@ -129,7 +135,7 @@ module.exports = {
 								groupName: this.groupName,
 								taskName: this.taskName,
 								taskString: this.taskString,
-								taskDeadline: this.taskDeadline,
+								taskDeadline: this.date,
 								taskPriority: this.taskPriority,
 								taskStatus: 'Not yet started'
 							});
@@ -148,6 +154,12 @@ module.exports = {
 			} else {
 				Vue.toast.customToast(this.taskNameNotify);
 			}	
+		},
+		consolelogit(){
+			console.log(this.day);
+			console.log(this.months);
+			console.log(this.year);
+			console.log(this.date);
 		}
 	}
 };

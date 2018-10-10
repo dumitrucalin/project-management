@@ -59,11 +59,6 @@ module.exports = {
 
 		async check(store, userInfo) {
 			try {
-				// var taskInfo = {
-				// 	username: userInfo.username,
-				// 	groupName: userInfo.groupName
-				// };
-
 				let response = await Vue.http.post(setup.API + '/tasks/get', {
 					username: userInfo.username,
 					groupName: userInfo.groupName
