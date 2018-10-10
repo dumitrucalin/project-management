@@ -67,7 +67,7 @@ module.exports = {
 
 		async checkOnce(store, userInfo) {
 			try {
-				let response = await Vue.http.post(setup.API + '/tasks/get', {
+				let response = await Vue.http.post(setup.API + '/tasks/getOnce', {
 					username: userInfo.username,
 					groupName: userInfo.groupName
 				});
@@ -106,8 +106,20 @@ module.exports = {
 							});
 
 							store.commit('tasks', response.data.tasks);
-								
+
 							console.log(response.data.tasks);
+
+							// var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+							// console.log(tasks);
+
+							// for (let taskReceived of response.data.tasks.tasksReceived)
+							// 	tasks.tasksReceived.push(taskReceived);
+							// for (let taskGiven of response.data.tasks.tasksGiven)
+							// 	tasks.tasksGiven.push(taskGiven);
+
+							// store.commit('tasks', tasks);
+								
+							// console.log(tasks);
 						}
 					} else {
 						Vue.toast.customToast({
@@ -237,6 +249,8 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
 					taskId: taskInfo.taskId,
 					usernamesReceiver: taskInfo.usernamesReceiver,
+					groupName: taskInfo.groupName,
+					usernamesToDelete: taskInfo.usernamesToDelete
 				});
 
 				if (response.data.err === 0) {

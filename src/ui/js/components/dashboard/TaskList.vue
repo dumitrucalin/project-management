@@ -271,7 +271,9 @@ module.exports = {
 
 				var otherState = await this.$store.dispatch('task/receivers', {
 					taskId: taskId,
-					usernamesReceiver: [this.user.username]
+					usernamesReceiver: [this.user.username],
+					groupName: this.groupName,
+					usernamesToDelet: usernamesToDelete
 				});
 
 				if (otherState)
