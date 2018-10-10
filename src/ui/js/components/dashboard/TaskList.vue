@@ -18,35 +18,114 @@
 
 				<table>
 					<tr>
-						<th>Tasks Recieved</th>
+						<th @click="consolelogit">Tasks Recieved</th>
 						<th>Tasks Given</th>
 					</tr>
 
 					<tr>
-						<td>
-							<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index>
-								<tr>
-									<th>Creator</th>
-									<th>Task Name</th>
-									<th>Task Details</th>
-									<th>Task Status</th>
-									<th v-if="task.taskDeadline">Deadline</th>
-									<th v-if="task.taskPriority">Priority</th>
-								</tr>
-								<tr>
-									<td>{{ task.usernameCreator }}</td>
-									<td>{{ task.taskName }}</td>
-									<td>{{ task.taskString }}</td>
-									<td @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
-									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
-									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-									<td v-if="(user.username !== task.usernamesReceiver[0]) || (task.taskStatus === 'Not yet assigned') || (task.taskStatus === 'Finished')"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
-								</tr>
-							</table>
-						</td>
+						<table>
+							<tr>
+								<h4>Not Assigned to anyone</h4>
+							</tr>
+							<tr>
+								<td>
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet assigned'">
+										<tr>
+											<th>Giver</th>
+											<th>Task Name</th>
+											<th>Task Details</th>
+											<th>Task Status</th>
+											<th v-if="task.taskDeadline">Deadline</th>
+											<th v-if="task.taskPriority">Priority</th>
+										</tr>
+
+										<tr>
+											<td>{{ task.usernameCreator }}</td>
+											<td>{{ task.taskName }}</td>
+											<td>{{ task.taskString }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+											<td><button @click="deleteTask(task.taskId)">X</button></td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<h4>Your Tasks</h4>
+							</tr>
+							<tr>
+								<td>
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet started' || task.taskStatus=='In progress'">
+										<tr>
+											<th>Giver</th>
+											<th>Task Name</th>
+											<th>Task Details</th>
+											<th>Task Status</th>
+											<th v-if="task.taskDeadline">Deadline</th>
+											<th v-if="task.taskPriority">Priority</th>
+										</tr>
+										<tr>
+											<td>{{ task.usernameCreator }}</td>
+											<td>{{ task.taskName }}</td>
+											<td>{{ task.taskString }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+											<td><button @click="deleteTask(task.taskId)">X</button></td>
+										</tr>
+									</table>	
+								</td>
+							</tr>
+							<tr>
+								<h4>Finished</h4>
+							</tr>
+							<tr>
+								<td>
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Finished'">
+										<tr>
+											<th>Giver</th>
+											<th>Task Name</th>
+											<th>Task Details</th>
+											<th>Task Status</th>
+											<th v-if="task.taskDeadline">Deadline</th>
+											<th v-if="task.taskPriority">Priority</th>
+										</tr>
+										<tr>
+											<td>{{ task.usernameCreator }}</td>
+											<td>{{ task.taskName }}</td>
+											<td>{{ task.taskString }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+											<td><button @click="deleteTask(task.taskId)">X</button></td>
+										</tr>
+									</table>	
+								</td>
+							</tr>
+							<tr>
+								<h4>Not yours</h4>
+							</tr>
+							<tr>
+								<td>
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.usernamesReceiver[0] != user.username">
+										<tr>
+											<th>Giver</th>
+											<th>Task Name</th>
+										</tr>
+										<tr>
+											<td>{{ task.usernameCreator }}</td>
+											<td>{{ task.taskName }}</td>
+											<td>The task has been assigned to someone else</td>
+											<td><button @click="deleteTask(task.taskId)">X</button></td>
+										</tr>
+									</table>	
+								</td>
+							</tr>
+						</table>
 
 						<td>
-							<table v-for="(task,index) in this.tasks.tasksGiven" :key=index>
+							<table v-for="(task,index) in this.tasks.tasksGiven" :key=index >
 								<tr>
 									<th>Receiver</th>
 									<th>Task Name</th>
@@ -55,9 +134,8 @@
 									<th v-if="task.taskDeadline">Deadline</th>
 									<th v-if="task.taskPriority">Priority</th>
 								</tr>
-
 								<tr>
-									<td>{{ task.usernamesReceiver[0] }}</td>
+									<td><p v-for="(user,index) in task.usernamesReceiver" :key=index>{{ user }}</p></td>
 									<td>{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
 									<td v-if="user.username">{{ task.taskStatus }}</td>
@@ -65,7 +143,7 @@
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									<td><button @click="deleteTask(task.taskId)">X</button></td>
 								</tr>
-							</table>
+							</table>	
 						</td>
 					</tr>
 				</table>
@@ -269,6 +347,9 @@ module.exports = {
 				username: this.user.username,
 				groupName: groupName
 			});
+		},
+		consolelogit(){
+			console.log(this.taks.tasksReceived);
 		}
 	}
 };
