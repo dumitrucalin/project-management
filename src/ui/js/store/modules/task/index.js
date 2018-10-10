@@ -176,22 +176,22 @@ module.exports = {
 			}
 		},
 
-		async deleteId(store, taskIdInfo) {
+		async deleteId(store, taskInfo) {
 			try {
 				let response = await Vue.http.post(setup.API + '/groups/task/delete', {
-					taskId: taskIdInfo.taskId, 
-					groupName: taskIdInfo.groupName, 
-					username: taskIdInfo.username
+					taskId: taskInfo.taskId, 
+					groupName: taskInfo.groupName, 
+					username: taskInfo.username
 				});
 
 				if (response.data.err === 0) {
 					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
-					var tasksReceived = tasks.tasksReceived;
-					tasksReceived = tasksReceived.filter(function(taskDeleteId) {
-						return taskDeleteId.taskId !== taskIdInfo.taskId;
-					});
 
-					tasks.tasksReceived = tasksReceived;
+					for (var id in tasks.tasksReceived) {
+						if (tasks.tasksReceived[id].taskId === taskInfo.taskId)
+							tasks.tasksReceived.splice(id, 1);
+					}
+					
 					store.commit('tasks', tasks);
 
 					return true;
@@ -249,8 +249,8 @@ module.exports = {
 				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
 					taskId: taskInfo.taskId,
 					usernamesReceiver: taskInfo.usernamesReceiver,
-					groupName: taskInfo.groupName,
-					usernamesToDelete: taskInfo.usernamesToDelete
+					usernameCreator: taskInfo.usernameCreator,
+					groupName: taskInfo.groupName
 				});
 
 				if (response.data.err === 0) {
@@ -265,6 +265,50 @@ module.exports = {
 				} else {
 					Vue.toast.customToast({
 						title: 'Change the Task Status: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
+
+					return false;
+				}
+			} catch(error) {
+				Vue.toast.serverErrorToast(error);
+				return false;
+			}
+		},
+
+		async assign(store, taskInfo) {
+			try {
+				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
+					taskId: taskInfo.taskId,
+					usernamesReceiver: taskInfo.usernamesReceiver,
+					usernameCreator: taskInfo.usernameCreator
+				});
+
+				if (response.data.err === 0) {
+					response = await Vue.http.post(setup.API + '/tasks/reload', {
+						groupName: taskInfo.groupName,
+						usernamesToDelete: taskInfo.usernamesToDelete
+					});
+
+					if (response.data.err === 0) {
+						var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+						for (let id in tasks.tasksReceived) {
+							if (tasks.tasksReceived[id].taskId === taskInfo.taskId)
+								tasks.tasksReceived[id].usernamesReceiver = taskInfo.usernamesReceiver;
+						}
+
+						Vue.toast.customToast({
+							title: 'Assign the Task: Success',
+							message: 'The task is yours.',
+							type: 'info'
+						});
+	
+						return true;
+					}
+				} else {
+					Vue.toast.customToast({
+						title: 'Assign the Task: Fail',
 						message: response.data.message,
 						type: 'warning'
 					});

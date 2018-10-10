@@ -46,7 +46,7 @@
 											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-											<td><button @click="deleteTask(task.taskId)">X</button></td>
+											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 										</tr>
 									</table>
 								</td>
@@ -56,7 +56,7 @@
 							</tr>
 							<tr>
 								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet started' || task.taskStatus=='In progress'">
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="(task.taskStatus === 'Not yet started' || task.taskStatus === 'In progress') && task.usernamesReceiver[0] === user.username">
 										<tr>
 											<th>Giver</th>
 											<th>Task Name</th>
@@ -72,7 +72,6 @@
 											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-											<td><button @click="deleteTask(task.taskId)">X</button></td>
 										</tr>
 									</table>	
 								</td>
@@ -82,7 +81,7 @@
 							</tr>
 							<tr>
 								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Finished'">
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Finished' && task.usernamesReceiver[0] === user.username">
 										<tr>
 											<th>Giver</th>
 											<th>Task Name</th>
@@ -98,7 +97,7 @@
 											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-											<td><button @click="deleteTask(task.taskId)">X</button></td>
+											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 										</tr>
 									</table>	
 								</td>
@@ -108,7 +107,7 @@
 							</tr>
 							<tr>
 								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.usernamesReceiver[0] != user.username">
+									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.usernamesReceiver[0] !== user.username && task.taskStatus !== 'Not yet assigned'">
 										<tr>
 											<th>Giver</th>
 											<th>Task Name</th>
@@ -117,7 +116,7 @@
 											<td>{{ task.usernameCreator }}</td>
 											<td>{{ task.taskName }}</td>
 											<td>The task has been assigned to someone else</td>
-											<td><button @click="deleteTask(task.taskId)">X</button></td>
+											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 										</tr>
 									</table>	
 								</td>
@@ -269,11 +268,12 @@ module.exports = {
 						usernamesToDelete.push(username);
 				}
 
-				var otherState = await this.$store.dispatch('task/receivers', {
+				var otherState = await this.$store.dispatch('task/assign', {
 					taskId: taskId,
+					usernameCreator: usernameCreator,
 					usernamesReceiver: [this.user.username],
 					groupName: this.groupName,
-					usernamesToDelet: usernamesToDelete
+					usernamesToDelete: usernamesToDelete
 				});
 
 				if (otherState)
@@ -315,7 +315,7 @@ module.exports = {
 						username: this.user.username
 					});
 				}
-			} else if (taskStatus === 'Not yet started') {
+			} else if (taskStatus == 'Not yet started' || taskStatus == 'In progress') {
 				await this.$store.dispatch('task/deleteId', {
 					taskId: taskId, 
 					groupName: this.groupName, 
@@ -330,7 +330,9 @@ module.exports = {
 
 				let state = await this.$store.dispatch('task/receivers', {
 					taskId: taskId,
-					usernamesReceiver: newUsernamesReceiver
+					usernamesReceiver: newUsernamesReceiver,
+					usernameCreator: usernameCreator,
+					groupName: this.groupName
 				});
 
 				if (state) {

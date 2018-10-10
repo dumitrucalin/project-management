@@ -108,7 +108,7 @@ module.exports = {
 				this.groupUsers.splice(index, 1);
 			}
 		}
-	},
+	}
 };
 
 </script>
