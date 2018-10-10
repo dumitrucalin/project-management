@@ -116,7 +116,7 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			usernames: 'group/usernames'
+			usersBasicInfo: 'group/usersBasicInfo'
 		}),
 		
 	},
@@ -128,8 +128,11 @@ module.exports = {
 			this.groupNamesSorted.push(groupName);
 		this.groupNamesSorted = this.groupNamesSorted.sort();
 
-		for (let username of this.usernames)
-			this.usernamesSorted.push(username);
+		var fullNames = Object.keys(this.usersBasicInfo);
+		for (let fullName of fullNames) {
+			this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+		}
+		
 		this.usernamesSorted = this.usernamesSorted.sort();
 
 		await this.$store.dispatch('task/stopCheck');
@@ -137,15 +140,19 @@ module.exports = {
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('group/users', this.groupName);
-			this.taskUsersShow = [];
-			this.taskUsers = [];
-			this.usernamesSorted = [];
-			for (let username of this.usernames) {
-				this.usernamesSorted.push(username);
-			}
+			let state = await this.$store.dispatch('group/users', this.groupName);
+			if (state) {
+				this.taskUsersShow = [];
+				this.taskUsers = [];
+				this.usernamesSorted = [];
 
-			this.usernamesSorted = this.usernamesSorted.sort();
+				var fullNames = Object.keys(this.usersBasicInfo);
+				for (let fullName of fullNames) {
+					this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+				}
+
+				this.usernamesSorted = this.usernamesSorted.sort();
+			}
 		}
 	},
 

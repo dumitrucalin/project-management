@@ -11,9 +11,9 @@
 		<div v-if="show">
 			<div v-if="tasks" class="taskList">
 				The users in the same group with you are:
-				<div v-for="(username, index) in this.usernamesShowed" :key=index>
-					<div>{{ fullNamesShowed[index]}}</div>
-					<div>{{ username }}</div><br>
+				<div v-for="(fullName, index) in this.fullNamesShowed" :key=index>
+					<div>{{ fullName }}</div>
+					<div>{{ usersBasicInfo[fullName] }}</div><br>
 				</div>
 
 				<table>
@@ -185,8 +185,7 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			usernames: 'group/usernames',
-			fullNames: 'group/fullNames',
+			usersBasicInfo: 'group/usersBasicInfo',
 			tasks: 'task/tasks',
 			show: 'task/show'
 		})
@@ -214,15 +213,12 @@ module.exports = {
 			let state = await this.$store.dispatch('group/users', this.groupName);
 
 			if (state) {
-				for (let username of this.usernames) {
-					if (username !== this.user.username)
-						this.usernamesShowed.push (username);
-				}
-
-				for (let fullName of this.fullNames) {
+				var fullNames = Object.keys(this.usersBasicInfo);
+				for (let fullName of fullNames) {
 					if (fullName !== this.user.fullName)
 						this.fullNamesShowed.push (fullName);
 				}
+				this.fullNamesShowed = this.fullNamesShowed.sort();
 
 				await this.$store.dispatch('task/view', true);
 				await this.$store.dispatch('task/checkOnce', {

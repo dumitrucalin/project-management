@@ -7,12 +7,12 @@ TODO:
 	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE IN PULA LUI CALIN SI A LUI MARIUS
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
-		- * refacut partea cu afisarea username-urilor si a fullName-urilor din fiecare grup
-		- * check pe lungime maxima de nume/grupnume/usernume etc 20 caractere
+		- * check pe lungime maxima de fullName/groupName/username etc 20 caractere
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
 		- To see how you can reassign a task from a user who exit the group
+		- To see how you can reassign if all the users denied a task
 
 	CSS:
 		- sa nu mai apara niciunde acel highlight albastru din jurul atributului pe care il apesi cu mouse-ul (exemplu, input din login)
@@ -24,10 +24,10 @@ TODO:
 
 	IDEAS:
 		1. Have sticky notes per task
-		2. Cache for tasks per groupName
-		3. Send mails when approaching the deadline, when task deleted or when a user dropped a task by exiting the group
-		4. Application on android for buzzers instead of e-mails (but still, keep the e-mails)
-		5. Messages per task (like a mini watsapp)
+		2. Send mails when approaching the deadline, when task deleted or when a user dropped a task by exiting the group
+		3. Application on android for buzzers instead of e-mails (but still, keep the e-mails)
+		4. Messages per task (like a mini watsapp)
+		5. Cache for tasks per groupName
 		6. To be able to upload a file, as well as download it
 
 		OPTIONAL: UML diagram
