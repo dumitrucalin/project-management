@@ -236,15 +236,16 @@ module.exports = {
 			try {
 				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
 					taskId: taskInfo.taskId,
-					usernamesReceiver: taskInfo.usernamesReceiver
+					usernamesReceiver: taskInfo.usernamesReceiver,
 				});
 
 				if (response.data.err === 0) {
-					Vue.toast.customToast({
-						title: 'Change the Task Status: Success',
-						message: 'Task assigned successfully to you.',
-						type: 'info'
-					});
+					if (!taskInfo.usernamesReceiver.includes(taskInfo.currentUsername))
+						Vue.toast.customToast({
+							title: 'Change the Task Status: Success',
+							message: 'Task assigned successfully to you.',
+							type: 'info'
+						});
 
 					return true;
 				} else {
