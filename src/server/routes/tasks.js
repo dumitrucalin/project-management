@@ -31,6 +31,7 @@ privateApp.post('/create', async function(req, res) {
 				debug('User ' + usernameCreator + ' tasks list updated');
 			} else {
 				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
+				// await db.task.updateViewStatus(taskId, true);
 				for (let usernameReceiver of usernamesReceiver) {
 					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
 					await db.group.setTasksStatus(groupName, usernameReceiver, true);
@@ -68,6 +69,63 @@ privateApp.post('/get', async function(req, res) {
 				for (let taskId of tasksId.tasksGiven) {
 					let task = await db.task.findByTaskId(taskId);
 					if (task) {
+						// if (task.justCreated === true) {
+						tasks.tasksGiven.push(task);
+						// }
+					} else {
+						await db.group.deleteTaskGiven(groupName, username, taskId);
+					}
+				}
+				debug('Given tasks got successfully');
+			
+				for (let taskId of tasksId.tasksReceived) {
+					let task = await db.task.findByTaskId(taskId);
+					if (task) {
+						// if (task.justCreated === true) {
+						tasks.tasksReceived.push(task);
+						//	await db.task.updateViewStatus(task.taskId, false);
+						// }
+					} else {
+						await db.group.deleteTaskReceived(groupName, username, taskId);
+					}
+				}
+				debug('Received tasks got successfully');
+
+				await db.group.setTasksStatus(groupName, username, false);
+				return res.status(200).send({ err: 0, tasks: tasks });
+			} else {
+				debug('The user ' + username + ' doesn\'t exist');
+				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
+			}
+		} else {
+			debug('The group ' + groupName + ' doesn\'t exist');
+			return res.status(200).send({ err: 1, message: 'The group ' + groupName + ' doesn\'t exist!' });
+		}
+	} catch(e) {
+		debug('Server error');
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
+	}
+});
+
+privateApp.post('/getOnce', async function(req, res) {
+	try {
+		var groupName = req.body.groupName;
+		var username = req.body.username;
+
+		var group = await db.group.findByGroupName(groupName);
+		if (group) {
+			var user = await db.user.findByUsername(username);
+			if (user) {
+				var tasksId = await db.group.findTasks(groupName, username);
+			
+				var tasks = {
+					tasksGiven: [],
+					tasksReceived: []
+				};
+			
+				for (let taskId of tasksId.tasksGiven) {
+					let task = await db.task.findByTaskId(taskId);
+					if (task) {
 						tasks.tasksGiven.push(task);
 					} else {
 						await db.group.deleteTaskGiven(groupName, username, taskId);
@@ -79,6 +137,7 @@ privateApp.post('/get', async function(req, res) {
 					let task = await db.task.findByTaskId(taskId);
 					if (task) {
 						tasks.tasksReceived.push(task);
+						// await db.task.updateViewStatus(task.taskId, false);
 					} else {
 						await db.group.deleteTaskReceived(groupName, username, taskId);
 					}
@@ -186,6 +245,8 @@ privateApp.post('/status/change', async function(req, res) {
 
 		var task = await db.task.changeTaskStatus(taskId, taskStatus);
 		if (task) {
+			// await db.task.updateViewStatus(taskId, true);
+
 			await db.group.setTasksStatus(groupName, usernameCreator, true);
 			debug('Changed the task status succesfully');
 			return res.status(200).send({ err: 0 });
@@ -203,8 +264,13 @@ privateApp.post('/receivers', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var usernamesReceiver = req.body.usernamesReceiver;
+		var groupName = req.body.groupName;
+		var usernamesToDelete = req.body.usernamesToDelete;
 
 		await db.task.setTaskReceiver(taskId, usernamesReceiver);
+		for (let username of usernamesToDelete) {
+			await db.group.setTasksStatus(groupName, username, true);
+		}
 		return res.status(200).send({ err: 0 });
 	} catch(e) {
 		debug('Server error');

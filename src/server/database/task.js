@@ -61,9 +61,8 @@ function createTaskId() {
 
 function createTask(taskInfo) {
 	var taskId = createTaskId();
-	var justCreated = true;
 	taskInfo.taskId = taskId;
-	taskInfo.justCreated = justCreated;
+	taskInfo.justCreated = true;
 
 	var task = new Task(_.assign({}, taskInfo));
 	task.save();
@@ -87,12 +86,17 @@ function changeTaskStatus(taskId, taskStatus) {
 	return Task.updateOne({ taskId: taskId }, { $set: { taskStatus: taskStatus } });
 }
 
+function updateViewStatus(taskId, view) {
+	return Task.updateOne({ taskId: taskId }, { $set: { justCreated: view } });
+}
+
 var task = {
 	createTask,
 	findByTaskId,
 	setTaskReceiver,
 	deleteTask,
-	changeTaskStatus
+	changeTaskStatus,
+	updateViewStatus
 };
 
 module.exports = task;
