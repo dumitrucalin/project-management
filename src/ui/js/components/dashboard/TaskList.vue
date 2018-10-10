@@ -316,7 +316,6 @@ module.exports = {
 					});
 				}
 			} else if (taskStatus == 'Not yet started' || taskStatus == 'In progress') {
-				console.log('fucking bitch');
 				await this.$store.dispatch('task/deleteId', {
 					taskId: taskId, 
 					groupName: this.groupName, 
