@@ -35,11 +35,11 @@ var taskSchema = mongoose.Schema({
 	usernameCreator: {
 		type: String,
 		required: true
+	},
+	justCreated: {
+		type: Boolean,
+		required: true
 	}
-	// justCreated: {
-	// 	type: Boolean,
-	// 	required: true
-	// }
 }, {
 	toObject: {
 		transform: function(doc, ret) {
@@ -61,8 +61,9 @@ function createTaskId() {
 
 function createTask(taskInfo) {
 	var taskId = createTaskId();
-	console.log(taskInfo);
+	var justCreated = true;
 	taskInfo.taskId = taskId;
+	taskInfo.justCreated = justCreated;
 
 	var task = new Task(_.assign({}, taskInfo));
 	task.save();
