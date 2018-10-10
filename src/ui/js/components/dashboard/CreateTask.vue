@@ -24,7 +24,7 @@
 				</select>
 				<ul>
 					<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
-						<p>{{ taskUserShow }}</p>
+						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">x</button></p>
 					</li>
 				</ul>
 				<button @click="addUserTask">Add User</button><br>
@@ -204,6 +204,13 @@ module.exports = {
 				Vue.toast.customToast(this.allreadyAdded);
 			}
 		},
+		outWithUser(username) {
+			var index = this.taskUsersShow.indexOf(username);
+			if (index > -1) {
+				this.taskUsersShow.splice(index, 1);
+				this.taskUsers.splice(index, 1);
+			}
+		}
 	}
 };
 
