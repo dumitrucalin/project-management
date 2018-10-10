@@ -1,12 +1,12 @@
 <template>
 	<div class="signupForm">
-		<input type="text" class="inputDesign" id="username" placeholder="Username" @keyup.enter="signup" v-model="username" />
-		<input type="password" id="password" class="inputDesign" placeholder="Password" @keyup.enter="signup" v-model="password" />
-		<input type="password" id="confirmPassword" class="inputDesign" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
-		<input type="checkbox" id="viewPassword" v-model="viewPassword" @click="togglePassword" />View Password<br>
-		<input type="text" class="inputDesign" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
-		<input type="text" class="inputDesign" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
-		<button class="submitButton" id="signupButton" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
+		<input type="text" class="form-control" id="username" placeholder="Username" @keyup.enter="signup" v-model="username" />
+		<input type="password" id="password" class="form-control" placeholder="Password" @keyup.enter="signup" v-model="password" />
+		<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
+		<input type="checkbox" class="form-control" id="viewPassword" v-model="viewPassword" @click="togglePassword" />View Password<br>
+		<input type="text" class="form-control" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
+		<input type="text" class="form-control" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
+		<button type="button" class="btn btn-dark" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
 		<a href="login.html" >Log In</a>
 		<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 	</div>
