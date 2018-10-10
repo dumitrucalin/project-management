@@ -5,7 +5,7 @@
 			<input type="text" class="input1" placeholder="Username" @keyup.enter="login" v-model="username" /><br>
 			<input type="password" class="input2" placeholder="Password" @keyup.enter="login" v-model="password" /><br>
 			<input type="checkbox" class="input3" v-model="viewPassword" @click="togglePassword" />View Password<br>
-			<button class="notSubmitButton" name="Submit" value="Login"  @click="login" >Login</button>
+			<button type="button" class="btn btn-primary" name="Submit" value="Login"  @click="login" >Login</button>
 			<a href="signup.html" >Sign Up</a>
 			
 		</div>
