@@ -113,21 +113,34 @@ privateApp.post('/user/delete', async function (req, res) {
 		if (group) {
 			var user = await db.user.findByUsername(username);
 			if (user) {
-				var tasks = group.users[username];
-				for (let taskId of tasks.tasksGiven) {
-					await db.task.deleteTask(taskId);
-				}
-				for (let taskId of tasks.tasksReceived) {
-					await db.task.deleteTask(taskId);
-				}
-				await db.group.deleteUser(groupName, username);
-				await db.user.deleteGroup(username, groupName);
+				var tasksId = group.users[username];
 
-				if (Object.keys(group.users).length === 1)
-					await db.group.deleteGroup(groupName);
+				// if (Object.keys(group.users).length === 1) {
+				for (let taskId of tasksId.tasksGiven) {
+					await db.task.deleteTask(taskId);
+				}
+				for (let taskId of tasksId.tasksReceived) {
+					await db.task.deleteTask(taskId);
+				}
+
+				await db.group.deleteGroup(groupName);
+				await db.group.deleteUser(groupName, username);
+				// } else {
+				// 	for (let taskId of tasksId.tasksGiven) {
+				// 		console.log(taskId);
+				// 		// TODO: STE THE TASK STATUS TO DELETED AND INFORM EVERY RECEIVER FROM EVERY TASK
+				// 	}
+				// 	for (let taskId of tasksId.tasksReceived) {
+				// 		console.log(taskId);
+				// 		// TODO: SET THE TASK STATUS TO REASSIGN AND INFORM THE GIVEN CREATOR
+				// 	}
+
+				// 	await db.group.deleteUser(groupName, username);
+				// 	await db.user.deleteGroup(username, groupName);
+				// }
 
 				debug('The user ' + username + ' was deleted from the group ' + groupName);
-				return res.status(200).send({ err: 0 });
+				return res.status(200).send({ err: 0, tasksId: tasksId });
 			} else {
 				debug('The user ' + username + ' doesn\'t exist');
 				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });

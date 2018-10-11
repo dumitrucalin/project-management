@@ -3,11 +3,13 @@
 This is the README for a application to manage tasks in a team working on a project.
 
 TODO: 
-	UI (ce are - si * inseamna ca il pot face si eu, ce are doar - poti face doar tu):
+	UI (ce are - si * inseamna ca il pot face si eu si tu, ce are doar - poti face doar tu):
 	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE IN PULA LUI CALIN SI A LUI MARIUS
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
 		- * check pe lungime maxima de fullName/groupName/username etc 20 caractere
+		- * taskStatus = Deleted daca userCreator a sters task-ul
+		- * sa nu se straga task-ul daca il sterge taskCreatorul, ci doar din lista proprie. Cel care il va sterge ultimul din baza de date este ultimul user din lista de usersReceiver
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis

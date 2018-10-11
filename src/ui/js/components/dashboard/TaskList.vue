@@ -43,7 +43,7 @@
 											<td>{{ task.usernameCreator }}</td>
 											<td>{{ task.taskName }}</td>
 											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
@@ -69,7 +69,7 @@
 											<td>{{ task.usernameCreator }}</td>
 											<td>{{ task.taskName }}</td>
 											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 										</tr>
@@ -94,7 +94,7 @@
 											<td>{{ task.usernameCreator }}</td>
 											<td>{{ task.taskName }}</td>
 											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">{{ task.taskStatus }}</td>
+											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
 											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
@@ -137,7 +137,7 @@
 									<td><p v-for="(user,index) in task.usernamesReceiver" :key=index>{{ user }}</p></td>
 									<td>{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
-									<td v-if="user.username">{{ task.taskStatus }}</td>
+									<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
 									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									<td><button @click="deleteTask(task.taskId)">X</button></td>
@@ -252,48 +252,53 @@ module.exports = {
 			}
 		},
 
-		async changeTaskStatus(taskId, taskStatus, usernamesReceiver, usernameCreator) {
-			if (taskStatus === 'Not yet started') {
-				taskStatus = 'In progress';
-			} else if (taskStatus === 'In progress') {
-				taskStatus = 'Finished';
-			} else if (taskStatus === 'Not yet assigned') {
-				var usernamesToDelete = [];
-				for (let username of usernamesReceiver) {
-					if (username !== this.user.username)
-						usernamesToDelete.push(username);
+		async changeTaskStatus(task) {
+			if (task.usernamesReceiver.includes(this.user.username)) {
+				if (task.taskStatus === 'Not yet started') {
+					task.taskStatus = 'In progress';
+				} else if (task.taskStatus === 'In progress') {
+					task.taskStatus = 'Finished';
+				} else if (task.taskStatus === 'Not yet assigned') {
+					var usernamesToDelete = [];
+					for (let username of task.usernamesReceiver) {
+						if (username !== this.user.username)
+							usernamesToDelete.push(username);
+					}
+
+					let state = await this.$store.dispatch('task/assign', {
+						taskId: task.taskId,
+						usernameCreator: task.usernameCreator,
+						usernamesReceiver: [this.user.username],
+						groupName: this.groupName,
+						usernamesToDelete: usernamesToDelete
+					});
+
+					if (state)
+						task.taskStatus = 'Not yet started';
 				}
 
-				var otherState = await this.$store.dispatch('task/assign', {
-					taskId: taskId,
-					usernameCreator: usernameCreator,
-					usernamesReceiver: [this.user.username],
-					groupName: this.groupName,
-					usernamesToDelete: usernamesToDelete
+				let state = await this.$store.dispatch('task/change', {
+					taskId: task.taskId, 
+					taskStatus: task.taskStatus,
+					usernameCreator: task.usernameCreator,
+					groupName: this.groupName
 				});
 
-				if (otherState)
-					taskStatus = 'Not yet started';
-			}
+				if (state) {
+					if (task.taskStatus === 'Finished' || (task.usernamesReceiver.length === 1 && task.usernamesReceiver[0] !== this.user.username))
+						this.deleteTaskIdView = true;
 
-			let state = await this.$store.dispatch('task/change', {
-				taskId: taskId, 
-				taskStatus: taskStatus,
-				usernameCreator: usernameCreator,
-				groupName: this.groupName
-			});
+					var groupName = await this.$store.getters ['group/groupName'];
 
-			if (state) {
-				if (taskStatus === 'Finished' || (usernamesReceiver.length === 1 && usernamesReceiver[0] !== this.user.username))
-					this.deleteTaskIdView = true;
-
-				var groupName = await this.$store.getters ['group/groupName'];
-
-				await this.$store.dispatch('task/stopCheck');
-				await this.$store.dispatch('task/check', {
-					username: this.user.username,
-					groupName: groupName
-				});
+					await this.$store.dispatch('task/stopCheck');
+					await this.$store.dispatch('task/check', {
+						username: this.user.username,
+						groupName: groupName
+					});
+				}
+			} else if (task.taskStatus === 'Reassign') {
+				// TODO ACTIVATE THE TASK CREATE VIEW OR CREATE A MINI NEW ONE
+				// take all the informations from the curent task, except the usersReceiver
 			}
 		},
 

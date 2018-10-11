@@ -246,6 +246,15 @@ module.exports = {
 
 		async receivers(store, taskInfo) {
 			try {
+				if (taskInfo.usernamesReceiver.length === 0) {
+					await Vue.http.post(setup.API + '/tasks/status/change', {
+						taskId: taskInfo.taskId, 
+						taskStatus: 'Reassign',
+						usernameCreator: taskInfo.usernameCreator,
+						groupName: taskInfo.groupName
+					});
+				}
+
 				let response = await Vue.http.post(setup.API + '/tasks/receivers', {
 					taskId: taskInfo.taskId,
 					usernamesReceiver: taskInfo.usernamesReceiver,
