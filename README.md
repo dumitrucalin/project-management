@@ -8,7 +8,6 @@ TODO:
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
 		- ce se intampla daca apasa pe reassign
-		- * de artat in tabel si task-urile care au la status deleted si reassign
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
