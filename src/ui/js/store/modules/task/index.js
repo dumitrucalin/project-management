@@ -108,18 +108,6 @@ module.exports = {
 							store.commit('tasks', response.data.tasks);
 
 							console.log(response.data.tasks);
-
-							// var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
-							// console.log(tasks);
-
-							// for (let taskReceived of response.data.tasks.tasksReceived)
-							// 	tasks.tasksReceived.push(taskReceived);
-							// for (let taskGiven of response.data.tasks.tasksGiven)
-							// 	tasks.tasksGiven.push(taskGiven);
-
-							// store.commit('tasks', tasks);
-								
-							// console.log(tasks);
 						}
 					} else {
 						Vue.toast.customToast({
@@ -128,7 +116,7 @@ module.exports = {
 							type: 'warning'
 						});
 					}
-				}, 1000);
+				}, 5000);
 			} catch(error) {
 				Vue.toast.serverErrorToast(error);
 				return false;
@@ -187,9 +175,14 @@ module.exports = {
 				if (response.data.err === 0) {
 					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
 
-					for (var id in tasks.tasksReceived) {
+					for (let id in tasks.tasksReceived) {
 						if (tasks.tasksReceived[id].taskId === taskInfo.taskId)
 							tasks.tasksReceived.splice(id, 1);
+					}
+
+					for (let id in tasks.tasksGiven) {
+						if (tasks.tasksGiven[id].taskId === taskInfo.taskId)
+							tasks.tasksGiven.splice(id, 1);
 					}
 					
 					store.commit('tasks', tasks);
@@ -221,6 +214,7 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
+
 					for (let id in tasks.tasksReceived) {
 						if (tasks.tasksReceived[id].taskId === task.taskId)
 							tasks.tasksReceived[id].taskStatus = task.taskStatus;

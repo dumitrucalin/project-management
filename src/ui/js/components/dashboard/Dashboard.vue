@@ -65,14 +65,16 @@ module.exports = {
 
 	async created() {
 		var user = await this.$store.dispatch('user/get');
-		await this.$store.dispatch('task/checkOnce', {
-			username: this.user.username,
-			groupName: this.user.groupNames[0]
-		});
+		if (this.user.groupNames.length > 0) {
+			await this.$store.dispatch('task/checkOnce', {
+				username: this.user.username,
+				groupName: this.user.groupNames[0]
+			});
+		}
 		
 		if (user.groupNames.length) {
 			var tempGroupName = await this.$store.getters ['group/groupName'];
-			if (tempGroupName === '' || tempGroupName === null)
+			if (tempGroupName !== '' || tempGroupName !== null)
 				await this.$store.dispatch('group/set', user.groupNames[0]);
 
 			await this.$store.dispatch('task/view', true);

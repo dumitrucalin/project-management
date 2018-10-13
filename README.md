@@ -7,14 +7,11 @@ TODO:
 	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE IN PULA LUI CALIN SI A LUI MARIUS
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
-		- * check pe lungime maxima de fullName/groupName/username etc 20 caractere
-		- * taskStatus = Deleted daca userCreator a sters task-ul
-		- * sa nu se straga task-ul daca il sterge taskCreatorul, ci doar din lista proprie. Cel care il va sterge ultimul din baza de date este ultimul user din lista de usersReceiver
+		- ce se intampla daca apasa pe reassign
+		- * de artat in tabel si task-urile care au la status deleted si reassign
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
-		- To see how you can reassign a task from a user who exit the group
-		- To see how you can reassign if all the users denied a task
 		- Make the logout if logout fail or other things like this
 
 	CSS:
