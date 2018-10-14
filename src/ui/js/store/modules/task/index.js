@@ -135,13 +135,18 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					var tasks = JSON.parse(JSON.stringify(store.getters ['tasks']));
-					for (var id in tasks.tasksGiven) {
+					for (let id in tasks.tasksGiven) {
 						if (tasks.tasksGiven[id].taskId === taskInfo.taskId)
 							tasks.tasksGiven.splice(id, 1);
 					}
 
-					store.commit('tasks', tasks);
+					for (let id in tasks.tasksReceived) {
+						if (tasks.tasksReceived[id].taskId === taskInfo.taskId)
+							tasks.tasksReceived.splice(id, 1);
+					}
 
+					store.commit('tasks', tasks);
+					
 					Vue.toast.customToast({
 						title: 'Task Deleted: Success',
 						message: 'Task deleted succsessfuly.',
@@ -257,13 +262,6 @@ module.exports = {
 				});
 
 				if (response.data.err === 0) {
-					if (!taskInfo.usernamesReceiver.includes(taskInfo.currentUsername))
-						Vue.toast.customToast({
-							title: 'Change the Task Status: Success',
-							message: 'Task assigned successfully to you.',
-							type: 'info'
-						});
-
 					return true;
 				} else {
 					Vue.toast.customToast({

@@ -24,7 +24,7 @@
 				</select>
 				<ul>
 					<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
-						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">x</button></p>
+						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
 					</li>
 				</ul>
 				<button @click="addUserTask">Add User</button><br>
@@ -128,12 +128,14 @@ module.exports = {
 			this.groupNamesSorted.push(groupName);
 		this.groupNamesSorted = this.groupNamesSorted.sort();
 
-		var fullNames = Object.keys(this.usersBasicInfo);
-		for (let fullName of fullNames) {
-			this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+		if (this.usersBasicInfo) {
+			var fullNames = Object.keys(this.usersBasicInfo);
+			for (let fullName of fullNames) {
+				this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+			}
+			
+			this.usernamesSorted = this.usernamesSorted.sort();
 		}
-		
-		this.usernamesSorted = this.usernamesSorted.sort();
 
 		await this.$store.dispatch('task/stopCheck');
 	},
@@ -211,6 +213,7 @@ module.exports = {
 				Vue.toast.customToast(this.allreadyAdded);
 			}
 		},
+
 		outWithUser(username) {
 			var index = this.taskUsersShow.indexOf(username);
 			if (index > -1) {

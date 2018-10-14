@@ -34,7 +34,7 @@
 
 					<ul>
 						<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
-							<p>{{ groupUserShow }}</p>
+							<p>{{ groupUserShow }}<button @click="outWithUser(groupUserShow)">X</button></p>
 						</li>
 					</ul>
 				</div>
@@ -193,6 +193,14 @@ module.exports = {
 
 		async redirectDashboard() {
 			await this.$store.dispatch('settings/redirect', 'DASHBOARD');
+		},
+
+		outWithUser(username) {
+			var index = this.usernamesShow.indexOf(username);
+			if (index > -1) {
+				this.usernamesShow.splice(index, 1);
+				this.usernames.splice(index, 1);
+			}
 		}
 	}
 };

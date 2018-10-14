@@ -7,7 +7,7 @@ TODO:
 	!!!!!!! DE RESPECTAT CE CODNIG STYLE AU ACUM FISIERELE .VUE IN PULA LUI CALIN SI A LUI MARIUS
 		- * data sa fie frumos prezentata
 		- * text de scris pentru partea de settings
-		- ce se intampla daca apasa pe reassign
+		- * ce se intampla daca apasa pe reassign (ai in comment-uri ce sa faci)
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis

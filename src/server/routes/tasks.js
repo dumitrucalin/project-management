@@ -13,7 +13,10 @@ privateApp.post('/create', async function(req, res) {
 		var usernameCreator = req.body.usernameCreator;
 		var usernamesReceiver = req.body.usernamesReceiver;
 		var groupName = req.body.groupName;
-		var viewers = [req.body.usernameCreator];
+		var viewers = [];
+
+		if (usernameCreator !== usernamesReceiver[0])
+			viewers.push(req.body.usernameCreator);
 
 		var group = await db.group.findByGroupName(groupName);
 		if (group) {
@@ -34,7 +37,7 @@ privateApp.post('/create', async function(req, res) {
 				debug('User ' + usernameCreator + ' tasks list updated');
 			} else {
 				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-				// await db.task.updateViewStatus(taskId, true);
+
 				for (let usernameReceiver of usernamesReceiver) {
 					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
 					await db.group.setTasksStatus(groupName, usernameReceiver, true);

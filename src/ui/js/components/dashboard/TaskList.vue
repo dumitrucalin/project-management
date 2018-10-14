@@ -280,13 +280,13 @@ module.exports = {
 					});
 				}
 			} else if (task.taskStatus === 'Reassign') {
-				// TODO ACTIVATE THE TASK CREATE VIEW OR CREATE A MINI NEW ONE
-				// take all the informations from the curent task, except the usersReceiver
+				// TODO: CREATE A MINI NEW ONE
+				// take all the informations from the curent task, except the usersReceiver, deadline and priority
 			}
 		},
 
 		async deleteTaskId(taskId, taskStatus, usernamesReceiver, usernameCreator) {
-			if(usernameCreator === this.user.username) {
+			if(usernameCreator === this.user.username && usernamesReceiver[0] !== this.user.username) {
 				let state = await this.$store.dispatch('task/change', {
 					taskId: taskId, 
 					taskStatus: 'Deleted',
