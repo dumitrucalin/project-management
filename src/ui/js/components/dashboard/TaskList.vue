@@ -142,6 +142,9 @@
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
 								</tr>
+								<div v-if="reassignView">
+									<button @click="reassign(task)">Reassign</button>
+								</div>
 							</table>	
 						</td>
 					</tr>
@@ -159,6 +162,7 @@
 
 var mapGetters = require('vuex').mapGetters;
 var Loading = require('../Loading.vue');
+var Vue = require('vue');
 
 module.exports = {
 	name: 'TaskList',
@@ -175,10 +179,20 @@ module.exports = {
 			fullNamesShowed: [],
 			editingTask: false,
 			deleteTaskIdView: false,
+			reassignView: false,
+			taskDeadline: null,
+			taskPriority: '',
+			taskUsers: [],
 
 			loadingSize: 20,
 			loadingColor: '#0000ff',
-			loadingDuration: 1500
+			loadingDuration: 1500,
+
+			wrongUsername: {
+				title: 'Create Task: Fail',
+				message: 'You must select a user to give the task to.',
+				type: 'warning'
+			}
 		};
 	},
 
@@ -279,9 +293,10 @@ module.exports = {
 						groupName: groupName
 					});
 				}
-			} else if (task.taskStatus === 'Reassign') {
-				// TODO: CREATE A MINI NEW ONE
-				// take all the informations from the curent task, except the usersReceiver, deadline and priority
+			} else if (task.taskStatus === 'Reassign' && task.usernameCreator === this.user.username) {
+				this.taskPriority = task.taskPriority;
+				this.taskDeadline = task.taskDeadline;
+				this.reassignView = true;
 			}
 		},
 
@@ -356,6 +371,40 @@ module.exports = {
 				username: this.user.username,
 				groupName: groupName
 			});
+		},
+
+		async reassign(task) {
+			var taskStatus = '';
+			if (this.taskUsers.length === 1)
+				taskStatus = 'Not yet started';
+			else
+				taskStatus = 'Not yet assigned';
+
+			if (this.taskUsers.length !== 0) {
+				await this.$store.dispatch('task/delete', {
+					taskId: task.taskId,
+					groupName: this.groupName
+				});
+
+				await this.$store.dispatch('task/create', {
+					usernameCreator: this.user.username,
+					usernamesReceiver: this.taskUsers,
+					groupName: this.groupName,
+					taskName: task.taskName,
+					taskString: task.taskString,
+					taskDeadline: this.taskDeadline,
+					taskPriority: this.taskPriority,
+					taskStatus: taskStatus
+				});
+
+				this.taskUsers = [];
+				this.taskDeadline = null;
+				this.taskPriority = '';
+			} else {
+				Vue.toast.customToast(this.wrongUsername);
+			}
+
+			this.reassignView = false;
 		},
 		
 		consolelogit(){

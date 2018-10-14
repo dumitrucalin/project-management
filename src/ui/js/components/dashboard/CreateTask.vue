@@ -32,6 +32,7 @@
 				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
 				<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline"/><br>
+				
 				Priority
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 				<select v-if="checkboxPriority" v-model="taskPriority">
@@ -175,7 +176,7 @@ module.exports = {
 								groupName: this.groupName,
 								taskName: this.taskName,
 								taskString: this.taskString,
-								taskDeadline: this.date,
+								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
 								taskStatus: this.taskStatus
 							});
@@ -190,7 +191,17 @@ module.exports = {
 				}
 			} else {
 				Vue.toast.customToast(this.wrongTaskName);
-			}	
+			}
+			
+			this.taskName = '';
+			this.taskString = '';
+			this.taskDeadline = null;
+			this.taskPriority = '';
+			this.taskUsers = [];
+			this.taskUsersShow = [];
+
+			this.checkboxDeadline = false;
+			this.checkboxPriority = false;
 		},
 
 		async addUserTask() {
