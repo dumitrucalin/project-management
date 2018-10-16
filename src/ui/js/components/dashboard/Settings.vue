@@ -34,7 +34,7 @@
 
 					<ul>
 						<li v-for="(groupUserShow, index) in usernamesShow" :key="index">
-							<p>{{ groupUserShow }}</p>
+							<p>{{ groupUserShow }}<button @click="outWithUser(groupUserShow)">X</button></p>
 						</li>
 					</ul>
 				</div>
@@ -95,6 +95,11 @@ module.exports = {
 				title: 'Update Users in the Group: Fail',
 				message: 'You are already in the group.',
 				type: 'warning'
+			},
+			incorrectEmail: {
+				title: 'Update Users Info: Fail',
+				message: 'The e-mail is not valid.',
+				type: 'warning'
 			}
 		};
 	},
@@ -128,11 +133,6 @@ module.exports = {
 	methods: {
 		async submitInfo() {
 			if (validator.isEmail(this.email, ['en-US'])) {
-				// var userInfo = {
-				// 	username: this.user.username,
-				// 	fullName: this.fullName,
-				// 	email: this.email
-				// };
 				let state = await this.$store.dispatch('user/update', {
 					username: this.user.username,
 					fullName: this.fullName,
@@ -142,9 +142,9 @@ module.exports = {
 				if (state)
 					await this.$store.dispatch('settings/redirect', 'DASHBOARD');
 			} else {
-				this.fullName = '';
 				this.email = '';
-				// TOAST FOR INCORRECT EMAIL
+				
+				Vue.toast.customToast(this.incorrectEmail);
 			}
 		},
 
@@ -183,8 +183,8 @@ module.exports = {
 
 		async exitGroup() {
 			let state = await this.$store.dispatch('group/delete', {
-				groupName:this.exitGroupName,
-				username:this.user.username
+				groupName: this.exitGroupName,
+				username: this.user.username
 			});
 
 			if (state)
@@ -193,6 +193,14 @@ module.exports = {
 
 		async redirectDashboard() {
 			await this.$store.dispatch('settings/redirect', 'DASHBOARD');
+		},
+
+		outWithUser(username) {
+			var index = this.usernamesShow.indexOf(username);
+			if (index > -1) {
+				this.usernamesShow.splice(index, 1);
+				this.usernames.splice(index, 1);
+			}
 		}
 	}
 };

@@ -113,21 +113,44 @@ privateApp.post('/user/delete', async function (req, res) {
 		if (group) {
 			var user = await db.user.findByUsername(username);
 			if (user) {
-				var tasks = group.users[username];
-				for (let taskId of tasks.tasksGiven) {
-					await db.task.deleteTask(taskId);
+				var tasksId = group.users[username];
+
+				for (let taskId of tasksId.tasksGiven) {
+					await db.task.changeTaskStatus(taskId, 'Deleted');
+					await db.task.deleteViewer(taskId, username);
+					let task = await db.task.findByTaskId(taskId);
+
+					for (let username of task.viewers) {
+						await db.group.setTasksStatus(groupName, username, true);
+					}
 				}
-				for (let taskId of tasks.tasksReceived) {
-					await db.task.deleteTask(taskId);
+				for (let taskId of tasksId.tasksReceived) {
+					await db.task.deleteViewer(taskId, username);
+					let task = await db.task.findByTaskId(taskId);
+					var newUsers = [];
+
+					for (let user of task.usernamesReceiver) {
+						if (user !== username)
+							newUsers.push(user);
+					}
+
+					await db.task.setTaskReceiver(taskId, newUsers);
+					if (task.usernamesReceiver.length <= 1)
+						await db.task.changeTaskStatus(taskId, 'Reassign');
+
+					for (let username of task.viewers) {
+						await db.group.setTasksStatus(groupName, username, true);
+					}
 				}
+
+				if (Object.keys(group.users).length <= 1)
+					await db.group.deleteGroup(groupName);
+
 				await db.group.deleteUser(groupName, username);
 				await db.user.deleteGroup(username, groupName);
 
-				if (Object.keys(group.users).length === 1)
-					await db.group.deleteGroup(groupName);
-
 				debug('The user ' + username + ' was deleted from the group ' + groupName);
-				return res.status(200).send({ err: 0 });
+				return res.status(200).send({ err: 0, tasksId: tasksId });
 			} else {
 				debug('The user ' + username + ' doesn\'t exist');
 				return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
@@ -171,6 +194,14 @@ privateApp.post('/task/delete', async function (req, res) {
 		var group = await db.group.findByGroupName(groupName);
 		if (group) {
 			await db.group.deleteTaskReceived(groupName, username, taskId);
+			await db.group.deleteTaskGiven(groupName, username, taskId);
+			await db.task.deleteViewer(taskId, username);
+
+			var task = await db.task.findByTaskId(taskId);
+			if (task.viewers.length === 0) {
+				await db.task.deleteTask(taskId);
+			}
+
 			debug('The task was deleted');
 			return res.status(200).send({ err: 0 });
 		} else {

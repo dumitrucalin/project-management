@@ -6,8 +6,7 @@ module.exports = {
 
 	state: {
 		user: null,
-		usernames: null,
-		fullNames: null,
+		usersBasicInfo: null,
 		groupName: null
 	},
 
@@ -15,11 +14,8 @@ module.exports = {
 		user(state) {
 			return state.user;
 		},
-		usernames(state) {
-			return state.usernames;
-		},
-		fullNames(state) {
-			return state.fullNames;
+		usersBasicInfo(state) {
+			return state.usersBasicInfo;
 		},
 		groupName(state) {
 			return state.groupName;
@@ -61,15 +57,15 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					var newUsernames = groupInfo.usernames;
-					var oldUsernames = store.getters ['usernames'];
+					var oldUsernames = store.getters ['usersBasicInfo'];
 
-					for (let username of oldUsernames) {
-						newUsernames.push(username);
+					for (let username of Object.keys(oldUsernames)) {
+						newUsernames.push(oldUsernames[username]);
 					}
 
 					store.commit('usernames', newUsernames);
 
-					let newResponse = await Vue.http.post(setup.API + '/users/fullNames/get', {
+					let newResponse = await Vue.http.post(setup.API + '/users/usersBasicInfo/get', {
 						usernames: newUsernames
 					});
 
@@ -84,7 +80,7 @@ module.exports = {
 
 						return false;
 					}
-					store.commit('fullNames', fullNames);
+					store.commit('usersBasicInfo', fullNames);
 
 					if(this.notifications)
 						Vue.toast.customToast({
@@ -127,26 +123,21 @@ module.exports = {
 					return false;
 				}
 
-				store.commit('usernames', usernames);
-
-				let newResponse = await Vue.http.post(setup.API + '/users/fullNames/get', {
+				response = await Vue.http.post(setup.API + '/users/usersBasicInfo/get', {
 					usernames: usernames
 				});
 
-				if (newResponse.data.err === 0) {
-					var fullNames = newResponse.data.fullNames;
+				if (response.data.err === 0) {
+					store.commit('usersBasicInfo', response.data.usersBasicInfo);
 				} else {
-					if(this.notifications)
-						Vue.toast.customToast({
-							title: 'Get Users form the Group: Fail',
-							message: newResponse.data.message,
-							type: 'warning'
-						});
+					Vue.toast.customToast({
+						title: 'Get Users form the Group: Fail',
+						message: response.data.message,
+						type: 'warning'
+					});
 
 					return false;
 				}
-
-				store.commit('fullNames', fullNames);
 
 				return true;
 			} catch (error) {
@@ -193,11 +184,8 @@ module.exports = {
 		user(state, value) {
 			state.user = value;
 		},
-		usernames(state, value) {
-			state.usernames = value;
-		},
-		fullNames(state, value) {
-			state.fullNames = value;
+		usersBasicInfo(state, value) {
+			state.usersBasicInfo = value;
 		},
 		groupName(state, value) {
 			state.groupName = value;

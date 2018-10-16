@@ -13,6 +13,10 @@ privateApp.post('/create', async function(req, res) {
 		var usernameCreator = req.body.usernameCreator;
 		var usernamesReceiver = req.body.usernamesReceiver;
 		var groupName = req.body.groupName;
+		var viewers = [];
+
+		if (usernameCreator !== usernamesReceiver[0])
+			viewers.push(req.body.usernameCreator);
 
 		var group = await db.group.findByGroupName(groupName);
 		if (group) {
@@ -22,7 +26,9 @@ privateApp.post('/create', async function(req, res) {
 					debug('The user ' + username + ' doesn\'t exist');
 					return res.status(200).send({ err: 1, message: 'The user ' + username + ' doesn\'t exist!' });
 				}
+				viewers.push(username);
 			}
+			req.body.viewers = viewers;
 
 			var taskId = await db.task.createTask(req.body);
 
@@ -31,7 +37,7 @@ privateApp.post('/create', async function(req, res) {
 				debug('User ' + usernameCreator + ' tasks list updated');
 			} else {
 				await db.group.setTasksGiven(groupName, usernameCreator, taskId);
-				// await db.task.updateViewStatus(taskId, true);
+
 				for (let usernameReceiver of usernamesReceiver) {
 					await db.group.setTasksReceived(groupName, usernameReceiver, taskId);
 					await db.group.setTasksStatus(groupName, usernameReceiver, true);
@@ -69,9 +75,7 @@ privateApp.post('/get', async function(req, res) {
 				for (let taskId of tasksId.tasksGiven) {
 					let task = await db.task.findByTaskId(taskId);
 					if (task) {
-						// if (task.justCreated === true) {
 						tasks.tasksGiven.push(task);
-						// }
 					} else {
 						await db.group.deleteTaskGiven(groupName, username, taskId);
 					}
@@ -81,10 +85,7 @@ privateApp.post('/get', async function(req, res) {
 				for (let taskId of tasksId.tasksReceived) {
 					let task = await db.task.findByTaskId(taskId);
 					if (task) {
-						// if (task.justCreated === true) {
 						tasks.tasksReceived.push(task);
-						//	await db.task.updateViewStatus(task.taskId, false);
-						// }
 					} else {
 						await db.group.deleteTaskReceived(groupName, username, taskId);
 					}
@@ -240,14 +241,15 @@ privateApp.post('/status/change', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var taskStatus = req.body.taskStatus;
-		var usernameCreator = req.body.usernameCreator;
 		var groupName = req.body.groupName;
 
 		var task = await db.task.changeTaskStatus(taskId, taskStatus);
 		if (task) {
-			// await db.task.updateViewStatus(taskId, true);
+			task = await db.task.findByTaskId(taskId);
+			
+			for (let username of task.viewers)
+				await db.group.setTasksStatus(groupName, username, true);
 
-			await db.group.setTasksStatus(groupName, usernameCreator, true);
 			debug('Changed the task status succesfully');
 			return res.status(200).send({ err: 0 });
 		} else {

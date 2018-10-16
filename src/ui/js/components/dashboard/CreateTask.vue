@@ -24,7 +24,7 @@
 				</select>
 				<ul>
 					<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
-						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">x</button></p>
+						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
 					</li>
 				</ul>
 				<button @click="addUserTask">Add User</button><br>
@@ -32,6 +32,7 @@
 				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
 				<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline"/><br>
+				
 				Priority
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 				<select v-if="checkboxPriority" v-model="taskPriority">
@@ -116,7 +117,7 @@ module.exports = {
 	computed: {
 		...mapGetters({
 			user: 'user/user',
-			usernames: 'group/usernames'
+			usersBasicInfo: 'group/usersBasicInfo'
 		}),
 		
 	},
@@ -128,24 +129,33 @@ module.exports = {
 			this.groupNamesSorted.push(groupName);
 		this.groupNamesSorted = this.groupNamesSorted.sort();
 
-		for (let username of this.usernames)
-			this.usernamesSorted.push(username);
-		this.usernamesSorted = this.usernamesSorted.sort();
+		if (this.usersBasicInfo) {
+			var fullNames = Object.keys(this.usersBasicInfo);
+			for (let fullName of fullNames) {
+				this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+			}
+			
+			this.usernamesSorted = this.usernamesSorted.sort();
+		}
 
 		await this.$store.dispatch('task/stopCheck');
 	},
 
 	watch: {
 		groupName: async function() {
-			await this.$store.dispatch('group/users', this.groupName);
-			this.taskUsersShow = [];
-			this.taskUsers = [];
-			this.usernamesSorted = [];
-			for (let username of this.usernames) {
-				this.usernamesSorted.push(username);
-			}
+			let state = await this.$store.dispatch('group/users', this.groupName);
+			if (state) {
+				this.taskUsersShow = [];
+				this.taskUsers = [];
+				this.usernamesSorted = [];
 
-			this.usernamesSorted = this.usernamesSorted.sort();
+				var fullNames = Object.keys(this.usersBasicInfo);
+				for (let fullName of fullNames) {
+					this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+				}
+
+				this.usernamesSorted = this.usernamesSorted.sort();
+			}
 		}
 	},
 
@@ -166,7 +176,7 @@ module.exports = {
 								groupName: this.groupName,
 								taskName: this.taskName,
 								taskString: this.taskString,
-								taskDeadline: this.date,
+								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
 								taskStatus: this.taskStatus
 							});
@@ -181,7 +191,17 @@ module.exports = {
 				}
 			} else {
 				Vue.toast.customToast(this.wrongTaskName);
-			}	
+			}
+			
+			this.taskName = '';
+			this.taskString = '';
+			this.taskDeadline = null;
+			this.taskPriority = '';
+			this.taskUsers = [];
+			this.taskUsersShow = [];
+
+			this.checkboxDeadline = false;
+			this.checkboxPriority = false;
 		},
 
 		async addUserTask() {
@@ -204,6 +224,7 @@ module.exports = {
 				Vue.toast.customToast(this.allreadyAdded);
 			}
 		},
+
 		outWithUser(username) {
 			var index = this.taskUsersShow.indexOf(username);
 			if (index > -1) {

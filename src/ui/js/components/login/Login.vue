@@ -5,7 +5,7 @@
 			<input type="text" class="input1" placeholder="Username" @keyup.enter="login" v-model="username" /><br>
 			<input type="password" class="input2" placeholder="Password" @keyup.enter="login" v-model="password" /><br>
 			<input type="checkbox" class="input3" v-model="viewPassword" @click="togglePassword" />View Password<br>
-			<button class="notSubmitButton" name="Submit" value="Login"  @click="login" >Login</button>
+			<button type="button" class="btn btn-primary" name="Submit" value="Login"  @click="login" >Login</button>
 			<a href="signup.html" >Sign Up</a>
 			
 		</div>
@@ -51,12 +51,7 @@ module.exports = {
 				title: 'Checking the Username: Fail',
 				message: 'The username contains invalid characters.',
 				type: 'warning'
-			},
-			wrongLogIn: {
-				title: 'Incorrect Log In!',
-				message: 'A user with this credentials do not exist.',
-				type: 'warning'
-			},
+			}
 		};
 	},
 
@@ -77,9 +72,6 @@ module.exports = {
 
 					if (state)
 						await this.$store.dispatch('settings/redirect', this.next);
-					else {
-						Vue.toast.customToast(this.wrongLogIn);
-					}
 				} else {
 					Vue.toast.customToast(this.wrongPassword);
 				}

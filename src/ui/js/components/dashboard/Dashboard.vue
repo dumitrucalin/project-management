@@ -4,10 +4,10 @@
 			<div class="dashboard">
 				<h3 @click="taskList">This is the dashboard!</h3>
 				<p @click="logIt()">Hello {{ this.user.fullName }}<br>{{ this.user.username }}</p>
-				<button class="submitButton" name="Submit" value="Logout"  @click="logout" >Logout</button>
-				<button class="submitButton" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
-				<button v-if="user.groupNames.length" class="submitButton" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<button class="submitButton" name="Submit" value="Settings" @click="settings">Settings</button>
+				<button class="btn btn-primary btn-md" name="Submit" value="Logout"  @click="logout" >Logout</button>
+				<button class="btn btn-basic btn-md" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
+				<button v-if="user.groupNames.length" class="btn btn-basic btn-md" name="Submit" value="Create Task" @click="createTask">Create Task</button>
+				<button class="btn btn-info btn-md" name="Submit" value="Settings" @click="settings">Settings</button>
 			</div>
 
 			<Settings v-if="settingsView" />
@@ -65,14 +65,16 @@ module.exports = {
 
 	async created() {
 		var user = await this.$store.dispatch('user/get');
-		await this.$store.dispatch('task/checkOnce', {
-			username: this.user.username,
-			groupName: this.user.groupNames[0]
-		});
+		if (this.user.groupNames.length > 0) {
+			await this.$store.dispatch('task/checkOnce', {
+				username: this.user.username,
+				groupName: this.user.groupNames[0]
+			});
+		}
 		
 		if (user.groupNames.length) {
 			var tempGroupName = await this.$store.getters ['group/groupName'];
-			if (tempGroupName === '' || tempGroupName === null)
+			if (tempGroupName !== '' || tempGroupName !== null)
 				await this.$store.dispatch('group/set', user.groupNames[0]);
 
 			await this.$store.dispatch('task/view', true);

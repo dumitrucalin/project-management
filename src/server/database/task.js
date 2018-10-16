@@ -18,11 +18,9 @@ var taskSchema = mongoose.Schema({
 	},
 	taskDeadline: {
 		type: Date,
-		// required: true
 	},
 	taskPriority: {
 		type: String, 
-		// required: true
 	},
 	taskStatus: {
 		type: String,
@@ -36,8 +34,8 @@ var taskSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	justCreated: {
-		type: Boolean,
+	viewers: {
+		type: [String],
 		required: true
 	}
 }, {
@@ -62,7 +60,6 @@ function createTaskId() {
 function createTask(taskInfo) {
 	var taskId = createTaskId();
 	taskInfo.taskId = taskId;
-	taskInfo.justCreated = true;
 
 	var task = new Task(_.assign({}, taskInfo));
 	task.save();
@@ -86,8 +83,8 @@ function changeTaskStatus(taskId, taskStatus) {
 	return Task.updateOne({ taskId: taskId }, { $set: { taskStatus: taskStatus } });
 }
 
-function updateViewStatus(taskId, view) {
-	return Task.updateOne({ taskId: taskId }, { $set: { justCreated: view } });
+function deleteViewer(taskId, username) {
+	return Task.updateOne({ taskId: taskId }, { $pull: { viewers: username } });
 }
 
 var task = {
@@ -96,7 +93,7 @@ var task = {
 	setTaskReceiver,
 	deleteTask,
 	changeTaskStatus,
-	updateViewStatus
+	deleteViewer
 };
 
 module.exports = task;
