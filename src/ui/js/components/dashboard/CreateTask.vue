@@ -2,7 +2,7 @@
 	<div class="createTask">
 		This is the task creator!<br>
 		Hello {{ this.user.fullName }}<br>
-		This is the task creator!<br>
+		<p @click="consolelogit()">This is the task creator!</p><br>
 
 		<div>
 			<div class="form-group">
@@ -231,6 +231,9 @@ module.exports = {
 				this.taskUsersShow.splice(index, 1);
 				this.taskUsers.splice(index, 1);
 			}
+		},
+		consolelogit(){
+			console.log(this.usernamesSorted);
 		}
 	}
 };
