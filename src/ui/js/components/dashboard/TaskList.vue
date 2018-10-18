@@ -135,16 +135,38 @@
 								</tr>
 								<tr>
 									<td><p v-for="(user,index) in task.usernamesReceiver" :key=index>{{ user }}</p></td>
-									<td>{{ task.taskName }}</td>
+									<td @click="consolelogit()">{{ task.taskName }}</td>
 									<td>{{ task.taskString }}</td>
 									<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
 									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
 									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
 									<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+									<div v-if="reassignView"> 
+										<select v-model="usernameTask" >
+											<option v-for="(username, index) in this.usernamesSorted" :key="index" :value="username">{{ username }}</option>
+										</select>					
+										<ul>
+											<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
+												<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
+											</li>
+										</ul>
+										<button @click="addUserTask">Add User</button><br>
+
+										DeadLine
+										<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline"/>
+										<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline" /><br>
+					
+										Priority
+										<input type="checkbox" @click="checkboxPriorityNot()">
+										<select v-if="checkboxPriority" v-model="taskPriority">
+											<option name="Urgent" value="urgent" :selected="this.urgent">Urgent</option>
+											<option name="Moderate" value="moderate" :selected="this.moderate">Moderate</option>
+											<option name="At leisure" value="atLeisure" :selected="this.atLeisure">At leisure</option>
+										</select><br>
+										
+										<button @click="reassign(task)">Reassign</button>
+									</div>
 								</tr>
-								<div v-if="reassignView">
-									<button @click="reassign(task)">Reassign</button>
-								</div>
 							</table>	
 						</td>
 					</tr>
@@ -180,9 +202,19 @@ module.exports = {
 			editingTask: false,
 			deleteTaskIdView: false,
 			reassignView: false,
+			checkboxDeadline:false,
+			checkboxPriority:false,
+			
+			usernamesSorted:[],
 			taskDeadline: null,
 			taskPriority: '',
 			taskUsers: [],
+			usernameTask: '',
+			taskUsersShow: [],
+
+			urgent:'',
+			moderate:'',
+			atLeisure:'',
 
 			loadingSize: 20,
 			loadingColor: '#0000ff',
@@ -245,7 +277,7 @@ module.exports = {
 					groupName: this.groupName
 				});
 			}
-		}
+		},
 	},
 
 	methods: {
@@ -294,9 +326,26 @@ module.exports = {
 					});
 				}
 			} else if (task.taskStatus === 'Reassign' && task.usernameCreator === this.user.username) {
-				this.taskPriority = task.taskPriority;
-				this.taskDeadline = task.taskDeadline;
-				this.reassignView = true;
+				let state = await this.$store.dispatch('group/users', this.groupName);
+				if (state) {
+					this.taskUsersShow = [];
+					this.taskUsers = [];
+					this.usernamesSorted = [];
+
+					var fullNames = Object.keys(this.usersBasicInfo);
+					for (let fullName of fullNames) {
+						this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+					}
+					this.usernamesSorted = this.usernamesSorted.sort();
+
+					this.taskPriority = task.taskPriority;
+					this.taskDeadline = task.taskDeadline;
+					this.reassignView = true;
+
+					console.log('pula');
+					console.log(this.usernamesSorted);
+				}
+
 			}
 		},
 
@@ -406,9 +455,57 @@ module.exports = {
 
 			this.reassignView = false;
 		},
-		
+
+		async addUserTask() {
+			if(!this.taskUsers.includes(this.usernameTask)) {
+				if (!this.taskUsers.includes(this.user.username)) {
+					if (this.taskUsers.length === 0 || this.usernameTask !== this.user.username) {
+						let state = await this.$store.dispatch('user/check', this.usernameTask);
+
+						if (state) {
+							this.taskUsersShow.push(this.usernameTask);
+							this.taskUsers.push(this.usernameTask);
+						}
+					} else {
+						Vue.toast.customToast(this.onlyCreatorUser);
+					}
+				} else {
+					Vue.toast.customToast(this.onlyCreatorUser);
+				}
+			} else {
+				Vue.toast.customToast(this.allreadyAdded);
+			}
+		},
+
+		outWithUser(username) {
+			var index = this.taskUsersShow.indexOf(username);
+			if (index > -1) {
+				this.taskUsersShow.splice(index, 1);
+				this.taskUsers.splice(index, 1);
+			}
+		},
+
+		checkboxPriorityNot(taskPriority){
+			if(taskPriority=='urgent')
+			{
+				this.urgent='selected';
+				this.moderate='';
+				this.atLeisure='';
+			} else if(taskPriority=='moderate')
+			{
+				this.urgent='';
+				this.moderate='selected';
+				this.atLeisure='""';
+			} else if(taskPriority=='atLeisusre')
+			{
+				this.urgent='';
+				this.moderate='';
+				this.atLeisure='selected';
+			}
+			this.checkboxPriority=!this.checkboxPriority;
+		},
 		consolelogit(){
-			console.log(this.taks.tasksReceived);
+			console.log(this.usernamesSorted);
 		}
 	}
 };
