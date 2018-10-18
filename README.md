@@ -11,6 +11,7 @@ TODO:
 
 	SERVER:
 		- Implement token and tasksModified variables checking with redis
+		- All the tasks have to go with no assigned first, independent of the number of users
 		- Make the logout if logout fail or other things like this
 
 	CSS:
