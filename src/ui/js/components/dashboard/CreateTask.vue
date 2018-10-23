@@ -2,7 +2,7 @@
 	<div class="createTask">
 		This is the task creator!<br>
 		Hello {{ this.user.fullName }}<br>
-		This is the task creator!<br>
+		<p @click="consolelogit()">This is the task creator!</p><br>
 
 		<div>
 			<div class="form-group">
@@ -24,7 +24,7 @@
 				</select>
 				<ul>
 					<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
-						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">x</button></p>
+						<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
 					</li>
 				</ul>
 				<button @click="addUserTask">Add User</button><br>
@@ -32,6 +32,7 @@
 				DeadLine
 				<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline;">
 				<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline"/><br>
+				
 				Priority
 				<input type="checkbox" @click="checkboxPriority = !checkboxPriority">
 				<select v-if="checkboxPriority" v-model="taskPriority">
@@ -128,12 +129,14 @@ module.exports = {
 			this.groupNamesSorted.push(groupName);
 		this.groupNamesSorted = this.groupNamesSorted.sort();
 
-		var fullNames = Object.keys(this.usersBasicInfo);
-		for (let fullName of fullNames) {
-			this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+		if (this.usersBasicInfo) {
+			var fullNames = Object.keys(this.usersBasicInfo);
+			for (let fullName of fullNames) {
+				this.usernamesSorted.push(this.usersBasicInfo[fullName]);
+			}
+			
+			this.usernamesSorted = this.usernamesSorted.sort();
 		}
-		
-		this.usernamesSorted = this.usernamesSorted.sort();
 
 		await this.$store.dispatch('task/stopCheck');
 	},
@@ -173,7 +176,7 @@ module.exports = {
 								groupName: this.groupName,
 								taskName: this.taskName,
 								taskString: this.taskString,
-								taskDeadline: this.date,
+								taskDeadline: this.taskDeadline,
 								taskPriority: this.taskPriority,
 								taskStatus: this.taskStatus
 							});
@@ -188,7 +191,17 @@ module.exports = {
 				}
 			} else {
 				Vue.toast.customToast(this.wrongTaskName);
-			}	
+			}
+			
+			this.taskName = '';
+			this.taskString = '';
+			this.taskDeadline = null;
+			this.taskPriority = '';
+			this.taskUsers = [];
+			this.taskUsersShow = [];
+
+			this.checkboxDeadline = false;
+			this.checkboxPriority = false;
 		},
 
 		async addUserTask() {
@@ -211,12 +224,16 @@ module.exports = {
 				Vue.toast.customToast(this.allreadyAdded);
 			}
 		},
+
 		outWithUser(username) {
 			var index = this.taskUsersShow.indexOf(username);
 			if (index > -1) {
 				this.taskUsersShow.splice(index, 1);
 				this.taskUsers.splice(index, 1);
 			}
+		},
+		consolelogit(){
+			console.log(this.usernamesSorted);
 		}
 	}
 };

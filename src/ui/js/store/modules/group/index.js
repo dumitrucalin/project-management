@@ -57,10 +57,10 @@ module.exports = {
 
 				if (response.data.err === 0) {
 					var newUsernames = groupInfo.usernames;
-					var oldUsernames = store.getters ['usernames'];
+					var oldUsernames = store.getters ['usersBasicInfo'];
 
-					for (let username of oldUsernames) {
-						newUsernames.push(username);
+					for (let username of Object.keys(oldUsernames)) {
+						newUsernames.push(oldUsernames[username]);
 					}
 
 					store.commit('usernames', newUsernames);
