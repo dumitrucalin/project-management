@@ -165,10 +165,7 @@ module.exports = {
 				if(this.taskString) {
 					if(this.groupName) {
 						if(this.taskUsers.length !== 0) {
-							if (this.taskUsers.length === 1)
-								this.taskStatus = 'Not yet started';
-							else
-								this.taskStatus = 'Not yet assigned';
+							this.taskStatus = 'Not yet assigned';
 
 							await this.$store.dispatch('task/create', {
 								usernameCreator: this.user.username,
@@ -232,6 +229,7 @@ module.exports = {
 				this.taskUsers.splice(index, 1);
 			}
 		},
+		
 		consolelogit(){
 			console.log(this.usernamesSorted);
 		}
