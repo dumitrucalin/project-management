@@ -1,13 +1,14 @@
 <template>
 	<div class="signupForm">
+		<link href="https://fonts.googleapis.com/css?family=Mali|Space+Mono" rel="stylesheet">
 		<input type="text" class="form-control" id="username" placeholder="Username" @keyup.enter="signup" v-model="username" />
 		<input type="password" id="password" class="form-control" placeholder="Password" @keyup.enter="signup" v-model="password" />
 		<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />
 		<input type="checkbox" class="form-control" id="viewPassword" v-model="viewPassword" @click="togglePassword" />View Password<br>
-		<input type="text" class="form-control" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
-		<input type="text" class="form-control" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
+		<input type="text" class="form-control" id="fullname" placeholder="Full Name" @keyup.enter="signup" v-model="fullName" />
+		<input type="text" class="form-control" id="email" placeholder="E-mail" @keyup.enter="signup" v-model="email" />
 		<button type="button" class="btn btn-dark" name="Submit" value="Signup"  @click="signup" >Sign Up</button>
-		<a href="login.html" >Log In</a>
+		<a href="login.html" style="text-decoration:none" >Log In</a>
 		<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" v-if="loadingView"/>
 	</div>
 </template>

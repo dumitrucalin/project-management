@@ -4,10 +4,12 @@
 			<div class="dashboard">
 				<h3 @click="taskList">This is the dashboard!</h3>
 				<p @click="logIt()">Hello {{ this.user.fullName }}<br>{{ this.user.username }}</p>
-				<button class="btn btn-primary btn-md" name="Submit" value="Logout"  @click="logout" >Logout</button>
-				<button class="btn btn-basic btn-md" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
-				<button v-if="user.groupNames.length" class="btn btn-basic btn-md" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-				<button class="btn btn-info btn-md" name="Submit" value="Settings" @click="settings">Settings</button>
+				<div class="buttonDiv">
+					<button class="btn btn-primary btn-md" name="Submit" value="Logout"  @click="logout" >Logout</button>
+					<button class="btn btn-basic btn-md" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
+					<button v-if="user.groupNames.length" class="btn btn-basic btn-md" name="Submit" value="Create Task" @click="createTask">Create Task</button>
+					<button class="btn btn-info btn-md" name="Submit" value="Settings" @click="settings">Settings</button>
+				</div>
 			</div>
 
 			<Settings v-if="settingsView" />
