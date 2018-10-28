@@ -1,28 +1,50 @@
 <template>
-	<div>
+	<div class="myDashboard">
 		<div v-if="user">
-			<div class="dashboard">
-				<h3 @click="taskList">This is the dashboard!</h3>
-				<p @click="logIt()">Hello {{ this.user.fullName }}<br>{{ this.user.username }}</p>
-				<div class="buttonDiv">
-					<button class="btn btn-primary btn-md" name="Submit" value="Logout"  @click="logout" >Logout</button>
-					<button class="btn btn-basic btn-md" name="Submit" value="Create Group" @click="createGroup">Create Group</button>
-					<button v-if="user.groupNames.length" class="btn btn-basic btn-md" name="Submit" value="Create Task" @click="createTask">Create Task</button>
-					<button class="btn btn-info btn-md" name="Submit" value="Settings" @click="settings">Settings</button>
+			<div class="navDiv">
+				
+				<div >
+					<ul class="listDashboard">
+						<li class="listDashboard">
+							<div id="titleDashboard">
+								<h3 @click="taskList">Dashboard!</h3>
+							</div>
+						</li>
+						<li class="listDashboard">
+							<div id="navButton">
+								<button class="btn btn-basic btn-md" name="Submit" value="Create Group" @click="createGroup">Create Group</button>		
+								<button v-if="user.groupNames.length" class="btn btn-basic btn-md" name="Submit" value="Create Task" @click="createTask">Create Task</button>
+								<button class="btn btn-info btn-md" name="Submit" value="Settings" @click="settings">Settings</button>
+							</div>
+						</li>
+						<li class="listDashboard">
+							<div id="helloUser">
+								<p @click="logIt()">Hello {{ this.user.fullName }}<br>{{ this.user.username }}</p>
+							</div>
+						</li>
+						<li class="listDashboard">	
+							<div>
+								<button id="logoutButton" class="btn btn-primary btn-md" name="Submit" value="Logout"  @click="logout" >Logout</button>
+							</div>
+						</li>
+					</ul>
 				</div>
 			</div>
 
-			<Settings v-if="settingsView" />
-			<CreateGroup v-if="createGroupView" />
-			<CreateTask v-if="createTaskView" />
-			<TaskList v-if="taskListView" />
+			<div class="taskDiv">
+				<Settings v-if="settingsView" />
+				<CreateGroup v-if="createGroupView" />
+				<CreateTask v-if="createTaskView" />
+				<TaskList v-if="taskListView" />
 
-			<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
+				<button v-if="createGroupView || createTaskView" @click="taskList">TaskView</button>
+			</div>
 		</div>
 
 		<div v-else>
 			<Loading :size="loadingSize" :color="loadingColor" :duration="loadingDuration" />
 		</div>
+
 	</div>
 </template>
 
