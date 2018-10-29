@@ -23,7 +23,7 @@
 						</tr>
 						<tr>
 							<table >
-								
+								<link href="https://fonts.googleapis.com/css?family=Aclonica|Cabin+Sketch|Salsa" rel="stylesheet">
 								<tr>
 									<td>
 										<table class="received" v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet assigned'" >

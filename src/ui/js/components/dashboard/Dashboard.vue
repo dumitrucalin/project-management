@@ -1,5 +1,6 @@
 <template>
 	<div class="myDashboard">
+		<link href="https://fonts.googleapis.com/css?family=Aclonica|Cabin+Sketch|Salsa" rel="stylesheet">
 		<div v-if="user">
 			<div class="navDiv">
 				

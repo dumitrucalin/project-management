@@ -3,7 +3,7 @@
 <div class="container">
 	<div id="content">
 		<div class="hexagon">
-			<link href="https://fonts.googleapis.com/css?family=Mali|Space+Mono" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/css?family=Aclonica|Cabin+Sketch|Salsa" rel="stylesheet">
 			<input type="text" class="input1" placeholder="Username" @keyup.enter="login" v-model="username" /><br>
 			<input type="password" class="input2" placeholder="Password" @keyup.enter="login" v-model="password" /><br>
 			<input type="checkbox" class="input3" v-model="viewPassword" @click="togglePassword" />View Password<br>
