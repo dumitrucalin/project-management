@@ -19,7 +19,8 @@ new Vue({
 		return render(Login);
 	},
 	async created() {
-		if (this.$store.getters['user/token'])
+		if (this.$store.getters['user/token']) {
 			await this.$store.dispatch ('settings/redirect', 'DASHBOARD');
+		}
 	}
 });

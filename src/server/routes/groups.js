@@ -13,6 +13,12 @@ privateApp.post('/create', async function(req, res) {
 		var groupName = req.body.groupName;
 		var usernames = req.body.usernames;
 
+		if (typeof usernames === 'string') {
+			usernames = usernames.replace('[', '');
+			usernames = usernames.replace(']', '');
+			usernames = usernames.split(', ');
+		}
+
 		var group = await db.group.findByGroupName(groupName);
 		if (!group) {
 			for (let username of usernames) {
@@ -75,6 +81,12 @@ privateApp.post('/users/create', async function (req, res) {
 	try {
 		var groupName = req.body.groupName;
 		var usernames = req.body.usernames;
+
+		if (typeof usernames === 'string') {
+			usernames = usernames.replace('[', '');
+			usernames = usernames.replace(']', '');
+			usernames = usernames.split(', ');
+		}
 
 		var group = await db.group.findByGroupName(groupName);
 		if (group) {

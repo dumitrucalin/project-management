@@ -100,7 +100,7 @@ module.exports = {
 
 		async get(store) {
 			try {
-				let response = await Vue.http.get(setup.API + '/users/get', store.state.token);
+				let response = await Vue.http.post(setup.API + '/users/get', store.state.token);
 
 				if (response.data.err === 0) {
 					store.commit ('user', response.data.user);

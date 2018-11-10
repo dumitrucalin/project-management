@@ -125,9 +125,9 @@ privateApp.post('/update', async function(req, res) {
 	}
 });
 
-privateApp.get('/get', async function(req, res) {
+privateApp.post('/get', async function(req, res) {
 	try {
-		var user = await db.user.findByToken(req.token);
+		var user = await db.user.findByToken(req.body.token);
 
 		if (user) {
 			debug('User found');
@@ -146,7 +146,15 @@ privateApp.post('/usersBasicInfo/get', async function(req, res) {
 	try {
 		var usersBasicInfo = {};
 
-		for (let username of req.body.usernames) {
+		var usernames = req.body.usernames;
+
+		if (typeof usernames === 'string') {
+			usernames = usernames.replace('[', '');
+			usernames = usernames.replace(']', '');
+			usernames = usernames.split(', ');
+		}
+
+		for (let username of usernames) {
 			var user = await db.user.findByUsername(username);
 
 			if (!user) {
@@ -175,6 +183,16 @@ privateApp.post('/check/name', async function (req, res) {
 		} else {
 			return res.status(200).send({ err: 1, message: 'Username ' + username + ' doesn\'t exist!' });
 		}
+	} catch(e) {
+		debug('Server error');
+		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });
+	}
+});
+
+publicApp.post('/test', function (req, res) {
+	try {
+		debug(req.body.test + '\n\n\n');
+		return res.status(200).send({ err: 0 });
 	} catch(e) {
 		debug('Server error');
 		return res.status(400).send({ err: 1, message: 'Server error!\n' + e });

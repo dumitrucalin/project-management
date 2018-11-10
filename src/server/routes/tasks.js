@@ -12,6 +12,14 @@ privateApp.post('/create', async function(req, res) {
 	try {
 		var usernameCreator = req.body.usernameCreator;
 		var usernamesReceiver = req.body.usernamesReceiver;
+
+		if (typeof usernamesReceiver === 'string') {
+			usernamesReceiver = usernamesReceiver.replace('[', '');
+			usernamesReceiver = usernamesReceiver.replace(']', '');
+			usernamesReceiver = usernamesReceiver.split(', ');
+			req.body.taskDeadline = new Date(req.body.taskDeadline);
+		}
+
 		var groupName = req.body.groupName;
 		var viewers = [];
 
@@ -266,6 +274,13 @@ privateApp.post('/receivers', async function(req, res) {
 	try {
 		var taskId = req.body.taskId;
 		var usernamesReceiver = req.body.usernamesReceiver;
+
+		if (typeof usernamesReceiver === 'string') {
+			usernamesReceiver = usernamesReceiver.replace('[', '');
+			usernamesReceiver = usernamesReceiver.replace(']', '');
+			usernamesReceiver = usernamesReceiver.split(', ');
+		}
+
 		var usernameCreator = req.body.usernameCreator;
 		var groupName = req.body.groupName;
 
@@ -282,6 +297,13 @@ privateApp.post('/reload', async function(req, res) {
 	try {
 		var groupName = req.body.groupName;
 		var usernamesToDelete = req.body.usernamesToDelete;
+
+		if (typeof usernamesToDelete === 'string') {
+			usernamesToDelete = usernamesToDelete.replace('[', '');
+			usernamesToDelete = usernamesToDelete.replace(']', '');
+			usernamesToDelete = usernamesToDelete.split(', ');
+			req.body.taskDeadline = new Date(req.body.taskDeadline);
+		}
 
 		for (let username of usernamesToDelete) {
 			await db.group.setTasksStatus(groupName, username, true);
