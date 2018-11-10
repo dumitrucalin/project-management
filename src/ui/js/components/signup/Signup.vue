@@ -1,6 +1,6 @@
 <template>
 	<div class="signupForm">
-		<link href="https://fonts.googleapis.com/css?family=Mali|Space+Mono" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css?family=Aclonica|Cabin+Sketch|Salsa" rel="stylesheet">
 		<input type="text" class="form-control" id="username" placeholder="Username" @keyup.enter="signup" v-model="username" />
 		<input type="password" id="password" class="form-control" placeholder="Password" @keyup.enter="signup" v-model="password" />
 		<input type="password" id="confirmPassword" class="form-control" placeholder="Confirm Password" @keyup.enter="signup" v-model="confirmPassword" />

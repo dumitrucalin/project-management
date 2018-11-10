@@ -1,176 +1,165 @@
 <template>
-	<div>
-		<select v-if="this.groupNamesSorted.length" v-model="groupName">
+	<div >
+		<select v-if="this.groupNamesSorted.length" v-model="groupName" class="TestDiv">
 			<option v-for="(groupNameIndex, index) in this.groupNamesSorted" :key=index >{{ groupNameIndex }}</option>
 		</select>
-
+		
 		<div v-else>
 			You are in no group at the moment.<br> Please first create a group or wait for an invitation!
 		</div>
 
 		<div v-if="show">
-			<div v-if="tasks" class="taskList">
-				The users in the same group with you are:
-				<div v-for="(fullName, index) in this.fullNamesShowed" :key=index>
-					<div>{{ fullName }}</div>
-					<div>{{ usersBasicInfo[fullName] }}</div><br>
+			<div v-if="tasks">
+				<div class="GroupUsers">
+					<div v-for="(fullName, index) in this.fullNamesShowed" :key=index>
+						<div>{{ fullName }}</div>
+						<div>{{ usersBasicInfo[fullName] }}</div><br>
+					</div>
 				</div>
-
-				<table>
-					<tr>
-						<th @click="consolelogit">Tasks Recieved</th>
-						<th>Tasks Given</th>
-					</tr>
-
-					<tr>
-						<table>
-							<tr>
-								<h4>Not Assigned to anyone</h4>
-							</tr>
-							<tr>
-								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet assigned'">
-										<tr>
-											<th>Giver</th>
-											<th>Task Name</th>
-											<th>Task Details</th>
-											<th>Task Status</th>
-											<th v-if="task.taskDeadline">Deadline</th>
-											<th v-if="task.taskPriority">Priority</th>
-										</tr>
-
-										<tr>
-											<td>{{ task.usernameCreator }}</td>
-											<td>{{ task.taskName }}</td>
-											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
-											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
-											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-							<tr>
-								<h4>Your Tasks</h4>
-							</tr>
-							<tr>
-								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="(task.taskStatus === 'Not yet started' || task.taskStatus === 'In progress') && task.usernamesReceiver[0] === user.username">
-										<tr>
-											<th>Giver</th>
-											<th>Task Name</th>
-											<th>Task Details</th>
-											<th>Task Status</th>
-											<th v-if="task.taskDeadline">Deadline</th>
-											<th v-if="task.taskPriority">Priority</th>
-										</tr>
-										<tr>
-											<td>{{ task.usernameCreator }}</td>
-											<td>{{ task.taskName }}</td>
-											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
-											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
-											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-										</tr>
-									</table>	
-								</td>
-							</tr>
-							<tr>
-								<h4>Finished</h4>
-							</tr>
-							<tr>
-								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="(task.taskStatus === 'Finished' && task.usernamesReceiver[0] === user.username) || task.taskStatus === 'Deleted'">
-										<tr>
-											<th>Giver</th>
-											<th>Task Name</th>
-											<th>Task Details</th>
-											<th>Task Status</th>
-											<th v-if="task.taskDeadline">Deadline</th>
-											<th v-if="task.taskPriority">Priority</th>
-										</tr>
-										<tr>
-											<td>{{ task.usernameCreator }}</td>
-											<td>{{ task.taskName }}</td>
-											<td>{{ task.taskString }}</td>
-											<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
-											<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
-											<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
-										</tr>
-									</table>	
-								</td>
-							</tr>
-							<tr>
-								<h4>Not yours</h4>
-							</tr>
-							<tr>
-								<td>
-									<table v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.usernamesReceiver[0] !== user.username && task.taskStatus !== 'Not yet assigned' && task.taskStatus !== 'Deleted'">
-										<tr>
-											<th>Giver</th>
-											<th>Task Name</th>
-										</tr>
-										<tr>
-											<td>{{ task.usernameCreator }}</td>
-											<td>{{ task.taskName }}</td>
-											<td>The task has been assigned to someone else</td>
-											<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
-										</tr>
-									</table>	
-								</td>
-							</tr>
-						</table>
-
-						<td>
-							<table v-for="(task,index) in this.tasks.tasksGiven" :key=index >
+					<table >
+						<tr>
+							<th @click="consolelogit" >Tasks Received</th>
+							<th @click="consolelogit">Tasks Given</th>
+						</tr>
+						<tr>
+							<table >
+								<link href="https://fonts.googleapis.com/css?family=Aclonica|Cabin+Sketch|Salsa" rel="stylesheet">
 								<tr>
-									<th>Receiver</th>
-									<th>Task Name</th>
-									<th>Task Details</th>
-									<th>Task Status</th>
-									<th v-if="task.taskDeadline">Deadline</th>
-									<th v-if="task.taskPriority">Priority</th>
+									<td>
+										<table class="received" v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.taskStatus=='Not yet assigned'" >
+											<tr>
+												<th>Giver</th>
+												<th>Task Name</th>
+												<th>Task Details</th>
+												<th>Task Status</th>
+												<th v-if="task.taskDeadline">Deadline</th>
+												<th v-if="task.taskPriority">Priority</th>
+											</tr>
+
+											<tr>
+												<td>{{ task.usernameCreator }}</td>
+												<td>{{ task.taskName }}</td>
+												<td>{{ task.taskString }}</td>
+												<td v-if="user.username" @click="changeTaskStatus(task)" >{{ task.taskStatus }}</td>
+												<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+												<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+												<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+											</tr>
+										</table>
+									</td>
 								</tr>
 								<tr>
-									<td><p v-for="(user,index) in task.usernamesReceiver" :key=index>{{ user }}</p></td>
-									<td @click="consolelogit()">{{ task.taskName }}</td>
-									<td>{{ task.taskString }}</td>
-									<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
-									<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
-									<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
-									<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
-									<div v-if="reassignView"> 
-										<select v-model="usernameTask" >
-											<option v-for="(username, index) in this.usernamesSorted" :key="index" :value="username">{{ username }}</option>
-										</select>					
-										<ul>
-											<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
-												<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
-											</li>
-										</ul>
-										<button @click="addUserTask">Add User</button><br>
-
-										DeadLine
-										<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline"/>
-										<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline" /><br>
-					
-										Priority
-										<input type="checkbox" @click="checkboxPriorityNot()">
-										<select v-if="checkboxPriority" v-model="taskPriority">
-											<option name="Urgent" value="urgent" :selected="this.urgent">Urgent</option>
-											<option name="Moderate" value="moderate" :selected="this.moderate">Moderate</option>
-											<option name="At leisure" value="atLeisure" :selected="this.atLeisure">At leisure</option>
-										</select><br>
-										
-										<button @click="reassign(task)">Reassign</button>
-									</div>
+									<td>
+										<table class="received" v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="(task.taskStatus === 'Not yet started' || task.taskStatus === 'In progress') && task.usernamesReceiver[0] === user.username">
+											<tr >
+												<th>Giver</th>
+												<th>Task Name</th>
+												<th>Task Details</th>
+												<th>Task Status</th>
+												<th v-if="task.taskDeadline">Deadline</th>
+												<th v-if="task.taskPriority">Priority</th>
+											</tr>
+											<tr>
+												<td>{{ task.usernameCreator }}</td>
+												<td>{{ task.taskName }}</td>
+												<td >{{ task.taskString }}</td>
+												<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
+												<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+												<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+											</tr>
+										</table>	
+									</td>
 								</tr>
-							</table>	
-						</td>
-					</tr>
-				</table>
+								<tr>
+									<td>
+										<table  v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="(task.taskStatus === 'Finished' && task.usernamesReceiver[0] === user.username) || task.taskStatus === 'Deleted'">
+											<tr>
+												<th>Giver</th>
+												<th>Task Name</th>
+												<th>Task Details</th>
+												<th>Task Status</th>
+												<th v-if="task.taskDeadline">Deadline</th>
+												<th v-if="task.taskPriority">Priority</th>
+											</tr>
+											<tr>
+												<td>{{ task.usernameCreator }}</td>
+												<td >{{ task.taskName }}</td>
+												<td >{{ task.taskString }}</td>
+												<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
+												<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+												<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+												<td style="width:70px"><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+											</tr>
+										</table>	
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<table class="received" v-for="(task,index) in this.tasks.tasksReceived" :key=index v-if="task.usernamesReceiver[0] !== user.username && task.taskStatus !== 'Not yet assigned' && task.taskStatus !== 'Deleted'">
+											<tr>
+												<th>Giver</th>
+												<th>Task Name</th>
+											</tr>
+											<tr>
+												<td>{{ task.usernameCreator }}</td>
+												<td>{{ task.taskName }}</td>
+												<td>The task has been assigned to someone else</td>
+												<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+											</tr>
+										</table>	
+									</td>
+								</tr>
+							</table>
+
+							<td>
+								<table class="given" v-for="(task,index) in this.tasks.tasksGiven" :key=index >
+									<tr >
+										<th>Receiver</th>
+										<th>Task Name</th>
+										<th >Task Details</th>
+										<th>Task Status</th>
+										<th v-if="task.taskDeadline">Deadline</th>
+										<th v-if="task.taskPriority">Priority</th>
+									</tr>
+									<tr>
+										<td><p v-for="(user,index) in task.usernamesReceiver" :key=index>{{ user }}</p></td>
+										<td  @click="consolelogit()">{{ task.taskName }}</td>
+										<td >{{ task.taskString }}</td>
+										<td v-if="user.username" @click="changeTaskStatus(task)">{{ task.taskStatus }}</td>
+										<td v-if="task.taskDeadline">{{ task.taskDeadline }}</td>
+										<td v-if="task.taskPriority">{{ task.taskPriority }}</td>
+										<td><button @click="deleteTaskId(task.taskId, task.taskStatus, task.usernamesReceiver, task.usernameCreator)">X</button></td>
+										<div v-if="reassignView"> 
+											<select v-model="usernameTask" >
+												<option v-for="(username, index) in this.usernamesSorted" :key="index" :value="username">{{ username }}</option>
+											</select>					
+											<ul>
+												<li v-for="(taskUserShow, index) in taskUsersShow" :key="index">
+													<p>{{ taskUserShow }}<button @click="outWithUser(taskUserShow)">X</button></p>
+												</li>
+											</ul>
+											<button @click="addUserTask">Add User</button><br>
+
+											DeadLine
+											<input type="checkbox" @click="checkboxDeadline = !checkboxDeadline"/>
+											<input type="datetime-local" v-model="taskDeadline" v-if="checkboxDeadline" /><br>
+						
+											Priority
+											<input type="checkbox" @click="checkboxPriorityNot()">
+											<select v-if="checkboxPriority" v-model="taskPriority">
+												<option name="Urgent" value="urgent" :selected="this.urgent">Urgent</option>
+												<option name="Moderate" value="moderate" :selected="this.moderate">Moderate</option>
+												<option name="At leisure" value="atLeisure" :selected="this.atLeisure">At leisure</option>
+											</select><br>
+											
+											<button @click="reassign(task)">Reassign</button>
+										</div>
+									</tr>
+								</table>	
+							</td>
+						</tr>
+					</table>
+				
 			</div>
 
 			<div v-else>
